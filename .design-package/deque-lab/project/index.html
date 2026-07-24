@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Deque Lab — SaaS & Shopify products</title>
+  <meta name="description" content="A small product lab. We build SaaS (Alliances PRO, Muslim Daily Planner) and Shopify apps." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <style>
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+    /* ============ HERO ============ */
+    .hero {
+      padding: 24px 0 0;
+    }
+    .hero .stage {
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: 28px;
+      padding: clamp(32px, 4vw, 56px) clamp(32px, 5vw, 72px);
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 48px;
+      align-items: center;
+    }
+    @media (max-width: 960px) { .hero .stage { grid-template-columns: 1fr; } }
+    .hero .stage::before {
+      content: ""; position: absolute; inset: 0;
+      background:
+        radial-gradient(800px 500px at 90% 0%, color-mix(in oklch, var(--accent) 22%, transparent), transparent 60%),
+        radial-gradient(500px 400px at 0% 100%, color-mix(in oklch, var(--accent) 10%, transparent), transparent 60%);
+      pointer-events: none;
+    }
+    .hero h1 {
+      font-size: clamp(40px, 5.6vw, 80px);
+      line-height: 1;
+      letter-spacing: -0.035em;
+      font-weight: 500;
+      position: relative;
+    }
+    .hero h1 .accent { color: var(--accent); }
+    .hero .lede {
+      margin-top: 22px;
+      font-size: clamp(15px, 1.2vw, 17px);
+      max-width: 46ch;
+      color: #c8cec4;
+      line-height: 1.55;
+      position: relative;
+    }
+    .hero-cta {
+      margin-top: 28px;
+      display: flex; gap: 10px; flex-wrap: wrap;
+      position: relative;
+    }
+
+    /* Hero brand right side */
+    .hero-brand {
+      position: relative;
+      display: grid; place-items: center;
+      aspect-ratio: 1;
+      width: 100%;
+    }
+    .hero-brand .ring {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      border: 1px dashed rgba(255,255,255,0.08);
+      animation: spin 60s linear infinite;
+    }
+    .hero-brand .ring.r2 { inset: 8%; border-style: solid; border-color: rgba(255,255,255,0.05); animation-duration: 80s; animation-direction: reverse; }
+    .hero-brand .ring.r3 { inset: 18%; border-style: dashed; border-color: rgba(90,154,62,0.15); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hero-brand .logo-bg {
+      position: relative;
+      width: 46%; aspect-ratio: 1;
+      background: var(--ink-2);
+      border-radius: 50%;
+      border: 1px solid var(--ink-3);
+      display: grid; place-items: center;
+      padding: 14%;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    .hero-brand .logo-bg img { width: 100%; height: 100%; object-fit: contain; }
+    .hero-brand .chip {
+      position: absolute;
+      padding: 10px 16px 10px 12px;
+      border-radius: 999px;
+      background: var(--ink-2);
+      border: 1px solid var(--ink-3);
+      font-family: var(--f-mono); font-size: 11px; color: #c8cec4;
+      letter-spacing: 0.06em;
+      display: inline-flex; align-items: center; gap: 10px;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .hero-brand .chip::before {
+      content: none;
+    }
+    .hero-brand .chip .n {
+      display: inline-grid; place-items: center;
+      min-width: 22px; height: 22px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: var(--accent); color: var(--accent-ink);
+      font-family: var(--f-mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0;
+    }
+    .hero-brand .c1 { top: 6%; left: 0%; animation: float 6s ease-in-out infinite; }
+    .hero-brand .c2 { top: 28%; right: -4%; animation: float 6s ease-in-out infinite 1s; }
+    .hero-brand .c3 { bottom: 18%; left: -2%; animation: float 6s ease-in-out infinite 2s; }
+    .hero-brand .c4 { bottom: 4%; right: 8%; animation: float 6s ease-in-out infinite 3s; }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* ============ Marquee ============ */
+    .marquee {
+      overflow: hidden; padding: 16px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      margin-top: 56px;
+    }
+    .marquee-track {
+      display: flex; gap: 0;
+      animation: ticker 50s linear infinite;
+      white-space: nowrap;
+    }
+    .marquee-track > span {
+      display: inline-flex; align-items: center; gap: 36px;
+      padding-right: 36px;
+      font-size: clamp(15px, 1.4vw, 18px);
+      font-weight: 500;
+      letter-spacing: 0;
+      color: var(--ink);
+      font-family: var(--f-mono);
+      text-transform: uppercase;
+    }
+    .marquee-track i { color: var(--accent); font-style: normal; font-size: 1em; vertical-align: middle; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* ============ Section header ============ */
+    .sec-head {
+      display: grid; grid-template-columns: 1fr auto; gap: 32px;
+      margin-bottom: 40px;
+      align-items: end;
+    }
+    @media (max-width: 720px) { .sec-head { grid-template-columns: 1fr; gap: 16px; } }
+    .sec-head h2 {
+      font-size: clamp(32px, 4.4vw, 56px);
+      letter-spacing: -0.03em;
+      line-height: 1.02;
+      font-weight: 500;
+    }
+    .sec-head .meta {
+      font-family: var(--f-mono); font-size: 11px;
+      letter-spacing: 0.1em; color: var(--muted);
+      display: flex; gap: 18px; flex-wrap: wrap;
+      align-items: center;
+    }
+    .sec-head .meta b { color: var(--ink); font-family: var(--f-sans); font-weight: 500; font-size: 13px; letter-spacing: 0; }
+    .sec-head .meta .dot { color: var(--accent); }
+
+    /* ============ Product grid ============ */
+    .pgrid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 960px) { .pgrid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px) { .pgrid { grid-template-columns: 1fr; } }
+
+    .p {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 26px;
+      display: flex; flex-direction: column;
+      min-height: 280px;
+      transition: border-color 200ms ease, transform 200ms ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .p:hover { border-color: var(--ink); }
+
+    /* Card top: icon + status */
+    .p .top {
+      display: flex; align-items: start; justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .p .ic {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: var(--accent); color: var(--accent-ink);
+      display: grid; place-items: center;
+      font-family: var(--f-mono); font-weight: 600; font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+    .p .ic.alt-dark { background: var(--ink); color: var(--accent); }
+    .p .ic.alt-pale { background: var(--paper-2); color: var(--ink); border: 1px solid var(--line); }
+    .p .ic.alt-tint { background: color-mix(in oklch, var(--accent) 18%, white); color: var(--accent-mid); }
+
+    /* Status badges */
+    .p .status {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-family: var(--f-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .p .status::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+    }
+    .p .status.live { background: color-mix(in oklch, var(--accent) 12%, white); color: var(--accent-mid); }
+    .p .status.live::before { background: var(--accent); animation: pulse 2s ease-in-out infinite; }
+    .p .status.soon { background: var(--paper-2); color: var(--muted); border: 1px dashed var(--line-2); }
+    .p .status.soon::before { background: var(--muted-2); }
+    .p .status.sold { background: #fff4e5; color: #a45300; }
+    .p .status.sold::before { background: #d97706; }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--accent) 50%, transparent); }
+      50% { box-shadow: 0 0 0 5px color-mix(in oklch, var(--accent) 0%, transparent); }
+    }
+
+    .p h3 {
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      font-weight: 500;
+    }
+    .p .desc {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      margin-top: 10px;
+    }
+
+    .p .foot {
+      margin-top: auto; padding-top: 22px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px;
+    }
+    .p .foot .price {
+      font-family: var(--f-mono); font-size: 12px; color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .p .cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--f-mono); font-size: 12px;
+      letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500;
+      color: var(--ink);
+      transition: gap 150ms ease, color 150ms ease;
+    }
+    .p .cta::after { content: "→"; }
+    .p:hover .cta { gap: 12px; color: var(--accent); }
+    .p .cta.muted { color: var(--muted-2); pointer-events: none; }
+    .p .cta.muted::after { content: ""; }
+
+    /* Coming-soon visual treatment */
+    .p.soon {
+      background: linear-gradient(180deg, #fff, var(--paper-2));
+    }
+    .p.soon h3 { color: var(--ink); }
+    .p.soon .ic {
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px dashed var(--line-2);
+    }
+    .p.soon .ic.alt-dark, .p.soon .ic.alt-pale, .p.soon .ic.alt-tint {
+      background: transparent; color: var(--ink); border: 1.5px dashed var(--line-2);
+    }
+
+    /* Sold-out (acquired) variant */
+    .p.sold {
+      background: linear-gradient(180deg, #fff, #fffaf0);
+    }
+    .p.sold .ic { background: var(--ink); color: #fff4e5; }
+
+    /* Featured (span 2) cards */
+    .p-feat { grid-column: span 2; min-height: 380px; }
+    @media (max-width: 960px) { .p-feat { grid-column: span 2; } }
+    @media (max-width: 640px) { .p-feat { grid-column: span 1; min-height: 280px; } }
+
+    /* Featured card with mock */
+    .p-feat.dark {
+      background: var(--ink); color: var(--paper); border-color: var(--ink);
+    }
+    .p-feat.dark h3 { color: var(--paper); }
+    .p-feat.dark .desc { color: #b8bfb5; }
+    .p-feat.dark .ic { background: var(--accent); color: var(--accent-ink); }
+    .p-feat.dark .cta { color: var(--paper); }
+    .p-feat.dark .foot { border-top: 1px solid var(--ink-3); padding-top: 18px; }
+    .p-feat.dark .status.live { background: color-mix(in oklch, var(--accent) 24%, transparent); color: #fff; }
+    .p-feat.dark .price { color: #8a8d85; }
+
+    .p-feat .body { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 32px; flex: 1; align-items: stretch; }
+    @media (max-width: 720px) { .p-feat .body { grid-template-columns: 1fr; } }
+    .p-feat .body .text { display: flex; flex-direction: column; }
+    .p-feat .body .text h3 { font-size: 28px; }
+    .p-feat .body .mock-crm,
+    .p-feat .body .mock-book { height: 100%; align-self: stretch; }
+
+    /* Feature chips */
+    .feat-chips {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px;
+    }
+    .feat-chips .chip-f {
+      font-family: var(--f-mono); font-size: 10px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 5px 10px; border-radius: 999px;
+      background: var(--paper-2); color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    .p-feat.dark .feat-chips .chip-f {
+      background: var(--ink-2); color: #c8cec4; border-color: var(--ink-3);
+    }
+    .p-feat.dark .feat-chips .chip-f.on { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+    .feat-chips .chip-f.on { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+
+    /* ===== Alliances mock ===== */
+    .mock-crm {
+      background: var(--ink-2); border: 1px solid var(--ink-3);
+      border-radius: 14px; padding: 14px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .mock-crm .row { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 10px; color: #8a8d85; letter-spacing: 0.08em; }
+    .mock-crm .lanes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; flex: 1; }
+    .mock-crm .lane { background: var(--ink); border: 1px solid var(--ink-3); border-radius: 8px; padding: 8px; display: flex; flex-direction: column; }
+    .mock-crm .lane h6 { font-family: var(--f-mono); font-size: 9px; color: #6b6f68; letter-spacing: 0.1em; margin: 0 0 6px; font-weight: 500; }
+    .mock-crm .deal { background: var(--ink-2); border: 1px solid var(--ink-3); border-radius: 6px; padding: 6px 8px; font-size: 11px; color: #fff; margin-bottom: 4px; }
+    .mock-crm .deal:last-child { margin-bottom: 0; }
+    .mock-crm .deal.focus { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in oklch, var(--accent) 18%, transparent); }
+    .mock-crm .deal .v { color: var(--accent); font-family: var(--f-mono); font-size: 9px; margin-top: 3px; }
+
+    /* ===== Planner mock ===== */
+    .mock-planner {
+      background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px;
+      display: grid; gap: 8px;
+    }
+    .mock-planner .head {
+      display: flex; justify-content: space-between;
+      font-family: var(--f-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em;
+    }
+    .mock-planner .head b { color: var(--ink); font-family: var(--f-sans); font-weight: 500; font-size: 12px; letter-spacing: 0; }
+    .mock-planner .prayers { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+    .mock-planner .pr {
+      padding: 8px 4px; text-align: center; border-radius: 6px;
+      background: var(--paper-2); font-family: var(--f-mono); font-size: 10px;
+    }
+    .mock-planner .pr.on { background: var(--accent); color: var(--accent-ink); }
+    .mock-planner .pr .t { font-size: 11px; font-weight: 600; }
+    .mock-planner .pr .l { font-size: 8px; opacity: 0.8; margin-top: 2px; letter-spacing: 0.04em; }
+    .mock-planner .tasks { display: grid; gap: 5px; margin-top: 4px; }
+    .mock-planner .task {
+      display: grid; grid-template-columns: 14px 1fr auto; gap: 8px; align-items: center;
+      font-size: 12px; padding: 6px 8px;
+      background: var(--paper-2); border-radius: 6px;
+    }
+    .mock-planner .task::before { content: ""; width: 12px; height: 12px; border-radius: 4px; border: 1.5px solid var(--line-2); }
+    .mock-planner .task.done::before { background: var(--accent); border-color: var(--accent); }
+    .mock-planner .task.done { color: var(--muted); text-decoration: line-through; }
+    .mock-planner .task .time { font-family: var(--f-mono); font-size: 10px; color: var(--muted); }
+
+    /* ===== Appointment booking mock ===== */
+    .mock-book {
+      background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px;
+      display: flex; flex-direction: column;
+    }
+    .mock-book .h { display: flex; justify-content: space-between; align-items: end; margin-bottom: 12px; }
+    .mock-book .h h6 { font-size: 14px; font-weight: 500; margin: 0; }
+    .mock-book .h .sub { font-family: var(--f-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.06em; }
+    .mock-book .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .mock-book .cal .d { aspect-ratio: 1; display: grid; place-items: center; font-size: 11px; border-radius: 5px; color: var(--ink); }
+    .mock-book .cal .d.off { color: var(--line-2); }
+    .mock-book .cal .d.avail { background: var(--paper-2); }
+    .mock-book .cal .d.sel { background: var(--accent); color: var(--accent-ink); font-weight: 500; }
+    .mock-book .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
+    .mock-book .slots.flex { margin-top: auto; padding-top: 10px; }
+    .mock-book .slot { padding: 6px; text-align: center; font-family: var(--f-mono); font-size: 10px; border: 1px solid var(--line); border-radius: 5px; }
+    .mock-book .slot.on { background: var(--ink); color: var(--paper); border-color: transparent; }
+
+    /* ===== PreOrder acquired story ===== */
+    .acq-story {
+      background: linear-gradient(180deg, #fff, #fffaf0);
+      border: 1px solid #f4d9b0;
+      border-radius: 14px;
+      padding: 14px;
+      display: grid; gap: 10px;
+    }
+    .acq-story .key { font-family: var(--f-mono); font-size: 10px; color: #a45300; letter-spacing: 0.1em; }
+    .acq-story .row { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid #f4d9b0; font-size: 12px; }
+    .acq-story .row:first-of-type { border-top: 0; }
+    .acq-story .row .v { font-family: var(--f-mono); color: #a45300; font-size: 12px; }
+
+    /* ============ Contact ============ */
+    .contact-wrap {
+      background: var(--ink); color: var(--paper);
+      border-radius: 28px;
+      padding: clamp(40px, 5vw, 72px) clamp(28px, 5vw, 64px);
+      display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px;
+      position: relative; overflow: hidden;
+    }
+    @media (max-width: 820px) { .contact-wrap { grid-template-columns: 1fr; gap: 40px; } }
+    .contact-wrap::before {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(800px 500px at 110% 0%, color-mix(in oklch, var(--accent) 18%, transparent), transparent 60%);
+      pointer-events: none;
+    }
+    .contact-wrap > * { position: relative; }
+
+    .contact-wrap h2 {
+      font-size: clamp(32px, 4.4vw, 56px);
+      letter-spacing: -0.03em;
+      line-height: 1.02;
+      font-weight: 500;
+    }
+    .contact-wrap h2 em { font-style: normal; color: var(--accent); }
+    .contact-wrap .lede { color: #c8cec4; max-width: 42ch; margin-top: 20px; }
+
+    .ctry { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .ctry .chip-link {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 10px 16px;
+      background: var(--ink-2); border: 1px solid var(--ink-3);
+      border-radius: 999px;
+      color: var(--paper);
+      font-size: 13px;
+      transition: border-color 150ms ease;
+    }
+    .ctry .chip-link:hover { border-color: var(--accent); }
+    .ctry .chip-link svg { width: 16px; height: 16px; }
+
+    .form {
+      background: var(--ink-2);
+      border: 1px solid var(--ink-3);
+      border-radius: 20px;
+      padding: 28px;
+    }
+    .form-row { display: grid; gap: 18px; }
+    .form-row .f label {
+      display: block; font-family: var(--f-mono); font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #8a8d85;
+      margin-bottom: 8px;
+    }
+    .form-row .f label .req { color: var(--accent); }
+    .form-row input, .form-row textarea, .form-row select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--ink-3);
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: 10px;
+      font-family: var(--f-sans);
+      font-size: 14px;
+      transition: border-color 150ms ease;
+    }
+    .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
+      outline: none; border-color: var(--accent);
+    }
+    .form-row input::placeholder, .form-row textarea::placeholder { color: #6b6f68; }
+    .form-row textarea { min-height: 110px; resize: vertical; }
+    .form .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 480px) { .form .grid2 { grid-template-columns: 1fr; } }
+    .form .submit {
+      margin-top: 20px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    }
+    .form .submit .note { font-family: var(--f-mono); font-size: 11px; color: #8a8d85; max-width: 30ch; line-height: 1.5; }
+    .form .success {
+      display: none;
+      text-align: center; padding: 32px 12px;
+    }
+    .form.sent .form-content { display: none; }
+    .form.sent .success { display: block; }
+    .success .tick {
+      width: 56px; height: 56px; margin: 0 auto 16px;
+      background: var(--accent); color: var(--accent-ink); border-radius: 50%;
+      display: grid; place-items: center; font-size: 26px;
+    }
+    .success h4 { font-size: 22px; font-weight: 500; color: var(--paper); }
+    .success p { color: #b8bfb5; font-size: 14px; margin-top: 8px; }
+
+    /* ============ Highlight strip (between sections) ============ */
+    .strip {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--line); border-radius: 18px;
+      overflow: hidden; background: #fff;
+    }
+    @media (max-width: 720px) { .strip { grid-template-columns: 1fr 1fr; } }
+    .strip .cell { padding: 24px 22px; border-right: 1px solid var(--line); }
+    .strip .cell:last-child { border-right: none; }
+    .strip .big {
+      font-size: clamp(28px, 3.4vw, 42px); letter-spacing: -0.025em; line-height: 1; font-weight: 500;
+    }
+    .strip .big .u { color: var(--accent); }
+    .strip .l { font-family: var(--f-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; margin-top: 10px; }
+
+    /* Status filter / legend */
+    .legend {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .legend .l {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--f-mono); font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+    }
+    .legend .l::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%;
+    }
+    .legend .l.live::before { background: var(--accent); }
+    .legend .l.soon::before { background: var(--muted-2); }
+    .legend .l.sold::before { background: #d97706; }
+  </style>
+</head>
+<body id="top">
+<div data-nav></div>
+
+<!-- ============== HERO ============== -->
+<section class="hero" data-screen-label="01 Hero">
+  <div class="wrap">
+    <div class="stage">
+      <div>
+        <div class="eyebrow on-dark">Deque Lab · Est. 2021</div>
+        <h1 style="margin-top: 18px">
+          Two product lines.<br>
+          One <span class="accent">small</span> lab.
+        </h1>
+        <p class="lede">
+          We build SaaS products and Shopify apps. Some are shipping, some are coming next.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-accent btn-arrow" href="#saas">Explore SaaS</a>
+          <a class="btn btn-ghost on-dark" href="#apps">Explore Apps</a>
+        </div>
+      </div>
+
+      <div class="hero-brand">
+        <div class="ring"></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
+        <div class="logo-bg">
+          <img src="assets/logo-mark.png" alt="Deque Lab logo" />
+        </div>
+        <span class="chip c1"><span class="n">7</span> SaaS products</span>
+        <span class="chip c2"><span class="n">8</span> Shopify apps</span>
+        <span class="chip c3"><span class="n">1</span> acquired</span>
+        <span class="chip c4"><span class="n">5+</span> shipping</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== Marquee ============== -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Alliances PRO <i>◆</i> Muslim Daily Planner <i>◆</i> Education CRM <i>◆</i> Real Estate CRM <i>◆</i> Duty Timer <i>◆</i> Email Marketing <i>◆</i> Appointment Booking <i>◆</i> PreOrder · Acquired 2024 <i>◆</i> Wholesale B2B <i>◆</i> Subscription Plus <i>◆</i></span>
+    <span>Alliances PRO <i>◆</i> Muslim Daily Planner <i>◆</i> Education CRM <i>◆</i> Real Estate CRM <i>◆</i> Duty Timer <i>◆</i> Email Marketing <i>◆</i> Appointment Booking <i>◆</i> PreOrder · Acquired 2024 <i>◆</i> Wholesale B2B <i>◆</i> Subscription Plus <i>◆</i></span>
+  </div>
+</div>
+
+<!-- ============== STRIP STATS ============== -->
+<section style="padding: 56px 0 0">
+  <div class="wrap">
+    <div class="strip">
+      <div class="cell"><div class="big">7</div><div class="l">SAAS PRODUCTS</div></div>
+      <div class="cell"><div class="big">8</div><div class="l">SHOPIFY APPS</div></div>
+      <div class="cell"><div class="big">1<span class="u">×</span></div><div class="l">APP ACQUIRED · 2024</div></div>
+      <div class="cell"><div class="big">5<span class="u">yr</span></div><div class="l">BUILDING SINCE 2021</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SAAS ============== -->
+<section id="saas" data-screen-label="02 SaaS">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">Section 01 · SaaS</div>
+        <h2 style="margin-top: 14px">SaaS products,<br>built with care.</h2>
+      </div>
+      <div class="meta">
+        <span><b>7</b> products</span>
+        <span class="dot">·</span>
+        <span>2 live</span>
+        <span class="dot">·</span>
+        <span>5 coming</span>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span class="l live">Live</span>
+      <span class="l soon">Coming Soon</span>
+      <span class="l sold">Acquired</span>
+    </div>
+
+    <div class="pgrid">
+      <!-- 01 · Alliances PRO (Live, featured) -->
+      <article class="p p-feat dark" id="saas-alliances" data-comment-anchor="4d6abf7afe-article">
+        <div class="top">
+          <div class="ic">AP</div>
+          <span class="status live">Live</span>
+        </div>
+        <div class="body">
+          <div class="text">
+            <h3>Alliances PRO</h3>
+            <p class="desc">A Mini CRM built for follow-ups. Deals, Tasks, Organizations — wired together so nothing slips between a warm intro and a closed deal.</p>
+            <div class="feat-chips">
+              <span class="chip-f on">Deals</span>
+              <span class="chip-f">Tasks</span>
+              <span class="chip-f">Organizations</span>
+              <span class="chip-f">Contacts</span>
+              <span class="chip-f">Follow-up engine</span>
+              <span class="chip-f">Email sync</span>
+              <span class="chip-f">Calendar sync</span>
+              <span class="chip-f">Pipeline analytics</span>
+            </div>
+          </div>
+          <div class="mock-crm" aria-hidden="true">
+            <div class="row"><span>PIPELINE · Q2</span><span style="color: var(--accent)">$184k</span></div>
+            <div class="lanes">
+              <div class="lane">
+                <h6>NEW · 12</h6>
+                <div class="deal">Alderwood<div class="v">$8.2k</div></div>
+                <div class="deal">Fieldcraft<div class="v">$4.0k</div></div>
+                <div class="deal">Meridian<div class="v">$12k</div></div>
+              </div>
+              <div class="lane">
+                <h6>DISCOVERY · 8</h6>
+                <div class="deal focus">Northwind<div class="v">$18k</div></div>
+                <div class="deal">Pebble<div class="v">$24k</div></div>
+                <div class="deal">Cedar Co<div class="v">$16k</div></div>
+              </div>
+              <div class="lane">
+                <h6>WON · 4</h6>
+                <div class="deal" style="opacity:.7">Patagonia<div class="v">$32k</div></div>
+                <div class="deal" style="opacity:.7">Pine Co<div class="v">$16k</div></div>
+                <div class="deal" style="opacity:.7">Lantern<div class="v">$22k</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="foot">
+          <span class="price">CRM · per-seat pricing</span>
+          <a href="#contact" class="cta">Try Alliances PRO</a>
+        </div>
+      </article>
+
+      <!-- 02 · Muslim Daily Planner (Live) -->
+      <article class="p" id="saas-planner">
+        <div class="top">
+          <div class="ic alt-dark">MP</div>
+          <span class="status live">Live</span>
+        </div>
+        <h3>Muslim Daily Planner</h3>
+        <p class="desc">Prayer times, daily Adhkar, habit tracking, and a clean day-planner — built for Muslims who want focus and Barakah in their routine.</p>
+        <div class="mock-planner" style="margin-top: 18px" aria-hidden="true">
+          <div class="head"><b>Wed · 9 Sha'ban</b><span>NYC · 40.7°N</span></div>
+          <div class="prayers">
+            <div class="pr"><div class="t">Fajr</div><div class="l">5:14</div></div>
+            <div class="pr"><div class="t">Dhuhr</div><div class="l">12:48</div></div>
+            <div class="pr on"><div class="t">Asr</div><div class="l">4:22</div></div>
+            <div class="pr"><div class="t">Mag</div><div class="l">7:36</div></div>
+            <div class="pr"><div class="t">Isha</div><div class="l">9:02</div></div>
+          </div>
+          <div class="tasks">
+            <div class="task done">Morning Adhkar<span class="time">5:30</span></div>
+            <div class="task">Read 1 page Qur'an<span class="time">PM</span></div>
+          </div>
+        </div>
+        <div class="foot">
+          <span class="price">iOS · Android · Web</span>
+          <a href="#contact" class="cta">Download</a>
+        </div>
+      </article>
+
+      <!-- 03 · Education CRM -->
+      <article class="p soon">
+        <div class="top">
+          <div class="ic">EC</div>
+          <span class="status soon">Coming Soon</span>
+        </div>
+        <h3>Education CRM</h3>
+        <p class="desc">Lead-to-enrollment CRM for coaching centres, language schools, and tutoring businesses. Built on the Alliances engine.</p>
+        <div class="foot">
+          <span class="price">EARLY 2026 · Q3</span>
+          <a href="#contact" class="cta">Get notified</a>
+        </div>
+      </article>
+
+      <!-- 04 · Real Estate CRM -->
+      <article class="p soon">
+        <div class="top">
+          <div class="ic alt-tint">RE</div>
+          <span class="status soon">Coming Soon</span>
+        </div>
+        <h3>Real Estate CRM</h3>
+        <p class="desc">A property-first CRM. Listings, buyer matches, viewing schedules, and a follow-up engine that respects the long sales cycle.</p>
+        <div class="foot">
+          <span class="price">2026 · Q4</span>
+          <a href="#contact" class="cta">Get notified</a>
+        </div>
+      </article>
+
+      <!-- 05 · Duty Timer -->
+      <article class="p soon">
+        <div class="top">
+          <div class="ic alt-pale">DT</div>
+          <span class="status soon">Coming Soon</span>
+        </div>
+        <h3>Duty Timer</h3>
+        <p class="desc">Mobile check-in / check-out for field teams, security, hospitality, and on-site work. Geofence, photo proof, and clean reporting.</p>
+        <div class="foot">
+          <span class="price">MOBILE · BETA Q1 2027</span>
+          <a href="#contact" class="cta">Get notified</a>
+        </div>
+      </article>
+
+      <!-- 06 · Email Marketing -->
+      <article class="p soon">
+        <div class="top">
+          <div class="ic">EM</div>
+          <span class="status soon">Coming Soon</span>
+        </div>
+        <h3>Email Marketing Suite</h3>
+        <p class="desc">Campaigns, automations, and lifecycle flows for small teams. Honest pricing, no per-contact gotchas.</p>
+        <div class="foot">
+          <span class="price">2027</span>
+          <a href="#contact" class="cta">Get notified</a>
+        </div>
+      </article>
+
+      <!-- 07 · Competitor Analysis -->
+      <article class="p soon">
+        <div class="top">
+          <div class="ic alt-dark">CA</div>
+          <span class="status soon">Coming Soon</span>
+        </div>
+        <h3>Competitor Marketing Analysis</h3>
+        <p class="desc">Track your competitors' ads, landing pages, SEO movement, and product launches — all in one weekly digest.</p>
+        <div class="foot">
+          <span class="price">2027 · Q2</span>
+          <a href="#contact" class="cta">Get notified</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SHOPIFY APPS ============== -->
+<section id="apps" data-screen-label="03 Shopify Apps">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">Section 02 · Shopify Apps</div>
+        <h2 style="margin-top: 14px">Shopify apps,<br>focused tools.</h2>
+      </div>
+      <div class="meta">
+        <span><b>8</b> apps</span>
+        <span class="dot">·</span>
+        <span>1 live</span>
+        <span class="dot">·</span>
+        <span>1 acquired</span>
+        <span class="dot">·</span>
+        <span>6 coming</span>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span class="l live">Live on Shopify</span>
+      <span class="l soon">Coming Soon</span>
+      <span class="l sold">Acquired</span>
+    </div>
+
+    <div class="pgrid">
+      <!-- 01 · Appointment Booking (Live, featured) -->
+      <article class="p p-feat" id="app-appointment" data-comment-anchor="96d1e78b55-article">
+        <div class="top">
+          <div class="ic">AB</div>
+          <span class="status live">Live on Shopify</span>
+        </div>
+        <div class="body">
+          <div class="text">
+            <h3>DQ: Appointment Booking App</h3>
+            <p class="desc">Let customers book services, classes, and consultations directly from your product pages. Calendar sync, staff schedules, deposits, SMS reminders.</p>
+            <div class="feat-chips">
+              <span class="chip-f on">Native widget</span>
+              <span class="chip-f">Google sync</span>
+              <span class="chip-f">Outlook sync</span>
+              <span class="chip-f">Staff schedules</span>
+              <span class="chip-f">Buffer times</span>
+              <span class="chip-f">Deposits</span>
+              <span class="chip-f">SMS reminders</span>
+              <span class="chip-f">OS 2.0</span>
+            </div>
+          </div>
+          <div class="mock-book" aria-hidden="true">
+            <div class="h">
+              <h6>Book a session</h6>
+              <span class="sub">30 MIN · FREE</span>
+            </div>
+            <div class="cal">
+              <div class="d off">28</div><div class="d off">29</div><div class="d off">30</div>
+              <div class="d avail">1</div><div class="d avail">2</div><div class="d">3</div><div class="d">4</div>
+              <div class="d avail">5</div><div class="d avail">6</div><div class="d avail">7</div><div class="d sel">8</div><div class="d avail">9</div><div class="d">10</div><div class="d">11</div>
+              <div class="d avail">12</div><div class="d avail">13</div><div class="d avail">14</div><div class="d avail">15</div><div class="d avail">16</div><div class="d">17</div><div class="d">18</div>
+              <div class="d avail">19</div><div class="d avail">20</div><div class="d avail">21</div><div class="d avail">22</div><div class="d avail">23</div><div class="d">24</div><div class="d">25</div>
+            </div>
+            <div class="slots flex">
+              <div class="slot">10:00</div>
+              <div class="slot on">11:00</div>
+              <div class="slot">1:00</div>
+            </div>
+          </div>
+        </div>
+        <div class="foot">
+          <span class="price">SHOPIFY APP STORE · 14-day trial</span>
+          <a href="#contact" class="cta">Install on Shopify</a>
+        </div>
+      </article>
+
+      <!-- 02 · PreOrder (Sold Out / Acquired) -->
+      <article class="p sold" id="app-preorder">
+        <div class="top">
+          <div class="ic">PO</div>
+          <span class="status sold">Acquired 2024</span>
+        </div>
+        <h3>DQ: PreOrder &amp; Request Stock</h3>
+        <p class="desc">Our flagship preorder app. Grew to 500+ merchants over three years, then acquired by a larger Shopify partner in 2024.</p>
+        <div class="acq-story" style="margin-top: 16px" aria-hidden="true">
+          <div class="key">EXIT SUMMARY</div>
+          <div class="row"><span>Merchants</span><span class="v">500+</span></div>
+          <div class="row"><span>App-store rating</span><span class="v">4.8 ★</span></div>
+          <div class="row"><span>Run</span><span class="v">3 years</span></div>
+        </div>
+        <div class="foot">
+          <span class="price">EXITED 2024 · NEW HOME</span>
+          <span class="cta muted">Acquired</span>
+        </div>
+      </article>
+
+      <!-- 03 · CRM for B2B -->
+      <article class="p soon">
+        <div class="top">
+          <div class="ic alt-dark">CB</div>
+          <span class="status soon">Coming Soon</span>
+        </div>
+        <h3>DQ: CRM for B2B</h3>
+        <p class="desc">Native CRM for B2B merchants on Shopify. Account hierarchies, rep assignments, account-based pipelines.</p>
+        <div class="foot">
+          <span class="price">B2B · 2026</span>
+          <a href="#contact" class="cta">Get notified</a>
+        </div>
+      </article>
+
+      <!-- 04 · Wholesale Pricing Discount -->
+      <article class="p soon">
+        <div class="top">
+          <div class="ic alt-tint">WP</div>
+          <span class="status soon">Coming Soon</span>
+        </div>
+        <h3>DQ: Wholesale Pricing &amp; Discount</h3>
+        <p class="desc">Customer-group pricing, tiered volume discounts, net-30 terms, and order minimums on Shopify Functions.</p>
+        <div class="foot">
+          <span class="price">PRICING · 2026 Q3</span>
+          <a href="#contact" class="cta">Get notified</a>
+        </div>
+      </article>
+
+      <!-- 05 · Request a Quote, Hide Price -->
+      <article class="p soon">
+        <div class="top">
+          <div class="ic alt-pale">RQ</div>
+          <span class="status soon">Coming Soon</span>
+        </div>
+        <h3>DQ: Request a Quote &amp; Hide Price</h3>
+        <p class="desc">Gate prices behind login or form. Capture quote requests with custom fields and admin-approval flow.</p>
+        <div class="foot">
+          <span class="price">SALES · 2026 Q3</span>
+          <a href="#contact" class="cta">Get notified</a>
+        </div>
+      </article>
+
+      <!-- 06 · Live Product Options -->
+      <article class="p soon">
+        <div class="top">
+          <div class="ic">LO</div>
+          <span class="status soon">Coming Soon</span>
+        </div>
+        <h3>DQ: Live Product Options</h3>
+        <p class="desc">Real-time product configurators — color swatches, custom fields, conditional logic, live price preview, image overlays.</p>
+        <div class="foot">
+          <span class="price">CUSTOMIZE · 2027</span>
+          <a href="#contact" class="cta">Get notified</a>
+        </div>
+      </article>
+
+      <!-- 07 · Subscription Plus -->
+      <article class="p soon">
+        <div class="top">
+          <div class="ic alt-dark">SP</div>
+          <span class="status soon">Coming Soon</span>
+        </div>
+        <h3>DQ: Subscription Plus</h3>
+        <p class="desc">Subscriptions for Shopify Plus. Mixed cart, swap-anytime, dunning recovery, and merchant-branded customer portal.</p>
+        <div class="foot">
+          <span class="price">PLUS · 2027 Q1</span>
+          <a href="#contact" class="cta">Get notified</a>
+        </div>
+      </article>
+
+      <!-- 08 · Checkout Extensions Plus -->
+      <article class="p soon">
+        <div class="top">
+          <div class="ic alt-tint">CE</div>
+          <span class="status soon">Coming Soon</span>
+        </div>
+        <h3>DQ: Checkout Extensions Plus</h3>
+        <p class="desc">A bundle of checkout extensions for Plus merchants — upsells, gift notes, custom blocks, and one-click order bumps.</p>
+        <div class="foot">
+          <span class="price">CHECKOUT · 2027</span>
+          <a href="#contact" class="cta">Get notified</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CONTACT ============== -->
+<section id="contact" data-screen-label="04 Contact">
+  <div class="wrap">
+    <div class="contact-wrap">
+      <div>
+        <div class="eyebrow on-dark">Stay in the loop</div>
+        <h2 style="margin-top: 16px">
+          Want early access<br>
+          or a <em>question</em>?
+        </h2>
+        <p class="lede">
+          Drop us a line. We reply to every message — usually within a business day.
+          Tell us which product, and we'll add you to that waitlist or get on a call.
+        </p>
+
+        <div class="ctry">
+          <a href="mailto:contact@dequelab.com" class="chip-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg>
+            contact@dequelab.com
+          </a>
+          <a href="https://linkedin.com/company/deque-lab" target="_blank" rel="noopener" class="chip-link">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h4v4H4zM4 10h4v10H4zM10 10h4v2h.1c.6-1 2-2 4-2 4.3 0 5 2.8 5 6.5V20h-4v-6.4c0-1.5-.5-2.6-2-2.6s-2.4 1.1-2.4 2.6V20h-4z"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://x.com/dequelab" target="_blank" rel="noopener" class="chip-link">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 3H21l-6.6 7.5L22 21h-6.2l-5-6.4L5 21H2.2l7-8L2 3h6.3l4.5 5.9z"/></svg>
+            @dequelab
+          </a>
+        </div>
+      </div>
+
+      <div class="form" id="briefForm">
+        <div class="form-content">
+          <div class="form-row">
+            <div class="grid2">
+              <div class="f">
+                <label>Name <span class="req">*</span></label>
+                <input name="name" placeholder="Jane Rivera" required />
+              </div>
+              <div class="f">
+                <label>Email <span class="req">*</span></label>
+                <input type="email" name="email" placeholder="jane@company.com" required />
+              </div>
+            </div>
+            <div class="f">
+              <label>I'm interested in</label>
+              <select name="interest">
+                <optgroup label="SaaS">
+                  <option>Alliances PRO</option>
+                  <option>Muslim Daily Planner</option>
+                  <option>Education CRM (waitlist)</option>
+                  <option>Real Estate CRM (waitlist)</option>
+                  <option>Duty Timer (waitlist)</option>
+                  <option>Email Marketing Suite (waitlist)</option>
+                  <option>Competitor Marketing Analysis (waitlist)</option>
+                </optgroup>
+                <optgroup label="Shopify Apps">
+                  <option>DQ: Appointment Booking</option>
+                  <option>DQ: CRM for B2B (waitlist)</option>
+                  <option>DQ: Wholesale Pricing (waitlist)</option>
+                  <option>DQ: Request a Quote / Hide Price (waitlist)</option>
+                  <option>DQ: Live Product Options (waitlist)</option>
+                  <option>DQ: Subscription Plus (waitlist)</option>
+                  <option>DQ: Checkout Extensions Plus (waitlist)</option>
+                </optgroup>
+                <option>Just saying hi</option>
+              </select>
+            </div>
+            <div class="f">
+              <label>Message</label>
+              <textarea name="msg" placeholder="Anything you'd like to share — questions, feedback, or what you're hoping the product does."></textarea>
+            </div>
+          </div>
+          <div class="submit">
+            <div class="note">No newsletter list. We'll only email you about what you asked about.</div>
+            <button type="button" class="btn btn-accent btn-arrow" onclick="submitContact()">Send message</button>
+          </div>
+        </div>
+
+        <div class="success">
+          <div class="tick">✓</div>
+          <h4>Thanks — got it.</h4>
+          <p>We'll reply within a business day.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div data-footer></div>
+<script src="assets/shell.js"></script>
+<script>
+  function submitContact() {
+    const f = document.getElementById('briefForm');
+    const name = f.querySelector('[name=name]');
+    const email = f.querySelector('[name=email]');
+    if (!name.value || !email.value) {
+      if (!name.value) name.focus();
+      else email.focus();
+      return;
+    }
+    f.classList.add('sent');
+  }
+</script>
+</body>
+</html>
