@@ -24,7 +24,7 @@ $scheme = (
 ) ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'] ?? 'dequelab.com';
 $CONFIG['site_url']      = $scheme . '://' . $host;
-$CONFIG['canonical_url'] = $CONFIG['site_url'] . '/privacy.php';
+$CONFIG['canonical_url'] = $CONFIG['site_url'] . '/privacy';
 
 function e(?string $v): string {
     return htmlspecialchars($v ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');

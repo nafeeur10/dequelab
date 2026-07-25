@@ -5,223 +5,11 @@ declare(strict_types=1);
  * Deque Lab — single-page PHP site
  * ============================================================ */
 
-// ---------- Config ----------
-$CONFIG = [
-    'site_name'        => 'Deque Lab',
-    'site_tagline'     => 'SaaS & Shopify products',
-    'site_description' => 'Deque Lab is a small product lab building SaaS products (Alliances PRO, Muslim Daily Planner) and Shopify apps. Live products, coming soon, and one acquired app.',
-    'site_keywords'    => 'Deque Lab, Alliances PRO, Muslim Daily Planner, Shopify apps, SaaS products, Mini CRM, Appointment Booking Shopify, PreOrder Shopify, Education CRM, Real Estate CRM',
-    'site_locale'      => 'en_US',
-    'site_author'      => 'Deque Lab',
-    'site_founded'     => '2021',
-    'contact_email'    => 'inafeeur@gmail.com',
-    'linkedin'         => 'https://linkedin.com/company/deque-lab',
-    'twitter'          => 'https://x.com/dequelab',
-    'twitter_handle'   => '@dequelab',
-];
+require __DIR__ . '/inc/lib.php';              // helpers, config, session, CSRF, interest lists
+require __DIR__ . '/inc/contact-process.php';  // contact POST handler → $form_errors/$form_data/$form_sent
 
-// Resolve canonical URL from current request (works in any environment).
-$scheme  = (
-    (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-    || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https')
-    || (($_SERVER['SERVER_PORT'] ?? '') == 443)
-) ? 'https' : 'http';
-$host = $_SERVER['HTTP_HOST'] ?? 'dequelab.com';
-$path = strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
-$CONFIG['site_url']      = $scheme . '://' . $host;
-$CONFIG['canonical_url'] = $scheme . '://' . $host . $path;
-$CONFIG['logo']          = '/assets/dqlab-small.png';      // square mark — hero, favicon, OG, schema
-$CONFIG['logo_full']     = '/assets/dqlab.png';                   // wordmark — header + footer
-$CONFIG['og_image']      = $CONFIG['site_url'] . $CONFIG['logo'];
-
-// ---------- Session (CSRF + flash) ----------
-if (session_status() === PHP_SESSION_NONE) {
-    session_start([
-        'cookie_httponly' => true,
-        'cookie_samesite' => 'Lax',
-        'cookie_secure'   => $scheme === 'https',
-    ]);
-}
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-$csrf_token = $_SESSION['csrf_token'];
-
-// ---------- Helpers ----------
-function e(?string $v): string {
-    return htmlspecialchars($v ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-}
-
-// Obvious spam-bot content: link markup, shorteners, classic spam phrases.
-function looks_like_spam(string $text): bool {
-    if (preg_match('~\[url=|\[link=|<a\s+href~i', $text)) {
-        return true;
-    }
-    static $phrases = [
-        'jackpot', 'casino', 'lottery', 'viagra', 'cialis', 'betting',
-        'earn money fast', 'work from home and earn', 'million dollar',
-        'crypto giveaway', 'investment opportunity', 'sex cam', 'xxx',
-        '1borsa.com', 'bit.ly', 'tinyurl.', 'cutt.ly', 'is.gd',
-    ];
-    foreach ($phrases as $p) {
-        if (stripos($text, $p) !== false) {
-            return true;
-        }
-    }
-    return false;
-}
-
-// ---------- Contact form options (rendered + validated server-side) ----------
-$INTEREST_SAAS = [
-    'Alliances PRO',
-    'Muslim Daily Planner',
-    'Education CRM (waitlist)',
-    'Real Estate CRM (waitlist)',
-    'Duty Timer (waitlist)',
-    'Email Marketing Suite (waitlist)',
-    'Competitor Marketing Analysis (waitlist)',
-];
-$INTEREST_SHOPIFY = [
-    'DQ: Appointment Booking',
-    'DQ: CRM for B2B (waitlist)',
-    'DQ: Wholesale Pricing (waitlist)',
-    'DQ: Request a Quote / Hide Price (waitlist)',
-    'DQ: Live Product Options (waitlist)',
-    'DQ: Subscription Plus (waitlist)',
-    'DQ: Checkout Extensions Plus (waitlist)',
-];
-$INTEREST_ALL = array_merge($INTEREST_SAAS, $INTEREST_SHOPIFY, ['Just saying hi']);
-
-// ---------- Contact form handling ----------
-$form_errors = [];
-$form_data   = ['name' => '', 'email' => '', 'interest' => '', 'message' => ''];
-$form_sent   = false;
-
-// Flash success from a successful PRG redirect.
-if (!empty($_SESSION['contact_sent'])) {
-    $form_sent = true;
-    unset($_SESSION['contact_sent']);
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['form_type'] ?? '') === 'contact') {
-
-    // Honeypot: bots fill hidden field; act successful and bail.
-    if (!empty($_POST['website'])) {
-        $_SESSION['contact_sent'] = true;
-        header('Location: ' . $path . '#contact', true, 303);
-        exit;
-    }
-    
-    // Time trap: humans need a few seconds between page load and submit.
-    // Bots that fetch-then-post instantly get a fake success.
-    $rendered_at = (int)($_SESSION['form_rendered_at'] ?? 0);
-    if ($rendered_at === 0 || (time() - $rendered_at) < 4) {
-        $_SESSION['contact_sent'] = true;
-        header('Location: ' . $path . '#contact', true, 303);
-        exit;
-    }
-
-    // CSRF
-    if (!hash_equals($csrf_token, (string)($_POST['csrf_token'] ?? ''))) {
-        $form_errors[] = 'Your session expired. Please refresh and try again.';
-    }
-    
-    // Rate limit: max 3 sends per session per hour.
-    $now = time();
-    $_SESSION['contact_log'] = array_values(array_filter(
-        (array)($_SESSION['contact_log'] ?? []),
-        static fn($t) => (int)$t > $now - 3600
-    ));
-    if (count($_SESSION['contact_log']) >= 3) {
-        $form_errors[] = 'Too many messages sent. Please try again in an hour, or email us directly.';
-    }
-
-    $form_data['name']     = trim((string)($_POST['name'] ?? ''));
-    $form_data['email']    = trim((string)($_POST['email'] ?? ''));
-    $form_data['interest'] = trim((string)($_POST['interest'] ?? ''));
-    $form_data['message']  = trim((string)($_POST['msg'] ?? ''));
-
-    // Interest must be one of the options we actually render.
-    if ($form_data['interest'] !== '' && !in_array($form_data['interest'], $INTEREST_ALL, true)) {
-        $form_data['interest'] = '';
-    }
-
-    // Known spam content: pretend success, send nothing.
-    if (looks_like_spam($form_data['name'] . ' ' . $form_data['message'])) {
-        $_SESSION['contact_sent'] = true;
-        header('Location: ' . $path . '#contact', true, 303);
-        exit;
-    }
-
-    // Links in the name field are never legitimate; links in the message
-    // are almost always spam — ask the sender to describe instead.
-    if (preg_match('~https?://|www\.~i', $form_data['name'])) {
-        $_SESSION['contact_sent'] = true;
-        header('Location: ' . $path . '#contact', true, 303);
-        exit;
-    }
-    if (preg_match('~https?://|www\.~i', $form_data['message'])) {
-        $form_errors[] = 'Please remove links from your message — describe it in words and we\'ll follow up by email.';
-    }
-
-    if ($form_data['name'] === '' || mb_strlen($form_data['name']) > 120) {
-        $form_errors[] = 'Please enter your name.';
-    }
-    if ($form_data['email'] === '' || !filter_var($form_data['email'], FILTER_VALIDATE_EMAIL)) {
-        $form_errors[] = 'Please enter a valid email address.';
-    }
-    if (mb_strlen($form_data['message']) > 5000) {
-        $form_errors[] = 'Message is too long (max 5000 characters).';
-    }
-    foreach (['name', 'email', 'interest'] as $f) {
-        if (preg_match('/[\r\n]/', $form_data[$f])) {
-            $form_errors[] = 'Invalid characters in form input.';
-            break;
-        }
-    }
-
-    if (!$form_errors) {
-        $domain = preg_replace('/^www\./', '', $host);
-        $from   = 'noreply@' . $domain;
-
-        $subject = '[Deque Lab] Contact: ' . ($form_data['interest'] !== '' ? $form_data['interest'] : 'New message');
-
-        $body  = "New contact submission from " . $CONFIG['site_url'] . "\n";
-        $body .= str_repeat('-', 56) . "\n";
-        $body .= "Name:        " . $form_data['name'] . "\n";
-        $body .= "Email:       " . $form_data['email'] . "\n";
-        $body .= "Interest:    " . ($form_data['interest'] !== '' ? $form_data['interest'] : '(not specified)') . "\n";
-        $body .= "Submitted:   " . gmdate('Y-m-d H:i:s') . " UTC\n";
-        $body .= "IP:          " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . "\n";
-        $body .= "User-Agent:  " . substr((string)($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 200) . "\n";
-        $body .= str_repeat('-', 56) . "\n\n";
-        $body .= "Message:\n" . ($form_data['message'] !== '' ? $form_data['message'] : '(empty)') . "\n";
-
-        $reply_name = preg_replace('/[^\p{L}\p{N} .\-_\']/u', '', $form_data['name']);
-        $headers  = "From: Deque Lab Website <{$from}>\r\n";
-        $headers .= "Reply-To: " . ($reply_name !== '' ? "{$reply_name} <{$form_data['email']}>" : $form_data['email']) . "\r\n";
-        $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
-        $headers .= "MIME-Version: 1.0\r\n";
-        $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-        $headers .= "Content-Transfer-Encoding: 8bit\r\n";
-
-        $envelope = '-f' . $from;
-        $sent = @mail($CONFIG['contact_email'], $subject, $body, $headers, $envelope);
-
-        if ($sent) {
-            // Post/Redirect/Get — prevent duplicate submission on refresh.
-            $_SESSION['contact_sent']  = true;
-            $_SESSION['csrf_token']    = bin2hex(random_bytes(32));
-            $_SESSION['contact_log'][] = time();
-            header('Location: ' . $path . '#contact', true, 303);
-            exit;
-        }
-        $form_errors[] = 'Sorry, your message could not be sent. Please email us directly at ' . $CONFIG['contact_email'] . '.';
-    }
-}
-
-// Timestamp this render for the submit-speed time trap.
-$_SESSION['form_rendered_at'] = time();
+// Canonical: home lives at the site root, not /index.php.
+$CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -370,17 +158,8 @@ $_SESSION['form_rendered_at'] = time();
   </script>
 
   <style>
-    /* Accessibility: skip link */
-    .skip-link {
-      position: absolute; top: -40px; left: 8px;
-      background: var(--ink); color: var(--paper);
-      padding: 10px 14px; border-radius: 8px; z-index: 999;
-      font-family: var(--f-mono); font-size: 12px;
-      transition: top 150ms ease;
-    }
-    .skip-link:focus { top: 8px; outline: 2px solid var(--accent); outline-offset: 2px; }
-
-    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    /* Page chrome (.skip-link, .sr-only, html scroll) and contact-form
+       styles are shared and live in /assets/styles.css. */
 
     /* ============ HERO (light) ============ */
     .hero { padding: 24px 0 0; }
@@ -676,93 +455,7 @@ $_SESSION['form_rendered_at'] = time();
     .acq-story .row:first-of-type { border-top: 0; }
     .acq-story .row .v { font-family: var(--f-mono); color: #a45300; font-size: 12px; }
 
-    /* ============ Contact (light) ============ */
-    .contact-wrap {
-      background: #fff; color: var(--ink);
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: clamp(40px, 5vw, 72px) clamp(28px, 5vw, 64px);
-      display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px;
-      position: relative; overflow: hidden;
-    }
-    @media (max-width: 820px) { .contact-wrap { grid-template-columns: 1fr; gap: 40px; } }
-    .contact-wrap::before {
-      content: ""; position: absolute; inset: 0;
-      background: radial-gradient(800px 500px at 110% 0%, color-mix(in oklch, var(--accent) 8%, transparent), transparent 60%);
-      pointer-events: none;
-    }
-    .contact-wrap > * { position: relative; }
-
-    .contact-wrap h2 {
-      font-size: clamp(32px, 4.4vw, 56px); letter-spacing: -0.03em; line-height: 1.02; font-weight: 500;
-    }
-    .contact-wrap h2 em { font-style: normal; color: var(--accent); }
-    .contact-wrap .lede { color: var(--muted); max-width: 42ch; margin-top: 20px; }
-
-    .ctry { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
-    .ctry .chip-link {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 10px 16px;
-      background: var(--paper-2); border: 1px solid var(--line);
-      border-radius: 999px; color: var(--ink);
-      font-size: 13px; transition: border-color 150ms ease, background 150ms ease;
-    }
-    .ctry .chip-link:hover, .ctry .chip-link:focus { border-color: var(--accent); background: #fff; }
-    .ctry .chip-link svg { width: 16px; height: 16px; }
-
-    .form {
-      background: var(--paper-2); border: 1px solid var(--line);
-      border-radius: 20px; padding: 28px;
-    }
-    .form-row { display: grid; gap: 18px; }
-    .form-row .f label {
-      display: block; font-family: var(--f-mono); font-size: 10px;
-      letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .form-row .f label .req { color: var(--accent); }
-    .form-row input, .form-row textarea, .form-row select {
-      width: 100%; padding: 13px 14px;
-      border: 1px solid var(--line); background: #fff; color: var(--ink);
-      border-radius: 10px; font-family: var(--f-sans); font-size: 14px;
-      transition: border-color 150ms ease, box-shadow 150ms ease;
-    }
-    .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
-      outline: none; border-color: var(--accent);
-      box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 14%, transparent);
-    }
-    .form-row input::placeholder, .form-row textarea::placeholder { color: var(--muted-2); }
-    .form-row textarea { min-height: 110px; resize: vertical; }
-    .form .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    @media (max-width: 480px) { .form .grid2 { grid-template-columns: 1fr; } }
-    .form .submit {
-      margin-top: 20px;
-      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-    }
-    .form .submit .note { font-family: var(--f-mono); font-size: 11px; color: var(--muted); max-width: 30ch; line-height: 1.5; }
-    .form button.btn { border: 0; cursor: pointer; }
-    .form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-
-    .form-success {
-      background: color-mix(in oklch, var(--accent) 10%, white);
-      border: 1px solid color-mix(in oklch, var(--accent) 35%, white);
-      border-radius: 14px; padding: 28px;
-      text-align: center;
-    }
-    .form-success .tick {
-      width: 52px; height: 52px; margin: 0 auto 14px;
-      background: var(--accent); color: var(--accent-ink); border-radius: 50%;
-      display: grid; place-items: center; font-size: 24px;
-    }
-    .form-success h4 { font-size: 20px; font-weight: 500; color: var(--ink); margin: 0 0 6px; }
-    .form-success p { color: var(--muted); font-size: 14px; }
-
-    .form-errors {
-      background: #fff5f5; border: 1px solid #f3c5c5;
-      border-radius: 10px; padding: 14px 16px; margin-bottom: 18px;
-      color: #8a2c2c; font-size: 13px;
-    }
-    .form-errors ul { margin: 0; padding-left: 18px; }
+    /* Contact + form styles are shared — see /assets/styles.css */
 
     /* ============ Highlight strip ============ */
     .strip {
@@ -787,13 +480,6 @@ $_SESSION['form_rendered_at'] = time();
     .legend .l.live::before { background: var(--accent); }
     .legend .l.soon::before { background: var(--muted-2); }
     .legend .l.sold::before { background: #d97706; }
-
-    /* visually-hidden for accessibility (used by screen-reader-only labels) */
-    .sr-only {
-      position: absolute; width: 1px; height: 1px;
-      padding: 0; margin: -1px; overflow: hidden;
-      clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
-    }
   </style>
 </head>
 <body id="top">
@@ -1231,7 +917,7 @@ $_SESSION['form_rendered_at'] = time();
         <p class="desc">Gate prices behind login or form. Capture quote requests with custom fields and admin-approval flow.</p>
         <div class="foot">
           <span class="price">SALES · 2026 Q3</span>
-          <a href="#contact" class="cta">Get notified</a>
+          <a href="/dqlab-request-quote-hide-price" class="cta">View app</a>
         </div>
       </article>
 
@@ -1281,109 +967,7 @@ $_SESSION['form_rendered_at'] = time();
 </section>
 
 <!-- ============== CONTACT ============== -->
-<section id="contact" aria-labelledby="contact-title">
-  <div class="wrap">
-    <div class="contact-wrap">
-      <div>
-        <div class="eyebrow">Stay in the loop</div>
-        <h2 id="contact-title" style="margin-top: 16px">
-          Want early access<br>
-          or a <em>question</em>?
-        </h2>
-        <p class="lede">
-          Drop us a line. We reply to every message — usually within a business day.
-          Tell us which product, and we'll add you to that waitlist or get on a call.
-        </p>
-
-        <div class="ctry">
-          <a href="mailto:<?= e($CONFIG['contact_email']) ?>" class="chip-link" aria-label="Email <?= e($CONFIG['contact_email']) ?>">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 7l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg>
-            <?= e($CONFIG['contact_email']) ?>
-          </a>
-          <a href="<?= e($CONFIG['linkedin']) ?>" target="_blank" rel="noopener noreferrer" class="chip-link" aria-label="Deque Lab on LinkedIn">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h4v4H4zM4 10h4v10H4zM10 10h4v2h.1c.6-1 2-2 4-2 4.3 0 5 2.8 5 6.5V20h-4v-6.4c0-1.5-.5-2.6-2-2.6s-2.4 1.1-2.4 2.6V20h-4z"/></svg>
-            LinkedIn
-          </a>
-          <a href="<?= e($CONFIG['twitter']) ?>" target="_blank" rel="noopener noreferrer" class="chip-link" aria-label="Deque Lab on X (Twitter)">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.2 3H21l-6.6 7.5L22 21h-6.2l-5-6.4L5 21H2.2l7-8L2 3h6.3l4.5 5.9z"/></svg>
-            <?= e($CONFIG['twitter_handle']) ?>
-          </a>
-        </div>
-      </div>
-
-      <div class="form" id="briefForm">
-        <?php if ($form_sent): ?>
-          <div class="form-success" role="status" aria-live="polite">
-            <div class="tick" aria-hidden="true">✓</div>
-            <h4>Thanks — got it.</h4>
-            <p>We'll reply within a business day at the email you provided.</p>
-          </div>
-        <?php else: ?>
-          <?php if ($form_errors): ?>
-            <div class="form-errors" role="alert">
-              <ul>
-                <?php foreach ($form_errors as $err): ?>
-                  <li><?= e($err) ?></li>
-                <?php endforeach; ?>
-              </ul>
-            </div>
-          <?php endif; ?>
-
-          <form method="post" action="<?= e($path) ?>#contact" novalidate>
-            <input type="hidden" name="form_type" value="contact" />
-            <input type="hidden" name="csrf_token" value="<?= e($csrf_token) ?>" />
-            <!-- Honeypot: must remain empty -->
-            <div class="hp" aria-hidden="true">
-              <label for="website">Website (leave blank)</label>
-              <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" />
-            </div>
-
-            <div class="form-row">
-              <div class="grid2">
-                <div class="f">
-                  <label for="name">Name <span class="req" aria-hidden="true">*</span><span class="sr-only">required</span></label>
-                  <input type="text" name="name" id="name" placeholder="Jane Rivera" required maxlength="120"
-                         autocomplete="name" value="<?= e($form_data['name']) ?>" />
-                </div>
-                <div class="f">
-                  <label for="email">Email <span class="req" aria-hidden="true">*</span><span class="sr-only">required</span></label>
-                  <input type="email" name="email" id="email" placeholder="jane@company.com" required maxlength="180"
-                         autocomplete="email" value="<?= e($form_data['email']) ?>" />
-                </div>
-              </div>
-              <div class="f">
-                <label for="interest">I'm interested in</label>
-                <select name="interest" id="interest">
-                  <option value="">— Select a product —</option>
-                  <optgroup label="SaaS">
-                    <?php foreach ($INTEREST_SAAS as $opt): ?>
-                      <option value="<?= e($opt) ?>" <?= $form_data['interest'] === $opt ? 'selected' : '' ?>><?= e($opt) ?></option>
-                    <?php endforeach; ?>
-                  </optgroup>
-                  <optgroup label="Shopify Apps">
-                    <?php foreach ($INTEREST_SHOPIFY as $opt): ?>
-                      <option value="<?= e($opt) ?>" <?= $form_data['interest'] === $opt ? 'selected' : '' ?>><?= e($opt) ?></option>
-                    <?php endforeach; ?>
-                  </optgroup>
-                  <option value="Just saying hi" <?= $form_data['interest'] === 'Just saying hi' ? 'selected' : '' ?>>Just saying hi</option>
-                </select>
-              </div>
-              <div class="f">
-                <label for="msg">Message</label>
-                <textarea name="msg" id="msg" maxlength="5000" placeholder="Anything you'd like to share — questions, feedback, or what you're hoping the product does."><?= e($form_data['message']) ?></textarea>
-              </div>
-            </div>
-
-            <div class="submit">
-              <div class="note">No newsletter list. We'll only email you about what you asked about.</div>
-              <button type="submit" class="btn btn-accent btn-arrow">Send message</button>
-            </div>
-          </form>
-        <?php endif; ?>
-      </div>
-    </div>
-  </div>
-</section>
+<?php require __DIR__ . '/inc/contact-section.php'; ?>
 
 </main>
 
@@ -1427,7 +1011,7 @@ $_SESSION['form_rendered_at'] = time();
     <div class="footer-meta">
       <span>© <?= e(date('Y')) ?> <?= e($CONFIG['site_name']) ?></span>
       <span class="footer-legal">
-        <a href="/privacy.php">Privacy Policy</a>
+        <a href="/privacy">Privacy Policy</a>
         <span aria-hidden="true">·</span>
         <span>Built in-house · v1.0</span>
       </span>
