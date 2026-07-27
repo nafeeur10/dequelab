@@ -16,8 +16,8 @@ $CONFIG['og_image']         = $CONFIG['site_url'] . '/assets/dq_request_quote.pn
 
 // Preselect this app in the shared contact form.
 $contact_default_interest = 'DQ: Request a Quote / Hide Price (waitlist)';
-$contact_eyebrow = 'Contact Sales';
-$contact_heading = 'Talk to us about<br><em>Request a Quote</em>.';
+$contact_eyebrow = 'Section 06 · Contact';
+$contact_heading = 'Talk to us about<br>Request a Quote.';
 $contact_lede    = 'On Shopify Plus, running B2B, or need a custom quote flow? Tell us what you sell and we\'ll help you set it up — usually within a business day.';
 
 require __DIR__ . '/inc/contact-process.php';
@@ -31,7 +31,7 @@ $FAQS = [
     ['q' => 'Does it work with Shopify Online Store 2.0 themes?',
      'a' => 'Yes. The quote button and form install as native theme app blocks, so they work with OS 2.0 themes with no code and no theme edits required.'],
     ['q' => 'How much does it cost?',
-     'a' => 'There is a Free plan for up to 20 quote requests per month. The Pro plan is $9/month for unlimited quotes, custom fields, and admin approval flows. Both include a 14-day trial of Pro features.'],
+     'a' => 'There is a Free plan that includes 10 quotes total, a simple quote form, and email support. The Pro plan is $9/month for unlimited quotes, advanced multi-section forms, quote buttons on products and collections, and priority email & WhatsApp support, with a 14-day free trial.'],
     ['q' => 'Do customers need an account to request a quote?',
      'a' => 'No. Quote requests work for guests and logged-in customers. You can optionally require login before prices or the quote form appear, which is common for B2B and wholesale stores.'],
 ];
@@ -105,8 +105,8 @@ $STEPS = [
         "description": "<?= e($CONFIG['page_description']) ?>",
         "publisher": { "@type": "Organization", "name": "<?= e($CONFIG['site_name']) ?>", "url": "<?= e($CONFIG['site_url']) ?>/" },
         "offers": [
-          {"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD","description":"Up to 20 quote requests per month."},
-          {"@type":"Offer","name":"Pro","price":"9","priceCurrency":"USD","description":"Unlimited quotes, custom fields, and admin approval. Billed monthly."}
+          {"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD","description":"10 quotes total, a simple quote form with one section, email support, and a quote button on product pages."},
+          {"@type":"Offer","name":"Pro","price":"9","priceCurrency":"USD","description":"Unlimited quotes, advanced multi-section quote forms, Page/Popup/Drawer widget actions, quote buttons on products and collections, and priority email & WhatsApp support. Billed monthly."}
         ]
       },
       {
@@ -142,6 +142,11 @@ $STEPS = [
   <style>
     html { scroll-padding-top: 84px; }
 
+    /* Logo left · links centered · Install right */
+    .nav-inner { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+    .nav-inner .nav-links { justify-self: center; }
+    .nav-inner .nav-cta { justify-self: end; }
+
     /* ============ HERO ============ */
     .qhero { padding: 24px 0 0; }
     .qhero .stage {
@@ -173,36 +178,161 @@ $STEPS = [
     .hero-media { position: relative; }
     .browser {
       background: #fff; border: 1px solid var(--line); border-radius: 16px;
-      overflow: hidden; box-shadow: 0 30px 60px rgba(14,18,16,0.10), 0 4px 10px rgba(14,18,16,0.04);
+      overflow: hidden;
     }
     .browser .bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--paper-2); }
     .browser .bar .dot { width: 10px; height: 10px; border-radius: 50%; background: #d8d4c6; }
     .browser .bar .url { margin-left: 10px; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
-    .browser video { width: 100%; height: auto; display: block; background: var(--paper-2); }
+    .browser video, .browser img { width: 100%; height: auto; display: block; background: var(--paper-2); }
 
-    /* ============ Feature trio (colored cards) ============ */
-    .feat3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    /* ---- Coded product-page mockup (replaces static comparison image) ---- */
+    .pm { display: grid; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 420px) { .pm { grid-template-columns: 1fr; } }
+    .pm-photo {
+      position: relative; overflow: hidden;
+      background: linear-gradient(165deg, #f6f4ee 0%, #eceadf 55%, #e3e0d4 100%);
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .pm-photo svg.chair { position: relative; width: 84%; height: auto; margin-bottom: 8%; }
+    .pm-tag {
+      position: absolute; top: 12px; left: 12px; z-index: 2;
+      font-family: var(--f-mono); font-size: 10px; letter-spacing: .04em; text-transform: uppercase;
+      color: var(--ink); background: rgba(255,255,255,.82); border: 1px solid var(--line);
+      padding: 4px 8px; border-radius: 999px; backdrop-filter: blur(4px);
+    }
+    .pm-info { padding: clamp(16px, 3.4vw, 26px); display: flex; flex-direction: column; gap: 14px; }
+    .pm-title { font-size: clamp(17px, 2vw, 22px); font-weight: 600; letter-spacing: -0.015em; line-height: 1.15; }
+    .pm-price { position: relative; min-height: 34px; }
+    .pm-state { position: absolute; inset: 0; display: flex; align-items: center; gap: 10px; }
+    .pm-state.is-before { animation: pmBefore 7s ease-in-out infinite; }
+    .pm-state.is-after  { animation: pmAfter  7s ease-in-out infinite; }
+    .pm-amt { font-weight: 700; font-size: 22px; letter-spacing: -0.01em; color: var(--ink); }
+    .pm-price .lock {
+      width: 34px; height: 34px; flex: none; display: grid; place-items: center;
+      border-radius: 9px; background: var(--paper-2); border: 1px solid var(--line); color: var(--ink);
+    }
+    .pm-price .lock svg { width: 17px; height: 17px; }
+    .pm-hidden { font-weight: 600; font-size: 15px; color: var(--ink); white-space: nowrap; }
+
+    /* Before -> After crossfade shared by the price row and the button */
+    @keyframes pmBefore {
+      0%, 34%  { opacity: 1; transform: translateY(0); }
+      44%, 90% { opacity: 0; transform: translateY(-7px); }
+      100%     { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pmAfter {
+      0%, 34%  { opacity: 0; transform: translateY(7px); }
+      44%, 90% { opacity: 1; transform: translateY(0); }
+      100%     { opacity: 0; transform: translateY(7px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pm-state, .pm-btnstate { animation: none !important; }
+      .pm-state.is-before, .pm-btnstate.is-cart { opacity: 0; }
+      .pm-state.is-after,  .pm-btnstate.is-quote { opacity: 1; }
+    }
+    .pm-stock { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+    .pm-stock .d { width: 8px; height: 8px; border-radius: 50%; background: #33a35a; box-shadow: 0 0 0 3px rgba(51,163,90,.15); }
+    .pm-qlabel { font-size: 13px; color: var(--muted); margin-bottom: -6px; }
+    .pm-stepper {
+      display: inline-flex; align-items: center; align-self: flex-start;
+      border: 1px solid var(--line-2); border-radius: 10px; overflow: hidden; background: #fff;
+    }
+    .pm-stepper span, .pm-stepper b {
+      display: grid; place-items: center; height: 38px; font-size: 15px;
+    }
+    .pm-stepper span { width: 40px; color: var(--muted); }
+    .pm-stepper b { width: 46px; font-weight: 500; border-inline: 1px solid var(--line); color: var(--ink); }
+    .pm-quote {
+      margin-top: 4px;
+      position: relative; overflow: hidden;
+      width: 200px; max-width: 100%; height: 44px;
+      border: 0; border-radius: 12px; cursor: default;
+      background: black;
+      color: var(--accent-ink);
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .pm-btnstate {
+      position: absolute; inset: 0;
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .pm-btnstate.is-cart  { animation: pmBefore 7s ease-in-out infinite; }
+    .pm-btnstate.is-quote { animation: pmAfter  7s ease-in-out infinite; }
+    .pm-quote svg { width: 18px; height: 18px; }
+
+    /* ============ Trust strip (at a glance) ============ */
+    .strip {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: #fff;
+    }
+    @media (max-width: 720px) { .strip { grid-template-columns: repeat(2, 1fr); } }
+    .strip .cell {
+      padding: clamp(22px, 3vw, 32px) clamp(18px, 2.4vw, 28px);
+      border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    }
+    .strip .cell:last-child { border-right: 0; }
+    @media (min-width: 721px) {
+      .strip .cell { border-bottom: 0; }
+      .strip .cell:nth-child(4) { border-right: 0; }
+    }
+    @media (max-width: 720px) {
+      .strip .cell:nth-child(2n) { border-right: 0; }
+      .strip .cell:nth-child(n+3) { border-bottom: 0; }
+    }
+    .strip .big {
+      font-size: clamp(30px, 3.6vw, 44px); font-weight: 500; letter-spacing: -0.03em;
+      line-height: 1; color: var(--ink);
+    }
+    .strip .big .u { font-size: 0.5em; color: var(--accent); margin-left: 2px; font-weight: 600; }
+    .strip .l {
+      margin-top: 12px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--muted);
+    }
+
+    /* ============ Section header (title + meta pill) ============ */
+    .sec-head {
+      display: grid; grid-template-columns: 1fr auto; gap: 24px;
+      align-items: end; margin-bottom: clamp(26px, 3.6vw, 44px);
+    }
+    .sec-head h2 { font-size: clamp(28px, 3.6vw, 44px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.04; }
+    .sec-head .meta { justify-self: end; display: inline-flex; align-items: center; gap: 8px; }
+    .sec-head .meta span {
+      font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+      white-space: nowrap; padding: 6px 12px; border-radius: 999px;
+      background: var(--paper-2); color: var(--muted); border: 1px solid var(--line);
+    }
+    @media (max-width: 720px) {
+      .sec-head { grid-template-columns: 1fr; gap: 14px; }
+      .sec-head .meta { justify-self: start; }
+    }
+
+    /* ============ Feature trio (art panel + text below) ============ */
+    .feat3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
     @media (max-width: 860px) { .feat3 { grid-template-columns: 1fr; } }
-    .fcard {
-      border: 1px solid var(--line); border-radius: 20px; padding: 26px;
-      display: flex; flex-direction: column; min-height: 230px;
-      transition: transform 200ms ease, border-color 200ms ease;
-    }
-    .fcard:hover { transform: translateY(-3px); }
+    .fcard { display: flex; flex-direction: column; }
     .fcard .art {
-      flex: 1; border-radius: 14px; display: grid; place-items: center; margin-bottom: 18px;
-      min-height: 120px;
+      position: relative; border-radius: 22px; min-height: 240px; overflow: hidden;
+      display: grid; place-items: center; transition: transform 220ms ease;
     }
-    .fcard .art svg { width: 52px; height: 52px; }
-    .fcard.t-a { background: color-mix(in oklch, var(--accent) 8%, white); border-color: color-mix(in oklch, var(--accent) 18%, white); }
-    .fcard.t-a .art { background: color-mix(in oklch, var(--accent) 14%, white); color: var(--accent-mid); }
-    .fcard.t-b { background: var(--paper-2); }
-    .fcard.t-b .art { background: #fff; border: 1px solid var(--line); color: var(--ink); }
-    .fcard.t-c { background: linear-gradient(180deg, #fff, var(--paper-2)); }
-    .fcard.t-c .art { background: var(--ink); color: var(--accent); }
-    .fcard h3 { font-size: 19px; font-weight: 500; letter-spacing: -0.015em; }
-    .fcard p { color: var(--muted); font-size: 14px; line-height: 1.55; margin-top: 8px; }
-    .fcard .tag { align-self: flex-start; margin-bottom: 14px; }
+    .fcard:hover .art { transform: translateY(-4px); }
+    .fcard .art .tag { position: absolute; top: 16px; left: 16px; z-index: 2; margin: 0; }
+    .fcard .glyph {
+      display: grid; 
+      place-items: center; 
+      width: 74px; 
+      height: 74px;
+      background: #fff; 
+      border-radius: 99px;
+    }
+    .fcard .glyph img { width: 34px; height: 34px; }
+    .fcard.t-a .art { background: color-mix(in oklch, var(--accent) 16%, white); }
+    .fcard.t-a .glyph img { color: var(--accent-mid); }
+    .fcard.t-b .art { background: var(--paper-3); }
+    .fcard.t-b .glyph img { color: var(--ink); }
+    .fcard.t-c .art { background: #b6d4e0; }
+    .fcard.t-c .glyph img { color: var(--accent); }
+    .fcard h3 { font-size: 21px; font-weight: 600; letter-spacing: -0.02em; margin-top: 20px; color: var(--ink); }
+    .fcard p { color: var(--muted); font-size: 14px; line-height: 1.55; margin-top: 6px; max-width: 34ch; }
 
     /* ============ Split feature ============ */
     .split {
@@ -226,7 +356,7 @@ $STEPS = [
     .frow h4 { font-size: 16px; font-weight: 500; }
     .frow p { color: var(--muted); font-size: 13px; margin-top: 4px; }
     .frow .tile { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; }
-    .frow .tile svg { width: 24px; height: 24px; }
+    .frow .tile img { width: 24px; height: 24px; }
     .frow .tile.a { background: color-mix(in oklch, var(--accent) 16%, white); color: var(--accent-mid); }
     .frow .tile.b { background: var(--paper-2); color: var(--ink); border: 1px solid var(--line); }
     .frow .tile.c { background: var(--ink); color: var(--accent); }
@@ -332,8 +462,8 @@ $STEPS = [
         <a href="#blog">Blog</a>
         <button type="button" class="chat-open" style="background:none;border:0;padding:8px 12px;font-size:14px;border-radius:8px;color:inherit;font-family:inherit;">Need help?</button>
         <a href="#contact">Contact Sales</a>
-        <a href="#contact" class="btn btn-accent btn-sm nav-cta">Request early access →</a>
       </div>
+      <a href="#contact" class="btn btn-accent btn-sm nav-cta">Install →</a>
     </div>
   </nav>
 </header>
@@ -345,7 +475,12 @@ $STEPS = [
   <div class="wrap">
     <div class="stage">
       <div class="lead">
-        <div class="eyebrow">Shopify App · DQ Series</div>
+        <div class="eyebrow">
+          <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0 0 48 48">
+            <path fill="#7cb342" d="M37.216,11.78c-0.023-0.211-0.211-0.305-0.351-0.305s-3.21-0.234-3.21-0.234s-2.132-2.132-2.39-2.343	c-0.234-0.234-0.68-0.164-0.867-0.117c-0.023,0-0.469,0.141-1.195,0.375c-0.726-2.086-1.968-3.984-4.194-3.984h-0.211	C24.187,4.375,23.391,4,22.735,4c-5.155,0-7.639,6.444-8.412,9.725c-2.015,0.633-3.445,1.054-3.609,1.125	c-1.125,0.351-1.148,0.375-1.289,1.429c-0.117,0.797-3.046,23.456-3.046,23.456L29.179,44l12.373-2.671	C41.575,41.282,37.24,11.991,37.216,11.78z M27.937,9.483c-0.562,0.164-1.242,0.375-1.921,0.609V9.671	c0-1.265-0.164-2.296-0.469-3.117C26.718,6.695,27.445,7.984,27.937,9.483L27.937,9.483z M24.117,6.812	c0.305,0.797,0.516,1.922,0.516,3.468v0.234c-1.265,0.398-2.601,0.797-3.984,1.242C21.422,8.804,22.899,7.351,24.117,6.812	L24.117,6.812z M22.617,5.359c0.234,0,0.469,0.094,0.656,0.234c-1.664,0.773-3.421,2.718-4.148,6.655	c-1.101,0.351-2.156,0.656-3.163,0.984C16.806,10.233,18.915,5.359,22.617,5.359z"></path><path fill="#558b2f" d="M36.865,11.428c-0.141,0-3.21-0.234-3.21-0.234s-2.132-2.132-2.39-2.343	C31.17,8.757,31.053,8.71,30.96,8.71L29.249,44l12.373-2.671c0,0-4.335-29.338-4.359-29.549	C37.169,11.569,37.005,11.475,36.865,11.428z"></path><path fill="#fff" d="M24.792,18.593l-1.475,4.449c0,0-1.337-0.715-2.927-0.715c-2.374,0-2.489,1.498-2.489,1.867	c0,2.028,5.301,2.812,5.301,7.583c0,3.757-2.374,6.177-5.578,6.177c-3.872,0-5.808-2.397-5.808-2.397l1.037-3.411	c0,0,2.028,1.752,3.734,1.752c1.129,0,1.59-0.876,1.59-1.521c0-2.651-4.333-2.766-4.333-7.145c0-3.665,2.628-7.214,7.952-7.214	C23.777,17.994,24.792,18.593,24.792,18.593z"></path>
+          </svg>
+          Shopify App · DQ Series
+        </div>
         <h1 id="q-hero-title">
           Hide prices.<br>
           Win more <span class="accent">quotes</span>.
@@ -368,13 +503,67 @@ $STEPS = [
         <div class="browser">
           <div class="bar" aria-hidden="true">
             <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            <span class="url">your-store.myshopify.com</span>
+            <span class="url">your-store.myshopify.com/products/lounge-chair</span>
           </div>
-          <video autoplay muted loop playsinline preload="metadata"
-                 poster="/assets/dq_request_quote.png"
-                 aria-label="Storefront overview of the Request a Quote app">
-            <source src="/assets/vid/hero_illu.mp4" type="video/mp4" />
-          </video>
+          <div class="pm" role="img"
+               aria-label="Animated Shopify product page for a Modern Lounge Chair: the $500 price and Add to Cart button transform into a hidden price with an Add to Quote button.">
+            <div class="pm-photo" aria-hidden="true">
+              <span class="pm-tag">Quote only</span>
+              <svg class="chair" viewBox="0 0 260 240" xmlns="http://www.w3.org/2000/svg" fill="none">
+                <!-- back frame post -->
+                <path d="M150 44 L196 150" stroke="#a9743f" stroke-width="12" stroke-linecap="round"/>
+                <!-- back cushion -->
+                <rect x="86" y="40" width="70" height="98" rx="12" fill="#727977" transform="rotate(-9 121 89)"/>
+                <!-- seat cushion -->
+                <rect x="78" y="120" width="108" height="36" rx="12" fill="#7f8583"/>
+                <!-- front seat rail -->
+                <path d="M80 150 L184 150" stroke="#b57e46" stroke-width="12" stroke-linecap="round"/>
+                <!-- armrest -->
+                <path d="M92 118 L172 108" stroke="#a9743f" stroke-width="10" stroke-linecap="round"/>
+                <!-- arm support -->
+                <path d="M96 118 L92 150" stroke="#a9743f" stroke-width="10" stroke-linecap="round"/>
+                <!-- front leg -->
+                <path d="M92 150 L78 214" stroke="#9a6a39" stroke-width="11" stroke-linecap="round"/>
+                <!-- back leg -->
+                <path d="M180 150 L206 214" stroke="#9a6a39" stroke-width="11" stroke-linecap="round"/>
+                <!-- cushion seam -->
+                <path d="M96 138 L182 138" stroke="#6a716f" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="pm-info" aria-hidden="true">
+              <div class="pm-title">Modern Lounge Chair</div>
+              <div class="pm-price">
+                <span class="pm-state is-before">
+                  <span class="pm-amt">$500</span>
+                </span>
+                <span class="pm-state is-after">
+                  <span class="lock">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                    </svg>
+                  </span>
+                  <span class="pm-hidden">Prices are hidden</span>
+                </span>
+              </div>
+              <div class="pm-stock"><span class="d"></span> In stock</div>
+              <div class="pm-qlabel">Quantity</div>
+              <div class="pm-stepper"><span>&minus;</span><b>1</b><span>+</span></div>
+              <div class="pm-quote">
+                <span class="pm-btnstate is-cart">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="20" r="1.4"/><circle cx="19" cy="20" r="1.4"/><path d="M2 3h3l2.2 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.2L22 7H6"/>
+                  </svg>
+                  Add to Cart
+                </span>
+                <span class="pm-btnstate is-quote">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/><path d="M9 13h6M9 17h4"/>
+                  </svg>
+                  Add to Quote
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -406,28 +595,34 @@ $STEPS = [
 
     <div class="feat3">
       <article class="fcard t-a">
-        <span class="badge solid tag">Core</span>
-        <div class="art" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg>
+        <div class="art">
+          <span class="badge solid tag">Core</span>
+          <span class="glyph" aria-hidden="true">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAADy0lEQVR4nO2W2U9TQRSHeVMfXOIS9Vn/A4NLoimgqQ3ctteVGIxGfXZFg0o0iuuLohKrXe4thBbFtQKttHPplaItGlpUFLRaq4AGQUzaQkADOeYMuTcUaoNLiFEnOclklvNlfnPOmUlJ+afbgnR23rhDFyvU81MVzMdFiqy0cYcvUjBLEb4wXZ3xHy6atdOcBtU2UrzGJfDaTy4u8ysa4dkuUrLWWW1SbSX6FVN/G1zJqhnCqc8RTtN737Y30uSvgmDoGYQ/dFDDPo7dv703InCaHoHXnrWZNJN/CX5oZ9aRtJXMYLE+r/91axha2rrhihiEU1Y/7Df4qGH/ijsILe2fAdf4qk/0uoYUWf/DQMd51QTCa0vdlpxYpaMCVmhy4HK5APmmetA5Q3CnOQpi+wA1W3MUdNUhOkcCrfCuK0pVcFs3xwjPXveeWTdpbFBONUsws0+9joLetx2fqCPTDRGWqrKhqOIheDogoVW+6IHD5ocyHPd67Ud7Cc8+FvXMzKTQu/qVcwWeDTd4uH7cjIby5pt8oLP7IUOzEfiaJ0ngMXpylH1ofwT8dcY+gV/1RjBmzE4IJSXLZxBeE270lclQNLzTS84QdVxy7zmkazbC9rMVkH2MUDtS3gzu94My/KIzBFfFoLwfLeC1fCE8G642KqfHQUWzYiJK0uAxxEHRTlr9UNESkx3vLLTDEmU27C6qhRO2Tth6xkvh0jzeOQbcSD8Ntfp+gWcDGD8yWChebfFWHe5BaUZuOGDwgbt9QHaMp8zVPYBlmTmwT++F47ZOOibN41rcM9LPu64I1DsKYsSsvfbTYDxpnvERhe8qqo0D17QNwEFjMvCq0tFS1+oTSo3pIzlGWVFePOke3QMq+47CSnke154qSyC1xzBa6uHBFfBa4oPLHaR5Kkv5fpDCpeDadd5BA06KdgyucvFVHLTRV5Y4uEamk99j6pdkx9TAdMI8/V4aYbRjql24U0/T6YWcTlEI1HF9gpkNfTedRhUQ+1G5gGBRwOKQDH6xqoEWGf01YaiAfOyG+rvHe8ZUQKSG9yDwWkuNJSf28tVjGY6nQSnxHjHg0GzPo3QM57ibIi2vNrsN3NZNNJBG3elYmsuQuUHg2W4s/K9b31DZsTicLvPTaEfDPt4pyhtqewtW44E+fFjytjMFKb/SHKWqKTW8phCfxbpbuZGn/koIhpqGPYtN9Fmsu50bIZyaPosqhlH+ts+EKH0EStY6Ca/tkj4CQjHbiWMuo3LL8I/AH/eT+VfgWWmpCqYjVZE5Z/zhGerkBeSvb98A2o2axBjcZuwAAAAASUVORK5CYII=" alt="blind">
+          </span>
         </div>
         <h3>Hide prices &amp; buy button</h3>
         <p>Replace price and add-to-cart with a “Request a Quote” button on any product, collection, or for specific customers.</p>
       </article>
       <article class="fcard t-b">
-        <span class="badge tag">Capture</span>
-        <div class="art" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        <div class="art">
+          <span class="badge tag">Capture</span>
+          <span class="glyph" aria-hidden="true">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFCUlEQVR4nO2Ze0xbZRjGi8ZsMbroP8ZkI0YTXfQfTXRRF6NZpGMDyiWwsXVECTTMAcKkA6aozC1GzdhawsyCDFDbCXTt6WXlHC4tlKvDOHXBbVzmYEDHtYOS4VJoecw50u6wUmC0h0vCkzxJ07Tne37f+349J315PB8rp0TtL5GrlFK5apy2RE4QEplmK28tKKdE7S+VERapnMAsywhLrky1hbfaJWF2ngmtP/WjYjMdWipTkTMQCt5ql5RpGwLs3WaqIicgkausKxJqZ3SsP18YrwzYLxrnC0Vw2q1NWP7sdH6w8/vpkvzQ+T7LZ12TXiNAKFIHHojb6rPwAUKRhb3IYgBOFpfaaAg6/MlihW2xAHwniDD+Dr221wD0zs+1wEIAD2O+h+vzhSLvzwy7ba623wBbvgJgq7Wtk91O3p8Z9o48qHME5XX4QoJyuy57TU4BuswDXkHQ4bvNAysHwJX46wAsrQMsQfx1gCUCXOr/Dcae2lnvGY3GBb1iAFbbONrvdLjCf2RIxsHqJHRZu1c/wMTUv8huPo4kYyqUHQQTPqE6EeU33W9MDyv+cgBMYxolbQomtNP6m6TX4Ze1hdgQnsKv2hZiQ/w9chWetOoBuBB/HWCRAJOdnRhJSYJjbAwOiwUjqcmY6u1ZOy00nBAP89vbMBizH4N7IpjXlgwxZwAkSW4wHzkiNKelNZvT0q7cOnr0aa8A6F0fjI5kgtMeOrCPqcaSZLMCt8oZR8fHzQJQVTY9o65pylQbGsztJ76GWSx2OnPlASbMwLUfgKoogBIwdpACXC6KxKETn8BPZfo5i2oY0NQ0gXa9vIwN0Pd7QsJjK9JClw0yDFekAFSoKzgTngqFTn8YAWoZeMo6xq9pTHYngNbYiK6sz10QvWJxlHeHODUZDqsV9uEhjHyciKm+Xo8AtYZKXK+S4m5F7KzQoAQYIyMh1WXjOdVFV3Cn/ZR1OFPdyADQbskvZFehfMkAi5bdBnSeB4wxbsHbyj9EilaCx5UGt+Bs777Y4ALQV9Ta+9LT6fCTfWKxmHuAK6fd2qRan4QQTRH8lKZ5gzu9UWmC3DgDYKyx/XVK8l1vRsbCfxb7BKCR7nUBRqko5Oi+wvOEblGheQ/4WPkv6K7Kgp2MmEZl8OsLhvcVQGenASlaKZ5Qzd8mvDn8iLKWqRRdsVntR4bolwfA2gyxMYcJ86jShC+13+ISlYLvdV/gRULjMfimCxWI/+kYWs6+A0d5kNvZ+R9C8Ba3AFOjQMtLuFa/jQmVqMkF/vgG6NYBLZ9iigpDgS4LW1R6V/AXShU4XpSEG2dexe28lxlPaQPnBqAElZwCtNceBOo2MH5DU4BcXTZwvQDokAFVe11B7pERKNMcRmnhXpjzXnEFd9qmet8TAKAPfZcTAC1VhT3C3XCYNjIAsqogbFeXwF4tBCojPLUEJsrew7h8O+5d2IFJzU449EGYJoM9A5AhNT4H6B8cwo7wfXgzMAy/Fm9mAOz1T+JZQoNw9TmMU/cfG+ADc1KByclJdPf0orejEjCfBf7JhLK1BPp+Cxx3b7t+WrFaARaUwwa05nEPwB5w0MMHn6vPOOtJ1PcAQpGaXQUufCg5FmZFODcA9LSQHrhxDRERG4c/iyN9D3B/zCpS0DMrLiF2x4iglUbbpn0NsNxCRfAHIENG1ywALZC7NoEKyV+zALwZoUKwC5Sgb80C0II67Kn5qvEfMjJaT3yVJK8AAAAASUVORK5CYII=" alt="fill-in-form">
+          </span>
         </div>
         <h3>Custom quote forms</h3>
         <p>Collect quantity, company, and any custom fields you need. Every request lands in your admin and your inbox instantly.</p>
       </article>
       <article class="fcard t-c">
-        <span class="badge dark tag">Convert</span>
-        <div class="art" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 6L9 17l-5-5"/></svg>
+        <div class="art">
+          <span class="badge dark tag">Convert</span>
+          <span class="glyph" aria-hidden="true">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFbElEQVR4nO2Ya0xbZRjHz4ddoC20hQK90AvbxOG+mBkX56JslHIpvbeHQktbepHFr16iURMMtFwLtHQtFMq4307JzEym0ZHMbCEmi5vGzZkYR/y0zbEPxkRA1/CY0yByk7bQ0y6Gf/Ik/dTz+z/v/33P8x4E2de+9hV/Xas/wJsyObgTpnu546Z7uRMGB3Kt8ADyLIoftJ4VYJZbPMyyxJ82z/GmLGrupGmUN2kC7gReRsgdNwJn1DDGGalRc0b1c6wR3RJ7SHeLM6g/m1z4S9YCPmZe5mMW4E+bgYfXVC1shs8dMwBntCZc7BE9sIf1wB7SAXOoepk5rC1ILPQn5wV5QSvKm7GeEQTNg7uFZw1VA2uwGnIGtEOs/sozzIAWZQZUfELhj8xY3xcErU8FM1YQBC2wV3jmxSpgDlRBTkALOYFKyOmvfJrVh75HCPzR4Buv5gVtKwTCQ3YfCtm96EpWH/pi3A3kBW0fEA7vRyHLr4GsXtW7cQPnD5pS+JjlND9ovZwYeDUwetSX6b2K0/iz99b1S9ZTgqDtUeI6r8bhgeFTQaZPBRlexcNMr/LlXcG/5K87mDdje5gs+EyvEjIvKIDukT9A/HUHYzaAxybZ8BkevOSQ0a04FbMBbtB2IiHwPWpgeFXAwKG3gad3y4HeKT0Rs4EjWB11dTwgDt6nAlaXDOo+VcGRbilkehRb4Gku2RK9BaXGBJ+HmTV8zLxANDyzUwpXftJDCKzw4xMjHPdIIMMt/7fzbhnQXFK8FqhdYlVU8DzMlsfDzH8R3vlOGXzxc00Y/p/65oEB6G3izfBA7ZIAtbPiT1q7OPKowcfMbycDPrRqgNYq3gZeAtSOCkhzlr8VeQWma9+JCn5YB+yLOmAP7j42oXWFRyjfLQZ6l3Rb+PQOcXQGBDMWPm+ydnFH+EEdHA+g8ObnWuD2aoA1ULWnzt99bIRjrood4dPbyxejilB4FSZMrp3gTwRQuLtQG3747C8G4HqVwOzXEtb5dKcYKG1lrqjgc6eMr+dOGJf+K/NMHwrfPjJtgPhy3gAcjxJy+tD4d94phrT2ckhrK1+itJa+FtEAd9x4c6cNy/Rq4PYmA2smuhWQ3ashAh4orWVAbi35OrKBCcPvO542A1XwQr96LULra3a+BjhuefjtGo/YpK2Dp7SWAqml9LfIERozzkU8KgNaKPCrtjVxdb4G2C5Z3OHJLaVAaiq5EdEAZ6SmiD2qX4p4zvdVQoFfCT8sbI0THpl4xYayCk9uFv2Rai+JbqhjjepPskb0yxFfUn4Unvcp4O7jrSbi2Xlyk2iZZC89GRX82ipE+4bt0UC+Vw53djCxJ/jmEtwAkB3FwqgNsId1nljHg/wLMrjzq4kQeBJejmJ31AZYQ7qGmC8jF5TwnEe6wUQc4SG1Ufhx1Abwr2XMi9WLMd+kPArId0vCQxleu9+wJZvgixcPNRTH9gUvJ1B5jhnQfh/zNdAtD4/E4akyHvB24T1So7AsJvhNRuyx3mG3n+d3FRv7rsHXDPRVticF3o4bKGrbs4Fsv+Z8cuCFcLihyLZnA8fcZYcZfs13CYdvPHcbqUcPIfEQyy8hMXyqjzJ9KizDq7xOXOaLr6c2CLGUhqIPkY5XUhEiRO2RC4jq/OH6QgGSCGV0y28QsGG/QhIlihvNorlln9Fd0hCtSxKiuSRXqZ0VT6KFJzlET1KbRLMkuzCU2igMpTQKr1DqCxlIokX1VdDx/YH/Tu+Q6KjOipX18JTW8nlyS9n8hs47RCspTcXV4T+oL6RQ6wtpyLOidKe4Os0pvklpK7tPaSsfoDglDLzILaUD5OaS+2SH6GaKQ1SVbM597ev/pL8BEp82F3eAadkAAAAASUVORK5CYII=" alt="approval">
+          </span>
         </div>
-        <h3>Approve &amp; convert</h3>
-        <p>Set your price, approve, and turn a quote into a draft order or a checkout link the customer can pay in one click.</p>
+        <h3>Approve &amp; negotiate</h3>
+        <p>Set your price, counter or approve, and turn an accepted quote into a draft order or a checkout link the customer can pay in one click.</p>
       </article>
     </div>
   </div>
@@ -438,7 +633,7 @@ $STEPS = [
   <div class="wrap">
     <div class="split">
       <div class="l">
-        <div class="eyebrow">Main feature</div>
+        <div class="eyebrow">Section 02 · Main feature</div>
         <h2 id="split-title" style="margin-top:14px">Set up your<br>quote flow.</h2>
         <p>Choose what to hide, design the request form, and decide who sees prices — all from a clean settings panel. No theme code, no developer required.</p>
         <button type="button" class="watch chat-open" aria-label="Watch a tutorial in chat">
@@ -454,44 +649,29 @@ $STEPS = [
             <h4>Targeting rules</h4>
             <p>Hide by product, collection, tag, or customer group.</p>
           </div>
-          <div class="tile a" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg></div>
+          <div class="tile a" aria-hidden="true">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEfUlEQVR4nO3ZyU8bVxwH8GmVqlIUVaqo1F6qSpHaXsIyHm/zPGMTqapy6aGHHnrpqfeSpQHsEEMSnMVmxoBtcBYi9Q/IhTRtozQ2kCgEWgKtMEoRpajMGIPBhtIEYodf9cZxsCc2tfGK5K/0lezbfPTe7z0vBFFJJZWUPIKb2o9L7OXMc7rPBA7NijyaF3ntVwDEa8ReisBpFSJPD4o8gsQKPHq40KHTEuWe+W5VlcihToGjo3LESwyHtgQefRe4pHqPKLeAm3pD4OhvBB6F0wFeXR16XeDp1j86j7xJlEPmOe0nAkdPZgpI0Wm/nf6idAAefSxw9Pc5AJLLoTt+O32oaIA5F/O2yKELIo8284bY3m4RkUduwWZ4p2AAMBOv4yNU4FEg34AUXcYzB2bDvrwi/B3osMihiSIAQNYpsUN7JGfAvI19Hx+VJQBA0pbjUP8CxxzMGhBwGA6IHG0RefppqREij+DvDhpGWxSRrCFhJxMq9cOLuByCyXNq+OlELfQ3VEPWELheD8+uGiDYpSsZYvqCBu421UmAeHcFiffpZT0EOosHmrPRcN+kgP6j2wDcH4/XRLOGbPVtQ3C3+gyw5mLBby8cQOARjJ9Rwa2jNUmAmw3VMNBIjjxoP/Ru1pB/XTrtxmX9X4kY3GifAUJONu+IKYsabn8bm4PEeprqYLBZkf2WkuefHhYiVw1JGNzNK3pYysP8zFzUgLcxeQ76G6rh9olauGdSSBDcnCFrPSzgrvfq4XmfHGSAJ249LNh1uzpOH56m4KZsDm4dq4EhIwne5hgg7xCpvaz04FH5/FyvB7xy/kzmgHsxB8eS5wAP9qCRhIFmMglQGMiL/nC8RtrT8u0WuWaAFQeTFvH4vAbupJiDu411MGTc3kae4kGq4Z6JhCmLSloJOWjjih4WE47rWatW2i6vzkFsG+0E8BQSgs/5sTYl/NJKwa+tFMxe0kiXpxyE52qkJc0cmBTgTbONPMWC4IZcDExf1EgQDHrUppTmR46R3wfepvRz4CkFJN6gQwc+i1rCxA4ERjqa5ZCfT+I5yB7gKRYkXnwrJ75f72Uhes2AP1bEALLjtGwhaym66mLB21SbE8BTDhDcfCA8FUhCKpCe/EG8zWRxICtOBmatmoJAhlsUC7+bNfU5Q4Lduoawi32yE+Tx+dg9EuzWxU6rPECGjOTmozOUichnwEzsW3Egd9jFPk+H8bWrYcaqhUAXgsl2tfRtcjeQgWZya9RM3SjoD9ui9fAHKw7mAb4f5BC8IqsuBv60aqWPLf7O2OpkPAdNdTBymvL5zMxHRLES7GQ/DTmZQNKKWNQvX0+cVcKsjc4YMnyKXP7tnOJzolRZ7kInQy5mI9XqZDIjQ8a6Z2NtSo4oh4Cb2r/kYG6supit+MPP2bQ7QvDX2FGzwjtsVr9FlFsW7foPQw5m/P+O3+EWcma8XVm8/0B2m8Uu5suwgwnLIfdPKdYnzKqvib2WpW7mbNjJRIaMZHSslXLj/1aIvZrVblWVz6KqKvVzVFJJJQTxH0yBK+WFQYCJAAAAAElFTkSuQmCC" alt="product">
+          </div>
         </div>
         <div class="frow">
           <div>
             <h4>Login to view price</h4>
             <p>Optionally require an account before prices appear.</p>
           </div>
-          <div class="tile b" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+          <div class="tile b" aria-hidden="true">
+            <img width="24" height="24" src="https://img.icons8.com/3d-fluency/94/lock-2.png" alt="lock-2"/>
+          </div>
         </div>
         <div class="frow">
           <div>
             <h4>Admin approval</h4>
             <p>Review, price, and approve every request in one place.</p>
           </div>
-          <div class="tile c" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg></div>
+          <div class="tile c" aria-hidden="true">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAACuklEQVR4nO2WXW/SUBjH+wkUTHQSE1+gUOiXkQtseLkZaHaviRsdL6VceOGMCa7ZhaIx+gVMvJABgwEF/By6b3GOOeY5XWGajZ6yshy0/+SfNOnN79c+z2kFwY8fP378/KtJjLWkPNVPoIlxPSmsU+SxlopPdCRPdCJP60Se6lie1HLCOsEnJjqBrpWEDPDjGkqMLfi1koiNNMWCrxGr50skpnWU+K4/FHiDl8waips2vIPERP8h8AVfRXFTIyDAIsGNQAzgR1UUHwG83cUSdMFNDkZIGmqp2KiCJIC36yhR42OJKfywgqRhlUgjKIuEhmWTC/jyHH54WkcJjuCjgzKSBpU5vKOEhiU38NffZJKB/cwJFK49g+9b8LFBhUAlNgksmVV2+BtGLhU0sihoZAntfhYHjEzOE/jjEoodW/CMEvhy8B5JiDP4MrHKJIG9gb+kBMCLvRKK9m14JgksDVzAw5wvhJ8XBY204gr+aBdF+yUCAowS2BU8BJaVAd6VxAy+VyK0bBLYNTwVMDI/XQg4SohdNRXpqki04dkk8FLwLkfIUWIGf7RLaNkk8NLwzEvMsNgUvnMGnk0CS4OSN1/YpSUaSg7gw50iErsqEbt/CVwsgcWeR/BLSzTSZON9/le4U8SRrkqgjBLew7uWoPAFEm7vkEhHtcomsTp4ZolGmtxqFsiDQ4AvnpZJYvXwjhIUPk/hw+0iLaMEFjtXBH+hhA3f2qajYwswSFw9vB0476lEI01uvtu04OHp0zfgLAGnU6StMv+CrCTBRloJvFbQva/PrNE52wUS4TYH8Hau7T1SqEBrm0mCnk68wNvZ+Ly1d//bc0cJuHfnw+OXAo8Jfdp6tVDisEhCzcKBwHNCH5+cL9HaIaHmJt/wdkLNwp8S6wRv5/bb/Iu7X55iKFzPbvjx48fPf5HfHS4yIZmrWTYAAAAASUVORK5CYII=" alt="checkmark--v1">
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============== HOW IT WORKS ============== -->
-<section aria-labelledby="steps-title" style="padding-top:0">
-  <div class="wrap">
-    <div class="sec-head">
-      <div>
-        <div class="eyebrow">Section 02 · How it works</div>
-        <h2 id="steps-title" style="margin-top:14px">Three steps<br>to your first quote.</h2>
-      </div>
-    </div>
-    <div class="steps">
-      <?php foreach ($STEPS as $i => $s): ?>
-      <article class="step">
-        <div class="n" aria-hidden="true"><?= $i + 1 ?></div>
-        <h3><?= e($s['t']) ?></h3>
-        <p><?= e($s['d']) ?></p>
-      </article>
-      <?php endforeach; ?>
     </div>
   </div>
 </section>
@@ -504,7 +684,7 @@ $STEPS = [
         <div class="eyebrow">Section 03 · Success stories</div>
         <h2 id="stories-title" style="margin-top:14px">Merchants who<br>sell on request.</h2>
       </div>
-      <div class="meta"><span>Placeholder testimonials</span></div>
+      <div class="meta"><span>Testimonials</span></div>
     </div>
     <div class="stories">
       <article class="story">
@@ -541,10 +721,12 @@ $STEPS = [
         <div class="name">Free</div>
         <div class="price">$0<small> /month</small></div>
         <ul>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Up to 20 quote requests / month</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Hide price &amp; add-to-cart button</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Basic quote form</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Email notifications</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> 10 quotes total</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Simple quote form</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> One form section</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Email support</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Widget action: Page &amp; Popup</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Quote button on product page</li>
         </ul>
         <a href="#contact" class="btn btn-outline">Get started free</a>
       </article>
@@ -554,18 +736,15 @@ $STEPS = [
         <div class="name">Pro</div>
         <div class="price">$9<small> /month</small></div>
         <ul>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Unlimited quote requests</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Custom fields &amp; targeting rules</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Admin approval &amp; draft orders</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Login-to-view-price &amp; priority support</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Unlimited quotes</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Advanced quote form</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Multiple form sections</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Widget action: Page, Popup &amp; Drawer</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Quote button on products &amp; collections</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Priority email &amp; WhatsApp support</li>
         </ul>
         <a href="#contact" class="btn btn-accent btn-arrow">Start 14-day trial</a>
       </article>
-    </div>
-
-    <!-- Dummy pricing screenshot (replace with a real one later) -->
-    <div class="placeholder pricing-shot" role="img" aria-label="App pricing screenshot placeholder">
-      PRICING SCREENSHOT · PLACEHOLDER
     </div>
     <p class="pricing-note eyebrow" style="justify-content:center; display:flex;">No credit card required to start</p>
   </div>
@@ -614,7 +793,7 @@ $STEPS = [
 </section>
 
 <!-- ============== CONTACT SALES BAND ============== -->
-<section aria-labelledby="cta-title" style="padding-top:0">
+<!-- <section aria-labelledby="cta-title" style="padding-top:0">
   <div class="wrap">
     <div class="cta-band">
       <div class="top">
@@ -627,7 +806,7 @@ $STEPS = [
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
 <!-- ============== CONTACT FORM ============== -->
 <?php require __DIR__ . '/inc/contact-section.php'; ?>

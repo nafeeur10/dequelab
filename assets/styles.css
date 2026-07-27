@@ -312,9 +312,34 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   font-size: clamp(32px, 4.4vw, 56px); letter-spacing: -0.03em; line-height: 1.02; font-weight: 500;
 }
 .contact-wrap h2 em { font-style: normal; color: var(--accent); }
-.contact-wrap .lede { color: var(--muted); max-width: 42ch; margin-top: 20px; }
+.contact-wrap .lede { color: var(--muted); max-width: 42ch; }
 
-.ctry { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+/* Friendly "talk to a human" founder block */
+.contact-wrap .talk { margin-top: 32px; }
+.contact-wrap .talk-title {
+  font-size: clamp(22px, 2.4vw, 30px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;
+  color: var(--ink);
+}
+.contact-wrap .talk-title em { font-style: italic; color: var(--accent); }
+.contact-wrap .talk-sub { color: var(--muted); font-size: 15px; line-height: 1.55; margin-top: 12px; max-width: 42ch; }
+.contact-wrap .person {
+  display: flex; align-items: center; gap: 22px; margin-top: 24px;
+}
+.contact-wrap .person-avatar {
+  width: 112px; height: 112px; flex: none; border-radius: 50%;
+  object-fit: cover; border: 3px solid #fff;
+  box-shadow: 0 8px 22px rgba(14,18,16,0.14), 0 0 0 1px var(--line);
+}
+.contact-wrap .person-name { font-weight: 600; font-size: 19px; color: var(--ink); letter-spacing: -0.015em; }
+.contact-wrap .person-role {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-top: 4px;
+}
+.contact-wrap .person-contacts { display: flex; flex-direction: column; gap: 3px; margin-top: 12px; }
+.contact-wrap .person-contacts a { font-size: 14px; color: var(--accent); width: fit-content; }
+.contact-wrap .person-contacts a:hover { text-decoration: underline; }
+
+.ctry { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
 .ctry .chip-link {
   display: inline-flex; align-items: center; gap: 10px;
   padding: 10px 16px;
@@ -324,6 +349,15 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 }
 .ctry .chip-link:hover, .ctry .chip-link:focus { border-color: var(--accent); background: #fff; }
 .ctry .chip-link svg { width: 16px; height: 16px; }
+
+/* Icon-only social/contact buttons (fixed size) */
+.ctry .ico-link {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: none;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease, transform 150ms ease;
+}
+.ctry .ico-link:hover, .ctry .ico-link:focus-visible { border-color: var(--accent); color: var(--accent); background: #fff; transform: translateY(-1px); }
+.ctry .ico-link img { width: 25px; height: 25px; display: block; }
 
 .form {
   background: var(--paper-2); border: 1px solid var(--line);

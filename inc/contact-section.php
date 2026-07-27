@@ -17,26 +17,46 @@ $contact_selected = $form_data['interest'] !== '' ? $form_data['interest'] : $co
 ?>
 <section id="contact" aria-labelledby="contact-title">
   <div class="wrap">
-    <div class="contact-wrap">
+    <div class="sec-head">
       <div>
         <div class="eyebrow"><?= e($contact_eyebrow) ?></div>
-        <h2 id="contact-title" style="margin-top: 16px">
+        <h2 id="contact-title" style="margin-top: 14px">
           <?= $contact_heading /* trusted markup */ ?>
         </h2>
+      </div>
+    </div>
+
+    <div class="contact-wrap">
+      <div>
         <p class="lede"><?= e($contact_lede) ?></p>
 
+        <div class="talk">
+          <h3 class="talk-title">Prefer to talk to a <em>human</em>?</h3>
+          <p class="talk-sub">I'm Nafeeur, the founder. Email or call me directly — I read every message myself and reply personally, usually within a business day.</p>
+          <div class="person">
+            <img class="person-avatar" src="/assets/10268310.png" width="112" height="112"
+                 alt="Nafeeur Rahman" loading="lazy" decoding="async" />
+            <div class="person-info">
+              <div class="person-name">Nafeeur Rahman</div>
+              <div class="person-role">Founder</div>
+              <div class="person-contacts">
+                <a href="tel:+8801793445766">+880 1793 445766</a>
+                <a href="mailto:nafeeur@dequelab.com">nafeeur@dequelab.com</a>
+                <a href="mailto:inafeeur@gmail.com">inafeeur@gmail.com</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="ctry">
-          <a href="mailto:<?= e($CONFIG['contact_email']) ?>" class="chip-link" aria-label="Email <?= e($CONFIG['contact_email']) ?>">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 7l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg>
-            <?= e($CONFIG['contact_email']) ?>
+          <a href="mailto:<?= e($CONFIG['contact_email']) ?>" class="ico-link" aria-label="Email us">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAACXBIWXMAAAsTAAALEwEAmpwYAAABhklEQVR4nO2Vy0tCQRjF73/nSouI3i1qFUEQLYoWbaIyytRS7x2DaFMQ0UKCNqHSw9B0ih4KBRERQUILk8LwcTkx4y2Kinx3sTlwYJgZmN/H9xhJEhISqgMZpoPQo6WPgISqurJBAFIBqOoLsNMdg9mX/HMwsy/JWb4Ajm09oMl+jO7FGGZ2nmoOZtl7Ru/yJRptRxjxxL9PsRzO8cMGK+WXbYFU1cFsBy/oW7mCyUoxtHEHOZz9vQadhxkMrt/COBfBwNoNFkLpioM5QxkOxN7oX72GI5guvknsgc/RubToyrGsZcmkZcm6nyq/i2d3tfqw5+tDobni4SJqvs7nC6vzksbMFOswEkOz44Q/RgqEG99OoNV5hjblHBPeRPXnIHuwxXWKdhLFpPfxx3tmfxJd7uh7QEotBzVL8+hmnKe9Z+mCQ7NmYmZrtsfO2J1SSqJiP4kczmLYc48OJQqjJcLN1mzvbWT8j6+O6ACKCEAqAFXd2CAAqQBUBSApBlCPloSEhOpAr54GgjiuxPL7AAAAAElFTkSuQmCC" alt="new-post">  
           </a>
-          <a href="<?= e($CONFIG['linkedin']) ?>" target="_blank" rel="noopener noreferrer" class="chip-link" aria-label="Deque Lab on LinkedIn">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h4v4H4zM4 10h4v10H4zM10 10h4v2h.1c.6-1 2-2 4-2 4.3 0 5 2.8 5 6.5V20h-4v-6.4c0-1.5-.5-2.6-2-2.6s-2.4 1.1-2.4 2.6V20h-4z"/></svg>
-            LinkedIn
+          <a href="<?= e($CONFIG['linkedin']) ?>" target="_blank" rel="noopener noreferrer" class="ico-link" aria-label="Deque Lab on LinkedIn">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABwklEQVR4nO2ZP0vDQByGkwsOruIkuGpXP4GLWyuufgk/g4OUXHFQEId2cFFwcHJUsC1mFPGutNpCLdY6VIp/2kT7N/1J0latbbGJklzgHninHMf75HdZLoLA4XA4TCPJdAXJJI5kqiFMwZHIVBMxjUkyWf5TeRET7FhpPDwiJkH7b97l8qgbKUQClgXMY8NAeWRMQaZR6wKYqG4XR73IpGJDgIHi+Cv/JuCLpOG8oIHW0EEpaDAfTntLQClo8J34veYtAa2h9wmodd1bAorXJ+CLpE0JYxKxvApz4RtvCSCXInAB3Mkwxnk+u3sN2xclSJWqUG224bXWMo/i2ukDTG4m2BZY2MvA41sTRnFZfIeZnRS7AtmXOvxGLK+CxKrAuPiPcmwK6G0wz//S4S2sHucheqcOXbeffGZTYF0p9q2ZCCXgJFcZWJd5qrEpML2dHNhn8SA7sK5ca7En0P7xvJepreTYa12fgN29EBfAXMCEC2AuQLkA4gIWGbWRWxE8fbWIadmygHE/z0BxMCJiemZZwPi54HZx1I2Er/yWBTpTIEG3y4uYbNgq/zmJEAkY9/POfhNENY6N7TfP4XA4glN8AJJwntfiYf8PAAAAAElFTkSuQmCC" alt="linkedin">  
           </a>
-          <a href="<?= e($CONFIG['twitter']) ?>" target="_blank" rel="noopener noreferrer" class="chip-link" aria-label="Deque Lab on X (Twitter)">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.2 3H21l-6.6 7.5L22 21h-6.2l-5-6.4L5 21H2.2l7-8L2 3h6.3l4.5 5.9z"/></svg>
-            <?= e($CONFIG['twitter_handle']) ?>
+          <a href="<?= e($CONFIG['twitter']) ?>" target="_blank" rel="noopener noreferrer" class="ico-link" aria-label="Deque Lab on X">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAC+klEQVR4nO2ZSWhUQRCGP424K24J7oiCOyoeBAUVPAQEEQlxuehBD4ogBD3pyZjcNOjJmwt6EEXwIgriRUGiYkxEQVDcUC+iMZt7kpaCP9CMSd6bl2ReT5wfipmp6aqpf17339XvQQEFFNAXlADVQD3QBrgcWxvwGKhSLYmwFWhJoXjXg1kt5UlIdAZQvMuwzmzIlAR2JVyGNQPFcYhUB1Csi7BjcYg0BFCoizATgEi0BlCoizCb+pFweWKR+K+IVETkOJdFQV+A+Yo7kGsiP4FlveQYC7yIkec3sEExG4E/aUytZ8BIYAhww/NvV541QHvE5rZLY5cATWmukeOKmQ58lu8rMFv+qhh7wTTgXVprxMk6vKmxxfPfAYYCw4D73cRd0ZUcBTxIQML1NxGzD8AkxZ71/Aflm5exNz0ERovotYQk3EAQMbuq2DHeIjdBWC7/PvneeO14TR9IuIEiYrZT8as99XkqQTBcABbp/d4+knADScRUZ45yHPX8JzPyl2Ypsy7XRMzuAkVa5LWezFrxhvEJZNalQcTssPLM9c41H4HJ8p/OFyJ/gFXKtcfzm0IhxXqeD0ScCrWCDZc9/275VgK/8oHIW09mp2hqOe0ntq8YjoROpBlYqlwT9Vrq3cyolRgUSRyCJNIObFKedcB7YKo+n/LGmTwbZgGNIRLZrxwLvQJvqq8aATzxBME2TtQBB0WkRvEmsy8zvrOdvKtd/yHfK2Cc/JdCIXJdc97akXvdfP8NWKD8hzz/GfkmJGjlI5EtiTo1izZ9LvYy7hEwXF3vbc+/zVtTHWkRMVmdGeMQ1WU2xjDDO4g1atEbTqRBxPaEFYrZEfNesf3j6xVT5vlveYLQkEsiJrObNX6tzh5x/4DXah57wmLge66I2G2brsbwU4J1dT6ihopcr5E0LRKDhkhLAEW6GP1cJOoDKNT1x2OFOPtB2lY5GB69NemMEwvlAT8MLYtLwifTHNiVKCMhinWzuS6lR3Kt+u3KbKZTAQUUwD/4C68XAvRNax0sAAAAAElFTkSuQmCC" alt="twitterx--v1">  
           </a>
         </div>
       </div>
@@ -105,7 +125,6 @@ $contact_selected = $form_data['interest'] !== '' ? $form_data['interest'] : $co
             </div>
 
             <div class="submit">
-              <div class="note">No newsletter list. We'll only email you about what you asked about.</div>
               <button type="submit" class="btn btn-accent btn-arrow">Send message</button>
             </div>
           </form>
