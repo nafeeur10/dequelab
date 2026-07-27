@@ -337,6 +337,8 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
     .p .status.soon::before { background: var(--muted-2); }
     .p .status.sold { background: #fff4e5; color: #a45300; }
     .p .status.sold::before { background: #d97706; }
+    .p .status.submitted { background: #eef2ff; color: #3730a3; }
+    .p .status.submitted::before { background: #4f46e5; }
     @keyframes pulse {
       0%,100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--accent) 50%, transparent); }
       50% { box-shadow: 0 0 0 5px color-mix(in oklch, var(--accent) 0%, transparent); }
@@ -911,7 +913,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
           <div class="ic ic-img bg-green" aria-hidden="true">
             <img src="/assets/dq_request_quote.png" alt="" loading="lazy" />
           </div>
-          <span class="status soon">Coming Soon</span>
+          <span class="status submitted">Submitted</span>
         </div>
         <h3>DQ: Request a Quote &amp; Hide Price</h3>
         <p class="desc">Gate prices behind login or form. Capture quote requests with custom fields and admin-approval flow.</p>
