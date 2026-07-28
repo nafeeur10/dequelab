@@ -816,7 +816,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
           <div class="ic ic-img bg-white" aria-hidden="true">
             <img src="/assets/dq-appointment-booking-app.png" alt="" loading="lazy" />
           </div>
-          <span class="status live">Live on Shopify</span>
+          <span class="status submitted">Ongoing</span>
         </div>
         <div class="body">
           <div class="text">
@@ -854,7 +854,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
         </div>
         <div class="foot">
           <span class="price">SHOPIFY APP STORE · 14-day trial</span>
-          <a href="#contact" class="cta">Install on Shopify</a>
+          <a href="#contact" class="cta">Get notified</a>
         </div>
       </article>
 
@@ -914,9 +914,9 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
           <div class="ic ic-img bg-green" aria-hidden="true">
             <img src="/assets/dq_request_quote.png" alt="" loading="lazy" />
           </div>
-          <span class="status submitted">Submitted</span>
+          <span class="status live">Live on Shopify</span>
         </div>
-        <h3>DQ: Request a Quote &amp; Hide Price</h3>
+        <h3>DQLab Request Quote Hide Price</h3>
         <p class="desc">Gate prices behind login or form. Capture quote requests with custom fields and admin-approval flow.</p>
         <div class="foot">
           <span class="price">SALES · 2026 Q3</span>
