@@ -444,6 +444,7 @@ $STEPS = [
       .fcard:hover, .chat-fab:hover, .split .watch:hover .play { transform: none; }
     }
   </style>
+  <?php require __DIR__ . '/inc/crisp.php'; ?>
 </head>
 <body id="top">
 
@@ -876,8 +877,8 @@ $STEPS = [
   </div>
 </footer>
 
-<!-- ============== Need-help chat launcher ============== -->
-<button type="button" class="chat-fab chat-open" aria-label="Open help chat">
+<!-- ============== Need-help chat launcher (hidden: Crisp provides its own bubble) ============== -->
+<button type="button" class="chat-fab chat-open" aria-label="Open help chat" style="display:none">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 0 1-.9-3.8A8.38 8.38 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5z"/></svg>
 </button>
 
@@ -902,10 +903,13 @@ $STEPS = [
     }
   })();
 
-  // "Need help?" / "Watch tutorial" / chat FAB → open chat, or fall back to contact.
+  // "Need help?" / "Watch tutorial" → open Crisp, then Tawk, else fall back to contact.
   document.querySelectorAll('.chat-open').forEach(function (el) {
     el.addEventListener('click', function (ev) {
-      if (window.Tawk_API && typeof Tawk_API.maximize === 'function') {
+      if (window.$crisp) {
+        ev.preventDefault();
+        window.$crisp.push(['do', 'chat:open']);
+      } else if (window.Tawk_API && typeof Tawk_API.maximize === 'function') {
         ev.preventDefault();
         Tawk_API.maximize();
       } else {

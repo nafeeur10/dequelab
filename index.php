@@ -483,6 +483,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
     .legend .l.soon::before { background: var(--muted-2); }
     .legend .l.sold::before { background: #d97706; }
   </style>
+  <?php require __DIR__ . '/inc/crisp.php'; ?>
 </head>
 <body id="top">
 

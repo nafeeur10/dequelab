@@ -12,7 +12,7 @@ $contact_heading ??= 'Want early access<br>or a <em>question</em>?';
 $contact_lede    ??= 'Drop us a line. We reply to every message — usually within a business day. Tell us which product, and we\'ll add you to that waitlist or get on a call.';
 $contact_default_interest ??= '';
 $contact_show_socials ??= true;   // set false to move social icons elsewhere (e.g. footer)
-$contact_section_style ??= '';    // e.g. 'padding-top:0' to tighten the gap above
+$contact_section_style ??= 'padding-top:0';    // e.g. 'padding-top:0' to tighten the gap above
 
 // Preselect: sticky form value wins; otherwise the page default.
 $contact_selected = $form_data['interest'] !== '' ? $form_data['interest'] : $contact_default_interest;
@@ -30,8 +30,6 @@ $contact_selected = $form_data['interest'] !== '' ? $form_data['interest'] : $co
 
     <div class="contact-wrap">
       <div>
-        <p class="lede"><?= e($contact_lede) ?></p>
-
         <div class="founder-card">
           <span class="founder-arrow" aria-hidden="true">
             <svg viewBox="0 0 66 62" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -47,11 +45,11 @@ $contact_selected = $form_data['interest'] !== '' ? $form_data['interest'] : $co
           <span class="founder-divider" aria-hidden="true"></span>
           <ul class="founder-contacts">
             <li>
-              <a href="tel:+8801793445766">
+              <a href="https://wa.me/8801339364047" target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp">
                 <span class="fc-ic" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 4h3l1.6 5-2.1 1.5a12 12 0 006 6L15 14.4 20 16v3a1 1 0 01-1 1A16 16 0 014 5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                  <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.9c0 2.1.55 4.06 1.6 5.82L2 22l4.42-1.16a9.9 9.9 0 004.62 1.18h.01c5.46 0 9.9-4.45 9.9-9.9 0-2.65-1.03-5.14-2.9-7.02A9.82 9.82 0 0012.04 2zm5.8 14.13c-.25.7-1.44 1.33-1.99 1.38-.53.05-1.02.24-3.43-.72-2.9-1.14-4.75-4.12-4.9-4.31-.14-.19-1.17-1.55-1.17-2.96 0-1.41.74-2.1 1-2.39.26-.29.57-.36.76-.36l.55.01c.18.01.42-.07.65.5.25.6.85 2.08.92 2.23.07.15.12.33.02.52-.09.19-.14.31-.28.48-.14.17-.29.38-.42.5-.14.14-.28.29-.12.57.16.28.72 1.19 1.55 1.93 1.07.95 1.97 1.25 2.25 1.39.28.14.44.12.6-.07.16-.19.69-.8.87-1.08.18-.28.37-.23.62-.14.25.09 1.6.75 1.87.89.28.14.46.21.53.33.07.12.07.68-.18 1.38z"/></svg>
                 </span>
-                +880 1793 445766
+                +880 1339 364047
               </a>
             </li>
             <li>
@@ -62,30 +60,8 @@ $contact_selected = $form_data['interest'] !== '' ? $form_data['interest'] : $co
                 nafeeur@dequelab.com
               </a>
             </li>
-            <li>
-              <a href="mailto:inafeeur@gmail.com">
-                <span class="fc-ic" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M4 7.5l8 5.5 8-5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                </span>
-                inafeeur@gmail.com
-              </a>
-            </li>
           </ul>
         </div>
-
-        <?php if ($contact_show_socials): ?>
-        <div class="ctry">
-          <a href="mailto:<?= e($CONFIG['contact_email']) ?>" class="ico-link" aria-label="Email us">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAACXBIWXMAAAsTAAALEwEAmpwYAAABhklEQVR4nO2Vy0tCQRjF73/nSouI3i1qFUEQLYoWbaIyytRS7x2DaFMQ0UKCNqHSw9B0ih4KBRERQUILk8LwcTkx4y2Kinx3sTlwYJgZmN/H9xhJEhISqgMZpoPQo6WPgISqurJBAFIBqOoLsNMdg9mX/HMwsy/JWb4Ajm09oMl+jO7FGGZ2nmoOZtl7Ru/yJRptRxjxxL9PsRzO8cMGK+WXbYFU1cFsBy/oW7mCyUoxtHEHOZz9vQadhxkMrt/COBfBwNoNFkLpioM5QxkOxN7oX72GI5guvknsgc/RubToyrGsZcmkZcm6nyq/i2d3tfqw5+tDobni4SJqvs7nC6vzksbMFOswEkOz44Q/RgqEG99OoNV5hjblHBPeRPXnIHuwxXWKdhLFpPfxx3tmfxJd7uh7QEotBzVL8+hmnKe9Z+mCQ7NmYmZrtsfO2J1SSqJiP4kczmLYc48OJQqjJcLN1mzvbWT8j6+O6ACKCEAqAFXd2CAAqQBUBSApBlCPloSEhOpAr54GgjiuxPL7AAAAAElFTkSuQmCC" alt="new-post">  
-          </a>
-          <a href="<?= e($CONFIG['linkedin']) ?>" target="_blank" rel="noopener noreferrer" class="ico-link" aria-label="Deque Lab on LinkedIn">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABwklEQVR4nO2ZP0vDQByGkwsOruIkuGpXP4GLWyuufgk/g4OUXHFQEId2cFFwcHJUsC1mFPGutNpCLdY6VIp/2kT7N/1J0latbbGJklzgHninHMf75HdZLoLA4XA4TCPJdAXJJI5kqiFMwZHIVBMxjUkyWf5TeRET7FhpPDwiJkH7b97l8qgbKUQClgXMY8NAeWRMQaZR6wKYqG4XR73IpGJDgIHi+Cv/JuCLpOG8oIHW0EEpaDAfTntLQClo8J34veYtAa2h9wmodd1bAorXJ+CLpE0JYxKxvApz4RtvCSCXInAB3Mkwxnk+u3sN2xclSJWqUG224bXWMo/i2ukDTG4m2BZY2MvA41sTRnFZfIeZnRS7AtmXOvxGLK+CxKrAuPiPcmwK6G0wz//S4S2sHucheqcOXbeffGZTYF0p9q2ZCCXgJFcZWJd5qrEpML2dHNhn8SA7sK5ca7En0P7xvJepreTYa12fgN29EBfAXMCEC2AuQLkA4gIWGbWRWxE8fbWIadmygHE/z0BxMCJiemZZwPi54HZx1I2Er/yWBTpTIEG3y4uYbNgq/zmJEAkY9/POfhNENY6N7TfP4XA4glN8AJJwntfiYf8PAAAAAElFTkSuQmCC" alt="linkedin">  
-          </a>
-          <a href="<?= e($CONFIG['twitter']) ?>" target="_blank" rel="noopener noreferrer" class="ico-link" aria-label="Deque Lab on X">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAC+klEQVR4nO2ZSWhUQRCGP424K24J7oiCOyoeBAUVPAQEEQlxuehBD4ogBD3pyZjcNOjJmwt6EEXwIgriRUGiYkxEQVDcUC+iMZt7kpaCP9CMSd6bl2ReT5wfipmp6aqpf17339XvQQEFFNAXlADVQD3QBrgcWxvwGKhSLYmwFWhJoXjXg1kt5UlIdAZQvMuwzmzIlAR2JVyGNQPFcYhUB1Csi7BjcYg0BFCoizATgEi0BlCoizCb+pFweWKR+K+IVETkOJdFQV+A+Yo7kGsiP4FlveQYC7yIkec3sEExG4E/aUytZ8BIYAhww/NvV541QHvE5rZLY5cATWmukeOKmQ58lu8rMFv+qhh7wTTgXVprxMk6vKmxxfPfAYYCw4D73cRd0ZUcBTxIQML1NxGzD8AkxZ71/Aflm5exNz0ERovotYQk3EAQMbuq2DHeIjdBWC7/PvneeO14TR9IuIEiYrZT8as99XkqQTBcABbp/d4+knADScRUZ45yHPX8JzPyl2Ypsy7XRMzuAkVa5LWezFrxhvEJZNalQcTssPLM9c41H4HJ8p/OFyJ/gFXKtcfzm0IhxXqeD0ScCrWCDZc9/275VgK/8oHIW09mp2hqOe0ntq8YjoROpBlYqlwT9Vrq3cyolRgUSRyCJNIObFKedcB7YKo+n/LGmTwbZgGNIRLZrxwLvQJvqq8aATzxBME2TtQBB0WkRvEmsy8zvrOdvKtd/yHfK2Cc/JdCIXJdc97akXvdfP8NWKD8hzz/GfkmJGjlI5EtiTo1izZ9LvYy7hEwXF3vbc+/zVtTHWkRMVmdGeMQ1WU2xjDDO4g1atEbTqRBxPaEFYrZEfNesf3j6xVT5vlveYLQkEsiJrObNX6tzh5x/4DXah57wmLge66I2G2brsbwU4J1dT6ihopcr5E0LRKDhkhLAEW6GP1cJOoDKNT1x2OFOPtB2lY5GB69NemMEwvlAT8MLYtLwifTHNiVKCMhinWzuS6lR3Kt+u3KbKZTAQUUwD/4C68XAvRNax0sAAAAAElFTkSuQmCC" alt="twitterx--v1">  
-          </a>
-        </div>
-        <?php endif; ?>
       </div>
 
       <div class="form" id="briefForm">

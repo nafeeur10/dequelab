@@ -29,6 +29,7 @@
     }
     .err-sub { color: var(--muted); max-width: 44ch; margin: 0 auto 28px; }
   </style>
+  <?php require __DIR__ . '/inc/crisp.php'; ?>
 </head>
 <body>
   <main class="wrap">

@@ -162,6 +162,7 @@ function e(?string $v): string {
       text-transform: uppercase; color: var(--muted); padding-top: 3px;
     }
   </style>
+  <?php require __DIR__ . '/inc/crisp.php'; ?>
 </head>
 <body id="top">
 
