@@ -484,6 +484,8 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
     .legend .l.sold::before { background: #d97706; }
   </style>
   <?php require __DIR__ . '/inc/crisp.php'; ?>
+
+  <script src="https://analytics.ahrefs.com/analytics.js" data-key="AgbLLxcpekIQG5E1V/q5ow" async></script>
 </head>
 <body id="top">
 
