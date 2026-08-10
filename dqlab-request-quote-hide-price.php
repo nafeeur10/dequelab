@@ -6,6 +6,7 @@ declare(strict_types=1);
  * ============================================================ */
 
 require __DIR__ . '/inc/lib.php';
+require __DIR__ . '/inc/posts.php';
 
 // Page-level SEO/AEO config (overrides base).
 $CONFIG['page_title']       = 'Request a Quote & Hide Price for Shopify — DQLab';
@@ -87,7 +88,7 @@ $STEPS = [
   <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
 
   <!-- ============== Fonts & styles ============== -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Geist+Mono:wght@400;500&display=swap" />
   <link rel="stylesheet" href="/assets/styles.css" />
 
   <!-- ============== Structured data (JSON-LD) ============== -->
@@ -404,17 +405,7 @@ $STEPS = [
     .pricing-shot { max-width: 760px; margin: 26px auto 0; height: 220px; }
 
     /* ============ Blog ============ */
-    .blog { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    @media (max-width: 860px) { .blog { grid-template-columns: 1fr; } }
-    .post { background: #fff; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; transition: border-color 200ms ease; }
-    .post:hover { border-color: var(--ink); }
-    .post .cover { height: 170px; background: repeating-linear-gradient(135deg, var(--paper-2) 0 12px, var(--paper-3) 12px 24px); display: grid; place-items: center; color: var(--muted-2); font-family: var(--f-mono); font-size: 11px; }
-    .post .body { padding: 22px; display: flex; flex-direction: column; flex: 1; }
-    .post .meta { display: flex; align-items: center; gap: 10px; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
-    .post .meta .tg { padding: 3px 9px; border-radius: 999px; background: var(--paper-2); border: 1px solid var(--line); letter-spacing: 0.04em; }
-    .post h3 { font-size: 18px; font-weight: 500; letter-spacing: -0.015em; margin-top: 12px; }
-    .post p { color: var(--muted); font-size: 14px; line-height: 1.55; margin-top: 10px; }
-    .post .rd { margin-top: auto; padding-top: 18px; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+    /* Post cards (.blog/.post/.cover-art) come from assets/styles.css. */
 
     /* ============ Contact Sales band (two-tone) ============ */
     .cta-band { border: 1px solid var(--ink); border-radius: 24px; overflow: hidden; }
@@ -455,7 +446,7 @@ $STEPS = [
   <nav class="nav" aria-label="Primary">
     <div class="wrap nav-inner">
       <a href="/" class="brand" aria-label="<?= e($CONFIG['site_name']) ?> — home">
-        <span class="brand-mark"><img src="<?= e($CONFIG['logo_full']) ?>" alt="<?= e($CONFIG['site_name']) ?>" height="32" /></span>
+        <span class="brand-mark"><img src="<?= e($CONFIG['logo_full']) ?>" alt="<?= e($CONFIG['site_name']) ?>" width="176" height="32" /></span>
       </a>
       <div class="nav-links">
         <a href="#features">Features</a>
@@ -759,36 +750,14 @@ $STEPS = [
         <div class="eyebrow">Section 05 · Blog</div>
         <h2 id="blog-title" style="margin-top:14px">From the blog.</h2>
       </div>
-      <div class="meta"><span>Guides for quote-based selling</span></div>
+      <div class="meta"><a href="/blogs" class="btn btn-ghost btn-sm">All articles →</a></div>
     </div>
     <div class="blog">
-      <article class="post">
-        <div class="cover" aria-hidden="true">COVER · PLACEHOLDER</div>
-        <div class="body">
-          <div class="meta"><span>Jul 2026</span><span class="tg">B2B</span></div>
-          <h3>When to hide prices on Shopify</h3>
-          <p>How wholesale, custom, and high-ticket stores use “request a quote” to qualify buyers and protect margins.</p>
-          <span class="rd">Read →</span>
-        </div>
-      </article>
-      <article class="post">
-        <div class="cover" aria-hidden="true">COVER · PLACEHOLDER</div>
-        <div class="body">
-          <div class="meta"><span>Jul 2026</span><span class="tg">Guide</span></div>
-          <h3>Designing a quote form that converts</h3>
-          <p>The fields that move a browser to a serious lead — and the ones that just add friction.</p>
-          <span class="rd">Read →</span>
-        </div>
-      </article>
-      <article class="post">
-        <div class="cover" aria-hidden="true">COVER · PLACEHOLDER</div>
-        <div class="body">
-          <div class="meta"><span>Jun 2026</span><span class="tg">Playbook</span></div>
-          <h3>From quote to paid in 24 hours</h3>
-          <p>A simple approval workflow that turns requests into draft orders your customers can pay right away.</p>
-          <span class="rd">Read →</span>
-        </div>
-      </article>
+      <?php
+        // Rendered from inc/posts.php, so these cards cannot drift from
+        // /blogs or the article pages the way the hand-written ones did.
+        foreach (array_slice(dq_posts(), 0, 3) as $p) { echo dq_post_card($p); }
+      ?>
     </div>
   </div>
 </section>
@@ -824,7 +793,7 @@ $STEPS = [
     <div class="footer-grid">
       <div class="footer-col">
         <a href="/" class="brand" aria-label="<?= e($CONFIG['site_name']) ?> — home">
-          <span class="brand-mark"><img src="<?= e($CONFIG['logo_full']) ?>" alt="<?= e($CONFIG['site_name']) ?>" height="40" /></span>
+          <span class="brand-mark"><img src="<?= e($CONFIG['logo_full']) ?>" alt="<?= e($CONFIG['site_name']) ?>" width="221" height="40" /></span>
         </a>
         <p style="color:#8a8d85; font-size:14px; margin-top:18px; max-width:34ch;">
           Request a Quote &amp; Hide Price — a Shopify app by Deque Lab for quote-based and B2B selling.

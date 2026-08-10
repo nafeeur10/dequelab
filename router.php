@@ -12,8 +12,8 @@ $path = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 $root = __DIR__;
 $full = realpath($root . $path);
 
-// Never serve server-side includes directly.
-if (preg_match('#^/inc(/|$)#', $path) || preg_match('#/\.#', $path)) {
+// Never serve server-side includes or runtime state directly.
+if (preg_match('#^/(inc|data)(/|$)#', $path) || preg_match('#/\.#', $path)) {
     http_response_code(404);
     echo 'Not found';
     return true;

@@ -6,6 +6,7 @@ declare(strict_types=1);
  * ============================================================ */
 
 require __DIR__ . '/inc/lib.php';              // helpers, config, session, CSRF, interest lists
+require __DIR__ . '/inc/posts.php';            // post registry → dq_posts(), dq_post_card()
 require __DIR__ . '/inc/contact-process.php';  // contact POST handler → $form_errors/$form_data/$form_sent
 
 // Canonical: home lives at the site root, not /index.php.
@@ -62,7 +63,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
   <link rel="preload" as="image" href="<?= e($CONFIG['logo']) ?>" />
 
   <!-- ============== Fonts & styles ============== -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Geist+Mono:wght@400;500&display=swap" />
   <link rel="stylesheet" href="/assets/styles.css" />
 
   <!-- ============== Structured data (JSON-LD) ============== -->
@@ -497,14 +498,16 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
     <div class="wrap nav-inner">
       <a href="#top" class="brand" aria-label="<?= e($CONFIG['site_name']) ?> — home">
         <span class="brand-mark">
-          <img src="<?= e($CONFIG['logo_full']) ?>" alt="<?= e($CONFIG['site_name']) ?>" height="32" />
+          <img src="<?= e($CONFIG['logo_full']) ?>" alt="<?= e($CONFIG['site_name']) ?>" width="176" height="32" />
         </span>
       </a>
       <div class="nav-links">
         <a href="#saas">SaaS</a>
         <a href="#apps">Shopify Apps</a>
-        <a href="#contact">Contact</a>
-        <a href="#contact" class="btn btn-accent btn-sm nav-cta">Get notified →</a>
+        <a href="/blogs">Blog</a>
+      </div>
+      <div class="nav-actions">
+        <a href="#contact" class="btn btn-accent btn-sm nav-cta">Contact →</a>
       </div>
     </div>
   </nav>
@@ -971,6 +974,25 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
   </div>
 </section>
 
+<!-- ============== STORIES & BLOGS ============== -->
+<section id="blog" aria-labelledby="blog-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">Section 03 · Journal</div>
+        <h2 id="blog-title" style="margin-top: 14px">Stories &amp; blogs,<br>from the build.</h2>
+      </div>
+      <div class="meta">
+        <a href="/blogs" class="btn btn-ghost btn-sm">View all articles →</a>
+      </div>
+    </div>
+
+    <div class="blog">
+      <?php foreach (array_slice(dq_posts(), 0, 3) as $p) { echo dq_post_card($p); } ?>
+    </div>
+  </div>
+</section>
+
 <!-- ============== CONTACT ============== -->
 <?php require __DIR__ . '/inc/contact-section.php'; ?>
 
@@ -982,7 +1004,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
     <div class="footer-grid">
       <div class="footer-col">
         <a href="#top" class="brand" aria-label="<?= e($CONFIG['site_name']) ?> — back to top">
-          <span class="brand-mark"><img src="<?= e($CONFIG['logo_full']) ?>" alt="<?= e($CONFIG['site_name']) ?>" height="40" /></span>
+          <span class="brand-mark"><img src="<?= e($CONFIG['logo_full']) ?>" alt="<?= e($CONFIG['site_name']) ?>" width="221" height="40" /></span>
         </a>
         <p style="color:#8a8d85; font-size:14px; margin-top:18px; max-width: 34ch;">
           A small product lab. We build SaaS and Shopify apps for teams that care about craft.
@@ -1002,6 +1024,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
           <li><a href="#app-appointment">Appointment Booking</a></li>
           <li><a href="#app-preorder">PreOrder (acquired)</a></li>
           <li><a href="#apps">All Shopify apps</a></li>
+          <li><a href="/shopify-b2b-wholesale-basic-plan">Shopify B2B guide</a></li>
         </ul>
       </nav>
       <nav class="footer-col" aria-label="Connect with us">

@@ -52,6 +52,8 @@ RewriteRule ^(.+?)/?$ $1.php [L]
   ExpiresByType image/png "access plus 1 year"
   ExpiresByType image/svg+xml "access plus 1 year"
   ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/avif "access plus 1 year"
   ExpiresByType text/css "access plus 1 month"
   ExpiresByType application/javascript "access plus 1 month"
   ExpiresByType text/html "access plus 1 hour"
@@ -62,6 +64,8 @@ RewriteRule ^(.+?)/?$ $1.php [L]
 <IfModule mod_mime.c>
   AddType image/svg+xml svg svgz
   AddType application/xml xml
+  AddType image/webp webp
+  AddType image/avif avif
 </IfModule>
 
 # ---------- Block sensitive files ----------
@@ -74,6 +78,9 @@ RedirectMatch 404 /\.design-package(/|$)
 
 # ---------- Block direct access to server-side includes ----------
 RedirectMatch 404 /inc(/|$)
+
+# ---------- Block direct access to runtime state (view counts) ----------
+RedirectMatch 404 /data(/|$)
 
 # ---------- Custom error pages ----------
 ErrorDocument 404 /404.php

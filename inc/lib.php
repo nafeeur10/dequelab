@@ -68,7 +68,13 @@ $CONFIG['og_image']  = $CONFIG['site_url'] . $CONFIG['logo'];
 $CONFIG['canonical_url'] = $CONFIG['site_url'] . $path;
 
 // ---------- Session (CSRF + flash) ----------
+// session_cache_limiter('') suppresses PHP's default "nocache" headers, which
+// stamped every page with Cache-Control: no-store — so a returning reader
+// re-downloaded ~130 KB of unchanged HTML on every visit, and the
+// ExpiresByType text/html rule in .htaccess never applied. Caching is put back
+// deliberately below, as private + revalidated.
 if (session_status() === PHP_SESSION_NONE) {
+    session_cache_limiter('');
     session_start([
         'cookie_httponly' => true,
         'cookie_samesite' => 'Lax',
@@ -79,6 +85,37 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 $csrf_token = $_SESSION['csrf_token'];
+
+// ---------- Conditional GET ----------
+// "private", never "public": the HTML carries this visitor's CSRF token, so a
+// shared cache must never hand it to somebody else. "no-cache" does not mean
+// do-not-store — it means ask me first, which is exactly what we want for a
+// page that can be edited at any time. An unchanged page then costs a 304 with
+// no body instead of the whole document.
+//
+// The ETag is a hash of the finished response, so it changes the moment the
+// prose, the view counter or the CSRF token does. Guarded to 200 responses:
+// the contact form answers POSTs with a 303 redirect, which must never be
+// turned into a 304.
+if (in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', ['GET', 'HEAD'], true)) {
+    header('Cache-Control: private, no-cache, must-revalidate');
+    ob_start();
+    register_shutdown_function(static function (): void {
+        if (headers_sent() || http_response_code() !== 200) {
+            return;
+        }
+        $body = ob_get_contents();
+        if (!is_string($body) || $body === '') {
+            return;
+        }
+        $etag = '"' . md5($body) . '"';
+        header('ETag: ' . $etag);
+        if (trim($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') === $etag) {
+            ob_end_clean();
+            http_response_code(304);
+        }
+    });
+}
 
 // ---------- Contact form options (rendered + validated server-side) ----------
 $INTEREST_SAAS = [

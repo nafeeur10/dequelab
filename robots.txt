@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /assets/*.php$
 Disallow: /inc/
+Disallow: /data/
 
 Sitemap: https://dequelab.com/sitemap.xml

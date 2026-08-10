@@ -41,7 +41,7 @@ function e(?string $v): string {
   <link rel="icon" type="image/png" href="/assets/logo-mark.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Geist+Mono:wght@400;500&display=swap" />
   <link rel="stylesheet" href="/assets/styles.css" />
 
   <script type="application/ld+json">
@@ -174,14 +174,16 @@ function e(?string $v): string {
     <div class="wrap nav-inner">
       <a href="/" class="brand" aria-label="<?= e($CONFIG['site_name']) ?> — home">
         <span class="brand-mark">
-          <img src="<?= e($CONFIG['logo_full']) ?>" alt="<?= e($CONFIG['site_name']) ?>" height="32" />
+          <img src="<?= e($CONFIG['logo_full']) ?>" alt="<?= e($CONFIG['site_name']) ?>" width="176" height="32" />
         </span>
       </a>
       <div class="nav-links">
         <a href="/#saas">SaaS</a>
         <a href="/#apps">Shopify Apps</a>
-        <a href="/#contact">Contact</a>
-        <a href="/#contact" class="btn btn-accent btn-sm nav-cta">Get notified →</a>
+        <a href="/blogs">Blog</a>
+      </div>
+      <div class="nav-actions">
+        <a href="/#contact" class="btn btn-accent btn-sm nav-cta">Contact →</a>
       </div>
     </div>
   </nav>

@@ -1,0 +1,5 @@
+.DS_Store
+
+# Runtime view counts — written by inc/views.php on the server.
+# Must never be committed or the deploy would overwrite live counts.
+data/views.json
