@@ -2009,15 +2009,21 @@ $share_title = rawurlencode($POST['title']);
            but it is the most useful next click from this article, so it keeps
            its hand-written card and the first slot. -->
       <a class="post" href="/dqlab-request-quote-hide-price">
-        <div class="cover-art cv-form" aria-hidden="true">
-          <span class="cv-eyebrow">Shopify app · Deque Lab</span>
-          <span class="cv-title">Hide the price, collect a <b>quote</b></span>
-          <div class="cv-card cv-form">
-            <span class="cv-field"></span><span class="cv-field short"></span>
-            <span class="cv-field"></span><span class="cv-btn">Request a quote</span>
-          </div>
-          <span class="cv-foot">Free plan · $9/month</span>
-        </div>
+        <?php
+          // Built by the same renderer as every other cover rather than by hand.
+          // The hand-written copy silently fell behind when the component gained
+          // its .cv-main row: the title stacked above the motif instead of
+          // sitting beside it, and only this one card was wrong.
+          echo dq_post_cover([
+              'title' => 'Hide prices and collect quote requests on Shopify',
+              'cover' => [
+                  'variant' => 'form',
+                  'eyebrow' => 'Shopify app · Deque Lab',
+                  'title'   => 'Hide the price, collect a <b>quote</b>',
+                  'foot'    => 'Free plan · $9/month',
+              ],
+          ]);
+        ?>
         <div class="body">
           <div class="meta"><span>App</span><span class="tg">B2B</span></div>
           <h3>Hide prices and collect quote requests on Shopify</h3>
