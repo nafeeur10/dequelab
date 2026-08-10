@@ -34,7 +34,7 @@ $CONFIG['canonical_url']    = $CONFIG['site_url'] . '/' . $POST['slug'];
 // app shot at 1.1 MB: square, so every platform centre-cropped it, and heavy
 // enough that some scrapers gave up and showed no preview at all.
 $CONFIG['og_image']         = $CONFIG['site_url'] . '/assets/og-shopify-b2b-basic.png';
-$CONFIG['og_image_alt']     = 'Run B2B and wholesale on Shopify Basic — volume pricing tiers from $59 at 5+ down to $55 at 30+.';
+$CONFIG['og_image_alt']     = 'Run B2B and wholesale business on Shopify Basic — volume pricing tiers from $59 at 5+ down to $55 at 30+.';
 
 // Preselect the closest waitlist in the shared contact form.
 $contact_default_interest = 'DQ: Wholesale Pricing (waitlist)';
