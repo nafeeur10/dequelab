@@ -163,6 +163,7 @@ function e(?string $v): string {
     }
   </style>
   <?php require __DIR__ . '/inc/crisp.php'; ?>
+  <?php require __DIR__ . '/inc/analytics.php'; ?>
 </head>
 <body id="top">
 
@@ -227,7 +228,7 @@ function e(?string $v): string {
           <p>
             This policy applies to Deque Lab (“we”, “us”, “our”), this website, our SaaS products —
             including Alliances PRO and Muslim Daily Planner — and our Shopify apps, including
-            DQ: Appointment Booking, DQ: Request a Quote &amp; Hide Price, and other apps we publish.
+            DQ: Appointment Booking, DQ: B2B Request a Quote (RFQ), and other apps we publish.
           </p>
           <p>
             Where we build an app for the Shopify ecosystem, we act as a processor of your store’s
@@ -245,6 +246,7 @@ function e(?string $v): string {
             <li><strong>Customer data.</strong> To deliver app functionality — such as creating quote requests, custom pricing, or bookings — we may process your customers’ information, including name, email address, and order history.</li>
             <li><strong>Billing information.</strong> Where a paid plan applies, billing is handled through the Shopify Billing API or our payment processor. We receive subscription and transaction records; we do not store full card numbers.</li>
             <li><strong>Contact form submissions.</strong> If you contact us through this website, we receive the name, email address, product interest, and message you submit.</li>
+            <li><strong>Newsletter subscriptions.</strong> If you subscribe from our blog, we store the email address you enter, the date you subscribed, and the page you subscribed from. We use it only to tell you when a new article is published, we never sell or share it, and you can ask us to remove it at any time by emailing <a href="mailto:<?= e($CONFIG['contact_email']) ?>"><?= e($CONFIG['contact_email']) ?></a>.</li>
           </ul>
           <div class="legal-note">
             <p>

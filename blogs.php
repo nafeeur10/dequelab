@@ -3,23 +3,29 @@ declare(strict_types=1);
 
 /* ============================================================
  * Deque Lab — blog index
- * Every post, grouped into a section per category, with client
- * side category tabs and a title search. All post data comes
- * from inc/posts.php.
+ * Newsletter hero, then one filterable grid of every post.
+ * Post data comes from inc/posts.php; the subscribe box is
+ * stored and processed by inc/newsletter.php.
  * ============================================================ */
 
 require __DIR__ . '/inc/lib.php';
 require __DIR__ . '/inc/posts.php';
+// Ahead of the contact processor: a newsletter POST answers with its own
+// redirect and never reaches the contact form's validation at all.
+require __DIR__ . '/inc/newsletter.php';
 
 $CONFIG['page_title']       = 'Blog — Shopify B2B, wholesale and app guides · Deque Lab';
 $CONFIG['page_description'] = 'Practical guides on selling B2B and wholesale on Shopify: what the native features cover, which apps are worth paying for, and how to build a quote flow that converts.';
 $CONFIG['canonical_url']    = $CONFIG['site_url'] . '/blogs';
-$CONFIG['og_image']         = $CONFIG['site_url'] . '/assets/og-shopify-b2b-basic.png';
+// Shares the article's card rather than carrying its own. Everything on this
+// index is Shopify B2B and wholesale today, so the artwork is representative —
+// worth revisiting if the blog broadens beyond that.
+$CONFIG['og_image']         = $CONFIG['site_url'] . '/assets/og-shopify-b2b-starter-guide.jpg';
 
 // The contact block at the foot of the page.
 $contact_default_interest = 'Just saying hi';
 $contact_eyebrow = 'Working on something similar?';
-$contact_heading = 'Got a question<br>we have not <em>written</em> up?';
+$contact_heading = 'Got a question<br>we have not written up?';
 $contact_lede    = 'Ask it and we will answer — and if the answer is useful to more than one person, it becomes the next article.';
 
 require __DIR__ . '/inc/contact-process.php';
@@ -125,22 +131,12 @@ $schema = [
 
   <style>
     html { scroll-padding-top: 90px; }
-
-    .blog-hero { padding: 64px 0 40px; }
-    .blog-hero h1 {
-      font-size: clamp(38px, 5.6vw, 68px); line-height: 1.04;
-      letter-spacing: -0.035em; font-weight: 500; margin: 18px 0 0;
-    }
-    .blog-hero .lede { margin-top: 20px; font-size: clamp(17px, 1.5vw, 21px); }
-    .blog-hero .counts {
-      margin-top: 26px; display: flex; gap: 22px; flex-wrap: wrap;
-      font-family: var(--f-mono); font-size: 12.5px; color: var(--muted);
-    }
-    .blog-hero .counts b { color: var(--ink); font-weight: 600; }
-    /* The listing owns the page, so it starts tight under the toolbar. */
-    .blog-list { padding-top: 0; }
+    /* The listing carries the page, so it starts tight under the hero rather
+       than opening the full section rhythm twice in a row. */
+    .blog-list { padding-top: 8px; }
   </style>
   <?php require __DIR__ . '/inc/crisp.php'; ?>
+  <?php require __DIR__ . '/inc/analytics.php'; ?>
 </head>
 <body id="top">
 
@@ -169,31 +165,84 @@ $schema = [
 
 <main id="main">
 
-<!-- ============== HERO ============== -->
-<section class="blog-hero" aria-labelledby="blog-title">
+<!-- ============== HERO + SUBSCRIBE ============== -->
+<section class="nl-hero" id="subscribe" aria-labelledby="blog-title">
   <div class="wrap">
-    <div class="eyebrow">Deque Lab journal</div>
-    <h1 id="blog-title">Blog Articles</h1>
-    <p class="lede">Stay updated with our latest insights and stories — what we learn building
-      Shopify apps and SaaS, written up so you do not have to learn it the expensive way.</p>
-    <div class="counts">
-      <span><b><?= e((string) $live_count) ?></b> published</span>
-      <span><b><?= e((string) count($categories)) ?></b> topics</span>
-      <span>New guides monthly</span>
+    <div class="nl-grid">
+      <div>
+        <span class="nl-pill">🚀 Our blogs</span>
+        <h1 id="blog-title">Get updated with the latest Shopify B2B guides</h1>
+        <p class="lede">Everything we learn building Shopify apps and SaaS — written up
+          so you do not have to learn it the expensive way. One email when a new guide lands.</p>
+
+        <?php if ($nl_sent): ?>
+          <p class="nl-msg ok" role="status">
+            <span aria-hidden="true">✓</span>
+            <span><b>You are on the list.</b> The next guide goes straight to your inbox — nothing else.</span>
+          </p>
+        <?php else: ?>
+          <?php if ($nl_error !== ''): ?>
+            <p class="nl-msg err" role="alert"><span aria-hidden="true">!</span><span><?= e($nl_error) ?></span></p>
+          <?php endif; ?>
+          <form class="nl-form" method="post" action="/blogs#subscribe" novalidate>
+            <input type="hidden" name="form_type" value="newsletter" />
+            <input type="hidden" name="nl_source" value="blogs-hero" />
+            <input type="hidden" name="csrf_token" value="<?= e($csrf_token) ?>" />
+            <!-- Honeypot: a real reader never sees this, a bot fills it in. -->
+            <span class="hp" aria-hidden="true">
+              <label for="company_url">Company URL</label>
+              <input type="text" id="company_url" name="company_url" tabindex="-1" autocomplete="off" />
+            </span>
+            <label class="sr-only" for="nl_email">Your email address</label>
+            <div class="nl-shell">
+              <input type="email" id="nl_email" name="nl_email" placeholder="Enter your email"
+                     autocomplete="email" required value="<?= e($nl_email) ?>" />
+              <button type="submit" class="btn btn-accent">Get updates</button>
+            </div>
+          </form>
+          <p class="nl-note">No spam, ever. We care about your data.</p>
+        <?php endif; ?>
+      </div>
+
+      <!-- Decorative: four tiles, arched corners running clockwise. Boxes and
+           radii only, so it costs nothing over the wire and stays sharp. -->
+      <div class="nl-art" aria-hidden="true">
+        <div class="nl-tile t1">
+          <span class="k">Guides live</span>
+          <span class="v"><?= e(str_pad((string) $live_count, 2, '0', STR_PAD_LEFT)) ?></span>
+        </div>
+        <div class="nl-tile t2">
+          <span class="k">Topics</span>
+          <span class="v"><?= e(str_pad((string) count($categories), 2, '0', STR_PAD_LEFT)) ?></span>
+        </div>
+        <div class="nl-tile t3">
+          <span class="k">We write about</span>
+          <ul class="nl-topics">
+            <li>Shopify B2B</li>
+            <li>Wholesale pricing</li>
+            <li>Quote flows</li>
+          </ul>
+        </div>
+        <div class="nl-tile t4">
+          <span class="k">New guides</span>
+          <span class="v sm">Monthly</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ============== LISTING ============== -->
-<section class="blog-list" aria-labelledby="blog-title">
+<section class="blog-list" aria-labelledby="all-articles">
   <div class="wrap">
+    <h2 class="sr-only" id="all-articles">All articles</h2>
 
     <!-- Tabs and search are progressive enhancement: with JS off every post
          stays visible and the controls simply do nothing. -->
     <div class="blog-toolbar">
       <div class="blog-tabs" role="group" aria-label="Filter posts by topic">
         <button type="button" class="blog-tab" data-filter="all" aria-pressed="true">
-          All Stories <span class="n"><?= e((string) count($all_posts)) ?></span>
+          All <span class="n"><?= e((string) count($all_posts)) ?></span>
         </button>
         <?php foreach ($categories as $key => $label): ?>
         <button type="button" class="blog-tab" data-filter="<?= e($key) ?>" aria-pressed="false">
@@ -211,14 +260,11 @@ $schema = [
       </div>
     </div>
 
-    <?php foreach ($categories as $key => $label): $posts = dq_posts($key); ?>
-    <div class="blog-section" data-section="<?= e($key) ?>" id="cat-<?= e($key) ?>">
-      <h2><?= e($label) ?> <span class="n"><?= e((string) count($posts)) ?></span></h2>
-      <div class="blog">
-        <?php foreach ($posts as $p) { echo dq_post_card($p); } ?>
-      </div>
+    <!-- One grid, newest first. The tabs filter it in place rather than
+         scrolling to a section, so the reader never loses their position. -->
+    <div class="blog blog-ed">
+      <?php foreach ($all_posts as $p) { echo dq_post_card($p, ['layout' => 'editorial']); } ?>
     </div>
-    <?php endforeach; ?>
 
     <p class="blog-empty" id="blog-empty" hidden>
       No articles match that search yet. Try a different word, or
@@ -230,7 +276,7 @@ $schema = [
 </section>
 
 <?php
-  $contact_section_style = 'padding-top:0';
+  $contact_section_style = 'padding-top: 0px';
   require __DIR__ . '/inc/contact-section.php';
 ?>
 
@@ -259,7 +305,7 @@ $schema = [
       <nav class="footer-col" aria-label="Shopify apps">
         <h5>Shopify Apps</h5>
         <ul>
-          <li><a href="/dqlab-request-quote-hide-price">Request a Quote &amp; Hide Price</a></li>
+          <li><a href="/dq-b2b-request-quote-rfq">B2B Request a Quote (RFQ)</a></li>
           <li><a href="/#app-appointment">Appointment Booking</a></li>
           <li><a href="/#apps">All Shopify apps</a></li>
         </ul>
@@ -286,12 +332,11 @@ $schema = [
 
 <script>
 (function () {
-  var tabs     = Array.prototype.slice.call(document.querySelectorAll('.blog-tab'));
-  var sections = Array.prototype.slice.call(document.querySelectorAll('.blog-section'));
-  var cards    = Array.prototype.slice.call(document.querySelectorAll('.post[data-title]'));
-  var input    = document.getElementById('blog-q');
-  var empty    = document.getElementById('blog-empty');
-  var status   = document.getElementById('blog-status');
+  var tabs   = Array.prototype.slice.call(document.querySelectorAll('.blog-tab'));
+  var cards  = Array.prototype.slice.call(document.querySelectorAll('.post[data-title]'));
+  var input  = document.getElementById('blog-q');
+  var empty  = document.getElementById('blog-empty');
+  var status = document.getElementById('blog-status');
   if (!tabs.length || !input) { return; }
 
   var filter = 'all';
@@ -306,13 +351,6 @@ $schema = [
       var show   = okCat && okText;
       card.hidden = !show;
       if (show) { shown++; }
-    });
-
-    // A section with nothing left in it is noise — hide the heading too.
-    sections.forEach(function (sec) {
-      var any = Array.prototype.slice.call(sec.querySelectorAll('.post[data-title]'))
-        .some(function (c) { return !c.hidden; });
-      sec.hidden = !any;
     });
 
     empty.hidden = shown !== 0;
@@ -339,9 +377,9 @@ $schema = [
     if (ev.key === 'Escape') { input.value = ''; apply(); }
   });
 
-  // Deep link: /blogs#cat-guides opens with that tab already active.
+  // Deep link: /blogs#cat-marketing opens with that tab already active.
   var hash = (location.hash || '').replace('#cat-', '');
-  if (hash) {
+  if (hash && hash !== location.hash) {
     var match = tabs.filter(function (t2) { return t2.getAttribute('data-filter') === hash; })[0];
     if (match) { match.click(); }
   }

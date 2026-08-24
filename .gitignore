@@ -3,3 +3,8 @@
 # Runtime view counts — written by inc/views.php on the server.
 # Must never be committed or the deploy would overwrite live counts.
 data/views.json
+
+# Newsletter subscribers — written by inc/newsletter.php on the server.
+# Personal data: never commit it, and never let a deploy overwrite the list.
+data/subscribers.json
+data/subscribers.json.corrupt-*

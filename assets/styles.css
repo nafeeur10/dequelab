@@ -657,6 +657,13 @@ article.post .rd { color: var(--muted-2); }
   gap: 20px; flex-wrap: wrap;
   padding-bottom: 22px; border-bottom: 1px solid var(--line); margin-bottom: 36px;
 }
+/* Tabs and the field share one row by design. Below the fold of a phone that
+   row cannot hold both, so the search takes the full width underneath rather
+   than shrinking to a slot too small to read what you typed. */
+@media (max-width: 640px) {
+  .blog-toolbar { align-items: stretch; }
+  .blog-search { flex: 1 1 100%; }
+}
 .blog-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
 .blog-tab {
   padding: 9px 16px; border-radius: 999px;
@@ -670,7 +677,7 @@ article.post .rd { color: var(--muted-2); }
 }
 .blog-tab .n { font-family: var(--f-mono); font-size: 11px; opacity: 0.65; margin-left: 6px; }
 
-.blog-search { position: relative; flex: 0 1 280px; }
+.blog-search { position: relative; flex: 0 1 320px; min-width: 220px; }
 .blog-search input {
   width: 100%; height: 44px; padding: 0 16px 0 42px;
   border: 1px solid var(--line-2); border-radius: 999px;
@@ -698,3 +705,255 @@ article.post .rd { color: var(--muted-2); }
   padding: 56px 0; text-align: center; color: var(--muted); font-size: 16px;
 }
 .blog-empty[hidden] { display: none; }
+
+/* ============================================================
+   Cover tones
+   A banner can be painted instead of left on paper. The palettes
+   live here rather than in the registry so a colour change is one
+   edit, and the motif card inside stays white in every tone —
+   that contrast is what makes the mock read at card size.
+   ============================================================ */
+.cover-art.toned {
+  background: var(--tone-bg);
+  border-bottom-color: transparent;
+}
+.tone-ink  { --tone-bg: #16201b; --tone-hi: #9ed17f; }
+.tone-moss { --tone-bg: #3c6b2c; --tone-hi: #d6ecc2; }
+.tone-plum { --tone-bg: #6a4a86; --tone-hi: #e3cdf5; }
+.tone-clay { --tone-bg: #a4552b; --tone-hi: #ffd7b3; }
+
+/* The accent haze reads as dirt on a dark ground; a soft white bloom is the
+   same device, inverted. */
+.cover-art.toned::after { background: rgba(255, 255, 255, 0.09); }
+/* Bracket in the corner opposite the title — the one decorative mark, kept to
+   a hairline so it never competes with the headline. */
+.cover-art.toned::before {
+  content: ""; position: absolute; right: 4.5%; bottom: 5.5%;
+  width: 24%; height: 28%;
+  border-right: 0.55cqw solid rgba(255, 255, 255, 0.24);
+  border-bottom: 0.55cqw solid rgba(255, 255, 255, 0.24);
+  border-bottom-right-radius: 5.5cqw;
+}
+.cover-art.toned .cv-eyebrow { color: rgba(255, 255, 255, 0.6); }
+.cover-art.toned .cv-title   { color: #fff; }
+.cover-art.toned .cv-title b { color: var(--tone-hi); }
+/* On a tone the footnote becomes the badge the card was missing: same string
+   from the registry, a shape that survives being read at 300px wide. */
+.cover-art.toned .cv-foot {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 1.3cqw;
+  margin-top: 3cqw;
+  padding: 1.1cqw 2.5cqw; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #fff; font-size: 2.8cqw; letter-spacing: 0.03em;
+}
+.cover-art.toned .cv-foot::before {
+  content: "◆"; font-size: 2.2cqw; color: var(--tone-hi);
+}
+
+/* ============================================================
+   Editorial post card (/blogs listing)
+   Banner on top, words underneath sitting straight on the page.
+   Dropping the box is the point: with a painted banner, a second
+   border around it reads as a card inside a card.
+   ============================================================ */
+.blog-ed { gap: 40px 28px; }
+@media (max-width: 860px) { .blog-ed { gap: 34px; } }
+
+.post.post-ed {
+  background: transparent; border: 0; border-radius: 0; overflow: visible;
+}
+a.post.post-ed:hover { transform: none; }
+a.post.post-ed:focus-visible { outline: none; }
+a.post.post-ed:focus-visible .cover-art { outline: 2px solid var(--accent); outline-offset: 3px; }
+article.post.post-ed { opacity: 1; }
+
+.post-ed .cover-art {
+  border-radius: var(--r-lg); border-bottom: 0;
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+a.post-ed:hover .cover-art {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(14, 18, 16, 0.16);
+}
+/* Nothing to click, so nothing lifts — the muted banner says "not yet" on its own. */
+article.post-ed .cover-art { filter: saturate(0.75); opacity: 0.9; }
+
+.post-ed .body { padding: 20px 2px 0; }
+.post-ed h3 {
+  font-size: 20px; font-weight: 700; line-height: 1.3;
+  letter-spacing: -0.02em; margin: 0;
+}
+a.post-ed:hover h3 { color: var(--accent-mid); }
+/* Three lines, then stop. Excerpts run to different lengths and a ragged grid
+   of 2- and 5-line blurbs is the thing that makes a listing look unedited. */
+.post-ed p {
+  margin-top: 12px; font-size: 15px; line-height: 1.6; color: var(--muted);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.post-ed .meta {
+  margin-top: auto; padding-top: 18px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  font-family: var(--f-mono); font-size: 12px; color: var(--muted);
+}
+.post-ed .meta .sep { color: var(--line-2); }
+
+/* ============================================================
+   Newsletter hero (/blogs)
+   ============================================================ */
+.nl-hero { padding: 56px 0 40px; }
+.nl-grid {
+  display: grid; grid-template-columns: 1.06fr 1fr; gap: 60px; align-items: center;
+}
+@media (max-width: 940px) { .nl-grid { grid-template-columns: 1fr; gap: 44px; } }
+
+.nl-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: 999px;
+  border: 1px solid color-mix(in oklch, var(--accent) 26%, white);
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent-mid);
+}
+.nl-hero h1 {
+  font-size: clamp(34px, 4.9vw, 60px); line-height: 1.05;
+  letter-spacing: -0.035em; font-weight: 500; margin: 22px 0 0;
+}
+.nl-hero .lede { margin-top: 18px; max-width: 46ch; }
+
+.nl-form { margin-top: 30px; max-width: 540px; }
+
+/* Field and button are one control, not two sitting next to each other: the
+   shell carries the border and the focus ring, the input inside it is stripped
+   bare. Focus lands on the input but the ring is drawn on the shell via
+   :focus-within, so tabbing to the field lights up the whole pill. */
+.nl-shell {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 6px 6px 22px;
+  background: #fff;
+  border: 1px solid var(--line-2); border-radius: 999px;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.nl-shell:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 14%, transparent);
+}
+.nl-shell input[type="email"] {
+  flex: 1 1 auto; min-width: 0;
+  height: 46px; padding: 0;
+  border: 0; background: transparent; color: var(--ink);
+  font-family: inherit; font-size: 15px;
+}
+.nl-shell input[type="email"]::placeholder { color: var(--muted-2); }
+/* The shell already shows focus; a second outline inside it reads as a bug. */
+.nl-shell input[type="email"]:focus { outline: none; }
+.nl-shell .btn { flex: none; height: 46px; padding: 0 24px; border: 0; }
+/* Sitting on a white shell rather than the page, the lift has nothing to lift
+   off — it just makes the pill look loose inside its own border. */
+.nl-shell .btn:hover { transform: none; }
+
+/* Narrow phones: the label is what has to give, not the field. Anything less
+   and there is no room left to read back the address you typed. */
+@media (max-width: 420px) {
+  .nl-shell { padding-left: 18px; }
+  .nl-shell .btn { padding: 0 18px; font-size: 13.5px; }
+}
+
+.nl-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.nl-note { margin-top: 14px; font-size: 13.5px; color: var(--muted); }
+.nl-note a { color: var(--accent-mid); text-decoration: underline; text-underline-offset: 2px; }
+
+.nl-msg {
+  margin-top: 20px; padding: 14px 18px; border-radius: 14px;
+  font-size: 14px; display: flex; align-items: flex-start; gap: 10px; max-width: 540px;
+}
+.nl-msg.ok {
+  background: color-mix(in oklch, var(--accent) 10%, white);
+  border: 1px solid color-mix(in oklch, var(--accent) 32%, white);
+  color: var(--ink-2);
+}
+.nl-msg.err { background: #fff5f5; border: 1px solid #f3c5c5; color: #8a2c2c; }
+.nl-msg b { font-weight: 700; }
+
+/* ---- Hero art ----
+   The same trick the article hero uses: a composition made of nothing but
+   boxes and radii, so it costs no request and stays sharp at any zoom. The
+   pinwheel of arched corners is what keeps four rectangles from reading as a
+   spreadsheet. Sized in cqw so it scales as one drawing. */
+.nl-art {
+  container-type: inline-size;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  aspect-ratio: 1 / 0.84;
+}
+/* Stacked under the copy, the art has less width to work with, so the rows
+   size to their content instead of to a ratio — otherwise the chips in the
+   third tile get cut off by a height the viewport chose. */
+@media (max-width: 940px) {
+  .nl-art { max-width: 520px; aspect-ratio: auto; grid-auto-rows: minmax(150px, auto); }
+}
+.nl-tile {
+  position: relative; overflow: hidden;
+  padding: 8% 9%;
+  display: flex; flex-direction: column; justify-content: center; gap: 2cqw;
+  min-width: 0;
+}
+.nl-tile .k {
+  font-family: var(--f-mono); font-size: 3cqw; letter-spacing: 0.13em;
+  text-transform: uppercase; opacity: 0.62;
+}
+.nl-tile .v { font-size: 13cqw; line-height: 1; font-weight: 700; letter-spacing: -0.04em; }
+.nl-tile .v.sm { font-size: 8.4cqw; }
+
+.nl-tile.t1 {
+  border-radius: 4cqw 19cqw 19cqw 4cqw;
+  background: color-mix(in oklch, var(--accent) 15%, white);
+  color: var(--accent-mid);
+}
+/* The arched corner eats into the padding box, so each tile gives that side
+   the extra room its label needs to clear the curve. */
+.nl-tile.t1 { padding-right: 13%; }
+.nl-tile.t2 
+{ 
+  border-radius: 19cqw 4cqw 4cqw 4cqw; 
+  background: #16201b; 
+  color: #fff; 
+  padding: 11% 9% 8% 12%; 
+  text-align: right;
+}
+
+.nl-tile.t2 .v 
+{ 
+  color: #9ed17f; 
+}
+
+/* Painted like its three neighbours rather than left as a white card: the
+   chips-on-paper version borrowed the look of a form control and read as a
+   piece of UI that had wandered into the picture. Same anatomy as the others
+   now — mono label above, display type below — only the payload is three
+   short lines instead of one big number. */
+.nl-tile.t3 {
+  border-radius: 4cqw 4cqw 4cqw 19cqw;
+  background: var(--accent); color: #fff;
+  padding: 8% 9% 9% 13%;
+  justify-content: center; gap: 2.6cqw;
+}
+.nl-topics {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 1.5cqw;
+}
+.nl-topics li {
+  font-size: 5.4cqw; line-height: 1.16;
+  font-weight: 700; letter-spacing: -0.025em;
+}
+/* The lead topic is the one the blog is actually about; the other two sit a
+   step back so the tile still has a focal point like "01" or "Monthly". */
+.nl-topics li + li { color: rgba(255, 255, 255, 0.72); font-size: 4.6cqw; }
+
+.nl-tile.t4 { border-radius: 4cqw 4cqw 19cqw 4cqw; background: #6a4a86; color: #fff; }
+.nl-tile.t4 .v { color: #e3cdf5; }
+
+@media (prefers-reduced-motion: reduce) {
+  a.post-ed:hover .cover-art { transform: none; }
+}

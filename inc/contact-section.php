@@ -8,7 +8,7 @@
  * ============================================================ */
 
 $contact_eyebrow ??= 'Stay in the loop';
-$contact_heading ??= 'Want early access<br>or a <em>question</em>?';
+$contact_heading ??= 'Want early access<br>or a question?';
 $contact_lede    ??= 'Drop us a line. We reply to every message — usually within a business day. Tell us which product, and we\'ll add you to that waitlist or get on a call.';
 $contact_default_interest ??= '';
 $contact_show_socials ??= true;   // set false to move social icons elsewhere (e.g. footer)
@@ -28,7 +28,7 @@ $contact_selected = $form_data['interest'] !== '' ? $form_data['interest'] : $co
       </div>
     </div>
 
-    <div class="contact-wrap">
+    <div class="contact-wrap" style="margin-top: 2.5rem;">
       <div>
         <div class="founder-card">
           <span class="founder-arrow" aria-hidden="true">

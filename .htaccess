@@ -23,7 +23,19 @@ RewriteRule ^ / [R=301,L]
 RewriteCond %{THE_REQUEST} \s/+([^.\s]+)\.php[\s?] [NC]
 RewriteRule ^ /%1 [R=301,L]
 
-# 3) Internally serve the matching .php file for a clean URL.
+# 3) Renamed post: /shopify-b2b-wholesale-basic-plan -> /shopify-b2b-starter-guide
+#    The article was rewritten from a Basic-plan piece into the general Shopify
+#    B2B starter guide, so the old slug no longer describes it. Keep this for as
+#    long as the old URL has inbound links — Google has already crawled it in
+#    sitemap.xml. Must sit above rule 4, or the clean-URL rewrite serves the old
+#    path first.
+RewriteRule ^shopify-b2b-wholesale-basic-plan/?$ /shopify-b2b-starter-guide [R=301,L]
+
+# 3b) Renamed app page: the app was rebranded to DQ: B2B Request a Quote (RFQ).
+#     Old URL is live and already in sitemap.xml, so it must keep resolving.
+RewriteRule ^dqlab-request-quote-hide-price/?$ /dq-b2b-request-quote-rfq [R=301,L]
+
+# 4) Internally serve the matching .php file for a clean URL.
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{DOCUMENT_ROOT}/$1.php -f

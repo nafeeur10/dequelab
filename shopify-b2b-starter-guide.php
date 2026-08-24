@@ -20,21 +20,31 @@ require __DIR__ . '/inc/posts.php';
 // headline. read_time and words are counted from the rendered body, not
 // estimated — both are public (one on the page, one as schema wordCount), so
 // an inflated guess is a claim we cannot back up.
-$POST = dq_post('shopify-b2b-wholesale-basic-plan');
+$POST = dq_post('shopify-b2b-starter-guide');
 
 // Page-level SEO (overrides base config from lib.php).
-// Keeps the brand suffix under ~60 chars total or Google truncates it in the SERP.
-// "Basic" and "without Plus" are the terms this page competes on — the slug
-// already targets them, so the title has to carry them too.
-$CONFIG['page_title']       = 'Shopify B2B on Basic: Run Wholesale Without Plus · Deque Lab';
+// Under ~60 chars so Google does not truncate it, and no brand suffix: the year
+// earns those characters back on a SERP where every competing title carries one.
+// "Shopify B2B" leads because that is the phrase every page ranking for this
+// topic puts in its title — searching "B2B business on Shopify" returns the same
+// pages and loses the exact match, so the how-to intent rides along as a
+// modifier rather than replacing the head term.
+$CONFIG['page_title']       = 'Shopify B2B: How to Start a Wholesale Business in 2026';
 $CONFIG['page_description'] = $POST['excerpt'];
-$CONFIG['page_keywords']    = 'Shopify B2B, Shopify Basic plan B2B, wholesale store Shopify, Shopify wholesale apps, Shopify B2B vs Plus, Shopify B2B catalogs, Trade theme, request a quote Shopify';
+$CONFIG['page_keywords']    = 'Shopify B2B, how to start B2B on Shopify, Shopify B2B store setup, Shopify B2B features, Shopify B2B themes, Shopify B2B apps, B2B marketing strategies, request a quote Shopify, Shopify wholesale';
 $CONFIG['canonical_url']    = $CONFIG['site_url'] . '/' . $POST['slug'];
-// Purpose-built 1200x630 card, 60 KB. The old share image was the 1254x1254
-// app shot at 1.1 MB: square, so every platform centre-cropped it, and heavy
-// enough that some scrapers gave up and showed no preview at all.
-$CONFIG['og_image']         = $CONFIG['site_url'] . '/assets/og-shopify-b2b-basic.png';
-$CONFIG['og_image_alt']     = 'Run B2B and wholesale business on Shopify Basic — volume pricing tiers from $59 at 5+ down to $55 at 30+.';
+// The same artwork as the lead illustration, re-cut to the 1200x630 share ratio.
+// One picture for the page and the preview means they can never drift apart, and
+// it is the cheap version of a brand: somebody who saw the card on LinkedIn
+// recognises the article when they land on it.
+// The crop is really an extension — the illustration's ground is a flat #065b45
+// on all four corners, so widening the canvas is invisible and nothing had to be
+// cut off the title or the logo to reach the ratio.
+// JPEG, not PNG: 82 KB against 276 KB, and every scraper handles it. Square
+// images get centre-cropped by every platform, and anything near 1 MB makes some
+// scrapers give up and show no preview at all.
+$CONFIG['og_image']         = $CONFIG['site_url'] . '/assets/og-shopify-b2b-starter-guide.jpg';
+$CONFIG['og_image_alt']     = 'Shopify B2B Starter Guide — a storefront under a green awning showing product cards, company accounts, volume discounts and sales charts, with shipping boxes stacked beside it.';
 
 // Preselect the closest waitlist in the shared contact form.
 $contact_default_interest = 'DQ: Wholesale Pricing (waitlist)';
@@ -64,18 +74,29 @@ function brand_link(string $href, string $label, string $icon = SHOPIFY_MARK): s
 // ---- Table of contents, grouped into four reading stages. Inner keys are
 //      heading ids; values are both the TOC label and the rendered <h2> text,
 //      so the sidebar and the headings can never drift apart. ----
+// The four groups are the reader's actual journey through a B2B launch —
+// understand it, set it up, extend it, then go and sell. A section only earns a
+// place here if it answers a question somebody types into Google.
 $TOC_GROUPS = [
-    'Start here' => [
-        'what-changed'    => 'Native B2B Features in Shopify for All Plans',
-        'basic-vs-plus'   => 'Basic vs Plus: the real differences',
+    'Understand' => [
+        'what-is-b2b'     => 'What is a Shopify B2B store?',
+        'core-features'   => 'Core features every Shopify B2B store needs',
     ],
-    'Choosing themes' => [
-        'theme'           => 'Which theme should you choose?',
+    'Set up' => [
+        'native-features' => 'Native Shopify B2B capabilities (2026 updates)',
+        'shopify-plus'    => 'Shopify B2B pricing: when do you need Shopify Plus?',
+        'theme'           => 'Choosing a Shopify B2B theme',
     ],
-    'Choosing apps' => [
-        'essential-apps'  => 'Apps you genuinely need',
-        'nice-apps'       => 'Apps that are nice to have'
-    ]
+    'Add apps' => [
+        'where-apps'      => 'When you need Shopify B2B apps',
+        'nice-apps'       => 'Shopify B2B apps that are nice to have',
+    ],
+    'Grow' => [
+        'marketing'       => 'How to market a B2B store on Shopify',
+        'first-30-days'   => 'Your first 30 days: a checklist',
+        'faq'             => 'Shopify B2B: common questions',
+        'summary'         => 'Summary'
+    ],
 ];
 
 // Flat id => label map, so h2() below stays a simple lookup.
@@ -198,33 +219,68 @@ function tip_bulb(): string {
         SVG;
 }
 
-// ---- Answer bank. NOT rendered and NOT emitted as schema.
-//      It was FAQPage structured data while no FAQ existed on the page, which
-//      breaks Google's "marked-up content must be visible" rule — and FAQ rich
-//      results have been limited to government and health sites since 2023, so
-//      it bought nothing. Kept here as raw material: work an answer into the
-//      prose, or give it its own heading, and it earns its place honestly. ----
+/**
+ * In-content promo card for our own Shopify app.
+ *
+ * An <aside>, not a <div>: this is tangential to the article, and saying so in
+ * the markup keeps it out of the main-content signal for search and answer
+ * engines. It reads as a product card — icon, name, what it does, price, button
+ * — rather than a banner, because a reader who has just hit the quoting wall is
+ * evaluating an app, not being interrupted by an ad.
+ *
+ * Used once per article, in the paragraph where native B2B runs out.
+ */
+function rfq_cta(): string {
+    return <<<HTML
+        <aside class="app-promo" aria-label="Shopify app by Deque Lab">
+          <img class="apr-logo" src="/assets/app-dq-b2b-rfq.png" width="96" height="96"
+               alt="" loading="lazy" decoding="async" />
+          <div class="apr-body">
+            <span class="apr-eyebrow">Our Shopify app</span>
+            <h4 class="apr-name">DQ: B2B Request a Quote (RFQ)</h4>
+            <p class="apr-desc">Puts a <strong>Request a Quote</strong> button where the price used
+              to be, keeps the back-and-forth in one thread, and turns an accepted quote into a
+              draft order.</p>
+            <div class="apr-foot">
+              <a class="apr-btn" href="/dq-b2b-request-quote-rfq">View app</a>
+              <span class="apr-price">Free plan &middot; \$9/month</span>
+            </div>
+          </div>
+        </aside>
+        HTML;
+}
+
+
 $FAQS = [
-    ['q' => 'Can you run a wholesale business on the Shopify Basic plan?',
-     'a' => 'Yes. Since 2 April 2026, Shopify\'s native B2B features work on Basic, Grow and Advanced — not just Plus. On Basic you get company accounts, wholesale price lists, minimum order quantities, net payment terms and a B2B checkout at no extra cost beyond the plan itself.'],
-    ['q' => 'How many B2B catalogs do you get on the Shopify Basic plan?',
-     'a' => 'Three active catalogs across all your B2B markets. Shopify Plus gets unlimited catalogs. Three catalogs means three pricing tiers — for most merchants starting out, that is enough.'],
-    ['q' => 'Do you need Shopify Plus to sell wholesale?',
-     'a' => 'No, not to start. You need Plus for four specific things: more than three pricing tiers, pricing negotiated with one individual company, taking a deposit upfront, and recording partial payments against an invoice. If none of those describe your business, Basic is enough.'],
-    ['q' => 'What is the best free Shopify theme for a wholesale store?',
-     'a' => 'Trade, built by Shopify specifically for B2B. It is free, includes a quick order list for bulk ordering, hides prices from logged-out visitors, and is designed around Shopify\'s native B2B features. Its weakness is that it is B2B-only, so it suits DTC crossover poorly.'],
+    ['q' => 'Can I run B2B business on Shopify basic plan?',
+     'a' => 'Yes. Since April 2026, Shopify\'s native B2B features work on Basic, Grow, and Advanced plans. On Basic, you get company accounts, B2B catalogs (wholesale price lists), minimum order quantities, net payment terms, and a dedicated B2B checkout at no extra cost.'],
+    
+    ['q' => 'How many Shopify B2B catalogs do I get on the Basic plan?',
+     'a' => 'You get up to three active catalogs across all your B2B markets. Shopify Plus gives you unlimited catalogs. For most merchants starting out, three pricing tiers are enough.'],
+    
+    ['q' => 'Do I need Shopify Plus to sell wholesale?',
+     'a' => 'No, not to start. You only need Shopify Plus for four specific things: more than three pricing tiers, pricing negotiated for one individual company, taking an upfront deposit, and recording partial payments. If you do not need those, Basic is enough.'],
+    
+    ['q' => 'What is the best free Shopify theme for a B2B store?',
+     'a' => 'The "Trade" theme is the best free option, built by Shopify specifically for B2B. It includes a quick order list and hides prices from logged-out visitors. However, it is designed only for B2B, so it is not great if you also sell directly to consumers (DTC) on the same site.'],
+    
     ['q' => 'Can Shopify hide prices from customers who are not logged in?',
-     'a' => 'Yes. The free Trade theme gates pricing behind customer login natively, so only approved wholesale buyers see your trade prices. Note that it hides the price but does not add a "Request a Quote" button in its place — that requires an app.'],
-    ['q' => 'Can you set different prices for different customers on Shopify Basic?',
-     'a' => 'You can set different prices for up to three customer groups using catalogs. You cannot set a price for one individual company — catalogs on Basic can only be attached to B2B markets, not to a specific company location. Per-company pricing requires Shopify Plus or a wholesale pricing app.'],
+     'a' => 'Yes. The free Trade theme automatically hides pricing, so only approved wholesale buyers can see your B2B prices after logging in. However, it does not add a "Request a Quote" button in its place — you need an app for that.'],
+    
+    ['q' => 'Can I set different prices for different B2B customers on Shopify basic?',
+     'a' => 'You can set different prices for up to three customer groups using catalogs. However, you cannot set a specific price for one individual company. Catalogs on Basic are attached to B2B markets, not specific companies. For per-company pricing, you need Shopify Plus or a B2B app.'],
+    
     ['q' => 'Does Shopify have a native Request a Quote feature?',
-     'a' => 'Partly. Draft orders let you build a quote with custom prices, lock those prices and send a payable invoice, and checkout-to-draft lets a buyer submit a cart for approval. But native quoting is always merchant-initiated — there is no buyer-facing "Request a Quote" button, no counter-offers, and no quote expiry without an app.'],
-    ['q' => 'Do you still need a wholesale app if you use native Shopify B2B?',
-     'a' => 'Not at first. Native B2B plus the Trade theme, Shopify Forms and Shopify Flow will carry your first twenty to thirty wholesale accounts. Buy an app when you hit a specific wall — a fourth price tier, invoicing your accounts department will accept, or freight rules Shopify\'s shipping settings cannot express.'],
+     'a' => 'Partly. Buyers can submit a cart for approval, and you can build a draft order with custom prices to send as an invoice. However, there is no real buyer-facing "Request a Quote" button or back-and-forth negotiation natively. To add a true quoting system, you should use an app like DQ: B2B Request a Quote (RFQ).'],
+    
+    ['q' => 'Do you still need wholesale apps if you use native Shopify B2B?',
+     'a' => 'Not at first. Native B2B, the Trade theme, Shopify Forms, and Shopify Flow can handle your first 20 to 30 wholesale accounts. You only need to add apps when you hit specific limits—like needing a fourth pricing tier, custom freight rules, or a dedicated quoting app for negotiations.'],
+    
     ['q' => 'Why are my B2B catalogs not working on the Shopify Basic plan?',
-     'a' => 'Almost always because the store is not on new Shopify Markets. On Basic, Grow and Advanced, B2B catalogs are attached to B2B markets, so the Markets migration is a hard prerequisite. Merchants routinely lose days to this before finding it.'],
-    ['q' => 'How much does it cost to run wholesale on Shopify Basic?',
-     'a' => 'The realistic floor is the Basic plan alone, because native B2B, the Trade theme, Shopify Forms and Shopify Flow are all included. A typical growing wholesale stack adds roughly $100–200 per month for a pricing app, invoicing and shipping rules. Compare that annual total against Shopify Plus before upgrading.'],
+     'a' => 'This almost always happens because your store is not set up on the new Shopify Markets. On the Basic, Grow, and Advanced plans, B2B catalogs must be attached to B2B markets. You must complete the Markets migration first before catalogs will work.'],
+    
+    ['q' => 'How much does it cost to run a wholesale store on Shopify Basic?',
+     'a' => 'The lowest cost is just the Basic plan subscription itself, because native B2B features, the Trade theme, and Shopify Flow are included. As you grow, expect to add roughly $100–$200 per month for apps handling advanced quoting, shipping rules, or ERP syncing.'],
 ];
 
 // ---- Structured data. Built as an array and json_encode'd so quotes and
@@ -272,6 +328,21 @@ $schema = [
             'publisher'        => ['@id' => $CONFIG['site_url'] . '/#organization'],
             'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $CONFIG['canonical_url']],
         ],
+        // Legitimate now that the same ten questions render visibly in the #faq
+        // section — the rule Google actually enforces is that marked-up content
+        // must be on the page. Worth knowing what it does and does not buy:
+        // FAQ rich results have been limited to government and health sites
+        // since 2023, so this earns topical coverage and a shot at being quoted
+        // in AI answers, not stars in the SERP.
+        [
+            '@type'      => 'FAQPage',
+            '@id'        => $CONFIG['canonical_url'] . '#faq',
+            'mainEntity' => array_map(static fn(array $f): array => [
+                '@type'          => 'Question',
+                'name'           => $f['q'],
+                'acceptedAnswer' => ['@type' => 'Answer', 'text' => $f['a']],
+            ], $FAQS),
+        ],
         [
             '@type'           => 'BreadcrumbList',
             '@id'             => $CONFIG['canonical_url'] . '#breadcrumb',
@@ -291,8 +362,6 @@ $share_title = rawurlencode($POST['title']);
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Primary SEO -->
   <title><?= e($CONFIG['page_title']) ?></title>
   <meta name="description" content="<?= e($CONFIG['page_description']) ?>" />
   <meta name="keywords" content="<?= e($CONFIG['page_keywords']) ?>" />
@@ -301,8 +370,6 @@ $share_title = rawurlencode($POST['title']);
   <meta name="theme-color" content="#0e1210" />
   <meta name="color-scheme" content="light" />
   <link rel="canonical" href="<?= e($CONFIG['canonical_url']) ?>" />
-
-  <!-- Open Graph -->
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="<?= e($CONFIG['site_name']) ?>" />
   <meta property="og:locale" content="<?= e($CONFIG['site_locale']) ?>" />
@@ -319,8 +386,6 @@ $share_title = rawurlencode($POST['title']);
   <?php foreach ($POST['tags'] as $tag): ?>
   <meta property="article:tag" content="<?= e($tag) ?>" />
   <?php endforeach; ?>
-
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="<?= e($CONFIG['twitter_handle']) ?>" />
   <meta name="twitter:creator" content="<?= e($CONFIG['twitter_handle']) ?>" />
@@ -328,12 +393,8 @@ $share_title = rawurlencode($POST['title']);
   <meta name="twitter:description" content="<?= e($POST['excerpt']) ?>" />
   <meta name="twitter:image" content="<?= e($CONFIG['og_image']) ?>" />
   <meta name="twitter:image:alt" content="<?= e($CONFIG['og_image_alt']) ?>" />
-
-  <!-- Icons -->
   <link rel="icon" type="image/png" href="<?= e($CONFIG['logo']) ?>" />
   <link rel="apple-touch-icon" href="<?= e($CONFIG['logo']) ?>" />
-
-  <!-- Fonts & styles -->
   <?php
     // One request, matching every other page. This used to be two: Geist on
     // display=optional (the headline face — a late swap reflowed the <h1> and
@@ -844,8 +905,6 @@ $share_title = rawurlencode($POST['title']);
     }
     .steps > li::before,
     .post-body h3.step-h::before {
-      /* Offsets resolve against the padding box, so padding-top above moves
-         the text without moving the disc — both stay centred on --tl-row. */
       position: absolute;
       z-index: 1;
       left: 0;
@@ -861,7 +920,6 @@ $share_title = rawurlencode($POST['title']);
       background: var(--accent);
       color: #fff;
 
-      font-family: var(--f-sans);
       font-size: var(--tl-num);
       font-weight: 600;
       line-height: 1;
@@ -902,6 +960,56 @@ $share_title = rawurlencode($POST['title']);
       --shot-ratio: 1306 / 506;
       --shot-bg: #fff;
     }
+    /* Lead illustration under the intro. Not a .shot: those wrap a link to the
+       full-size capture, and there is nothing to zoom into here. Width and
+       height are on the tag so the 3:2 box is reserved before the bytes land. */
+    .lead-art { margin: 34px 0 0; }
+    .lead-art img {
+      width: 100%; height: auto; display: block;
+      border: 1px solid var(--line); border-radius: var(--r-lg);
+    }
+
+    /* Worked example: a rule stated once, then the cases that pass and fail.
+       Chips rather than a table — five short values do not need column headers,
+       and they wrap down the page on a phone without any extra rules.
+       Colour follows the convention plan_cell() already set for the plan table:
+       --accent for yes, --red for no, and the glyph is decorative because the
+       sr-only word beside it is what actually gets announced.
+
+       Selectors carry .post-body deliberately. The prose default is
+       `.post-body ul { display: grid; padding-left: 22px }` at (0,1,1), so a
+       bare `.qty-ex` at (0,1,0) loses and the chips render as full-width blocks.
+       Matching the prefix beats it on specificity instead of on source order. */
+    .post-body .qty-ex {
+      margin: 14px 0 0; 
+      padding-left: 0; 
+      list-style: none;
+    }
+    .post-body .qty-ex li {
+      padding: 6px 0px; 
+      border-radius: 999px;
+      font-size: 14px; 
+      line-height: 1.5;
+      border: 1px solid transparent; 
+      white-space: nowrap;
+    }
+    .post-body .qty-ex li::before { font-size: 13px; line-height: 1; }
+    .post-body .qty-ex .ok {
+      color: color-mix(in oklch, var(--accent) 80%, black);
+    }
+    .post-body .qty-ex .ok::before { 
+      content: "\2713"; 
+      color: var(--accent);
+      margin-right: 10px;
+    }
+    .post-body .qty-ex .no { color: #8a2c2c; }
+    .post-body .qty-ex .no::before { 
+      content: "\2717"; 
+      color: var(--red-2); 
+      margin-right: 10px;
+    }
+    .post-body .qty-ex b { font-weight: 600; }
+
     .shot { margin: 0; }
     /* The frame lives on the link, not the image: the radius can then clip
        whatever sits inside it, including a trimmed capture. */
@@ -1011,6 +1119,55 @@ $share_title = rawurlencode($POST['title']);
     /* App-store icon beside a listing name. The icon is now taller than one
        line, so the app column gets a min-width: without it the icon eats the
        horizontal room and the longest name breaks onto a third line. */
+    /* ---- Install path ----
+       The route to a feature, drawn as one line: app-store mark, the app's own
+       icon, then the admin breadcrumb. Centred, and it wraps to as many lines as
+       the width needs rather than scrolling sideways.
+
+       Size is one number. Change --ap-ico on the element (inline style or a
+       rule) and the icons, their radius and the separators scale with it.
+
+       .post-body prefix on purpose: the prose defaults for p and a are
+       (0,1,1), so an unprefixed class would lose the cascade. */
+    .post-body .app-path {
+      --ap-ico: 25px;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: left;
+      gap: 4px 8px;
+      margin: 16px 0 0;
+      font-family: var(--f-sans); font-size: 15px; line-height: 1.5;
+    }
+    /* One link around both icons, not two: same destination twice would be two
+       tab stops and two identical announcements. */
+    .post-body .app-path .ap-node {
+      display: inline-flex; align-items: center; gap: 7px;
+      text-decoration: none; color: var(--ink); font-weight: 700;
+      transition: background 140ms ease, border-color 140ms ease;
+    }
+    .post-body .app-path .ap-node:hover {
+      outline: 0.5px solid var(--accent); outline-offset: 2px;
+    }
+    .post-body .app-path .ap-node:focus-visible {
+      outline: 2px solid var(--accent); outline-offset: 2px;
+    }
+    .post-body .app-path .ap-ico {
+      width: var(--ap-ico); height: var(--ap-ico);
+      flex: none; display: block;
+      border-radius: calc(var(--ap-ico) * 0.22);
+    }
+    /* The store mark is a glyph, not a tile — no plate behind it. */
+    .post-body .app-path .ap-ico.ap-store {
+      border: 0; border-radius: 0; color: var(--accent);
+      width: calc(var(--ap-ico) * 0.82); height: calc(var(--ap-ico) * 0.82);
+    }
+    .post-body .app-path img.ap-ico { border: 1px solid var(--line-2); object-fit: cover; }
+    /* Sized against the text, not --ap-ico: these mostly sit between word steps,
+       so scaling them with the icons made them heavy at larger settings. */
+    .post-body .app-path .ap-sep {
+      color: var(--muted-2); font-size: 1.15em; line-height: 1;
+      flex: none; user-select: none;
+    }
+    .post-body .app-path .ap-step { color: var(--ink-2); white-space: nowrap; }
+
     .ft-app { display: flex; align-items: center; gap: 10px; }
     .app-ico {
       flex: 0 0 auto;
@@ -1059,20 +1216,9 @@ $share_title = rawurlencode($POST['title']);
 
     .tc-id {
       display: grid;
-      grid-template-columns: 46px 1fr;
+      grid-template-columns: 1fr;
       column-gap: 14px;
       align-content: center;
-    }
-    .tc-num {
-      grid-row: 1 / span 2;
-      align-self: center;
-      width: 46px; height: 46px;
-      display: flex; align-items: center; justify-content: center;
-      border: 1.5px solid color-mix(in oklch, var(--c) 40%, white);
-      border-radius: 50%;
-      font-family: var(--f-mono);
-      font-size: 14px;
-      color: var(--c);
     }
     .post-body .tc-name {
       margin: 0;
@@ -1092,38 +1238,29 @@ $share_title = rawurlencode($POST['title']);
       color: var(--muted);
     }
 
-    .tc-chip {
-      display: inline-block;
-      background: color-mix(in oklch, var(--c) 14%, white);
-      color: color-mix(in oklch, var(--c) 82%, black);
-      border-radius: 8px;
-      padding: 5px 12px;
+    /* The three cell labels are one component. They were not: "Best for" is a
+       <span> and Pros/Cons are <p>, so `.post-body .tc-cell p` at (0,2,1) beat
+       `.post-body .tc-h` at (0,2,0) and pushed 11px of top margin onto those two
+       while the span sat flush. Naming the cell in the selector wins that on
+       specificity — which is what the !important patches were standing in for. */
+    .post-body .tc-cell .tc-chip,
+    .post-body .tc-cell .tc-h {
+      display: block;
+      margin: 0;
       font-size: 12.5px;
       font-weight: 600;
+      line-height: 1.5;
     }
-    .post-body .tc-cell p { margin: 11px 0 0; font-size: 15px; line-height: 1.5; }
-    .post-body .tc-h {
-      margin: 0;
-      font-size: 15.5px;
-      font-weight: 700;
-    }
-    .tc-h.is-pro { color: #2f8f4e; }
-    .tc-h.is-con { color: #cf3b34; }
+    /* Colour is the only pro/con signal left now the tick and cross icons are
+       out of the markup, so it stays while everything else matches. */
+    .post-body .tc-cell .tc-h.is-pro { color: #2f8f4e; }
+    .post-body .tc-cell .tc-h.is-con { color: #cf3b34; }
 
-    .tc-line { display: grid; grid-template-columns: 18px 1fr; column-gap: 9px; }
-    .tc-ico {
-      width: 18px; height: 18px;
-      margin-top: 2px;
-      display: inline-flex; align-items: center; justify-content: center;
-      border: 1.5px solid currentColor;
-      border-radius: 50%;
-      font-size: 9px;
-      line-height: 1;
+    .post-body .tc-cell p { margin: 11px 0 0; font-size: 12.5px; line-height: 1.5; }
+
+    .tc-line { 
+      display: grid;
     }
-    .tc-ico.is-pro { color: #2f8f4e; }
-    .tc-ico.is-con { color: #cf3b34; }
-    .tc-ico.is-pro::before { content: "\2713"; }
-    .tc-ico.is-con::before { content: "\2715"; }
 
     /* Four columns need room. Below that, identity and "best for" share a row
        and pros/cons share the next; narrower still, everything stacks and the
@@ -1284,11 +1421,122 @@ $share_title = rawurlencode($POST['title']);
       .tip-bulb { top: -30px; left: 6px; width: 54px; height: 54px; }
     }
 
+    /* ---- In-content app promo ----
+       A card, not a banner. Constrained width and a left-aligned layout so it
+       reads as a product being shown rather than the page shouting: at full
+       bleed the same content looked like an interstitial ad and got skipped.
+       Everything sizes from --apr-logo, so one number moves the block. */
+     {
+      --apr-logo: 56px;
+      display: flex; align-items: flex-start; gap: 18px;
+      max-width: 560px;
+      margin: 30px 0;
+      padding: 20px 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      border-radius: 14px;
+      box-shadow: 0 1px 2px rgba(14, 18, 16, 0.04);
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .post-body .apr-logo {
+      width: var(--apr-logo); height: var(--apr-logo);
+      flex: none; display: block; margin: 0;
+      border-radius: calc(var(--apr-logo) * 0.22);
+      border: 1px solid var(--line);
+    }
+    .post-body .apr-body { min-width: 0; }
+    .post-body .apr-eyebrow {
+      display: block;
+      font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.13em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .post-body .apr-name {
+      margin: 5px 0 0;
+      font-family: var(--f-sans); font-size: 17px; font-weight: 700;
+      line-height: 1.3; letter-spacing: -0.01em; color: var(--ink);
+    }
+    .post-body .apr-desc {
+      margin: 8px 0 0;
+      font-size: 14.5px; line-height: 1.55; color: var(--muted);
+    }
+    .post-body .apr-desc strong { color: var(--ink-2); font-weight: 700; }
+    .post-body .apr-foot {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px;
+      margin-top: 15px;
+    }
+    .post-body .apr-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 18px; border-radius: 999px;
+      background: var(--accent); color: var(--accent-ink);
+      font-size: 14px; font-weight: 700; text-decoration: none;
+      transition: background 140ms ease;
+    }
+    .post-body .apr-btn::after { content: "\2192"; }
+    .post-body .apr-btn:hover { background: var(--accent-mid); }
+    .post-body .apr-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+    .post-body .apr-price {
+      font-family: var(--f-mono); font-size: 12.5px; color: var(--muted);
+    }
+    @media (max-width: 560px) {
+       { flex-direction: column; gap: 14px; }
+    }
+
+    /* Comparison table in "What is a B2B store" — two columns that are read
+       against each other, so the header row carries the contrast, not colour
+       inside the cells. */
+    .vs-table td:first-child + td { color: var(--muted); }
+
+    /* Marker is positioned, not a grid column. As a grid the box only worked
+       for items made of one text node: a leading <strong> became grid item one
+       and the sentence after it was placed in the 22px marker column, which
+       broke it to one word per line. Absolute positioning lets an item hold
+       any inline markup. */
+    /* ---- Nested week plan ----
+       Weeks are the checklist items; their steps are a plain disc list inside.
+       Sizes come from --wk-size so one number moves the whole block, and both
+       values are the article's own defaults rather than a foreign stylesheet.
+
+       Selectors name .post-body because the prose defaults (`.post-body ul` at
+       (0,1,1) sets display:grid and padding-left:22px, `.post-body li` sets the
+       type) would otherwise outrank a bare class and the discs would sit in the
+       wrong place. display is reset to block: a grid <ul> blockifies its items
+       and the markers stop rendering. */
+    .post-body .week-plan { --wk-size: 18px; }
+    .post-body .week-plan .wk {
+      display: block;
+      font-size: var(--wk-size);
+      font-weight: 700;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+    .post-body .week-plan > li > ul {
+      display: block;
+      list-style: disc;
+      margin: 8px 0 0;
+      padding-left: 22px;
+    }
+    .post-body .week-plan > li > ul > li {
+      font-size: var(--wk-size);
+      line-height: 1.5;
+      color: var(--ink-2);
+    }
+    .post-body .week-plan > li > ul > li + li { margin-top: 7px; }
+    .post-body .week-plan > li > ul > li::marker { color: var(--accent); }
+
     .checklist { list-style: none; padding-left: 0; }
-    .checklist li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; font-size: 18px; line-height: 1.6; }
-    .checklist li::before {
-      content: ""; margin-top: 7px; width: 14px; height: 14px;
-      border: 1.5px solid var(--line-2); border-radius: 4px;
+    /* Direct children only. A nested list inside an item — the pack-size
+       example — would otherwise inherit a checkbox per line. */
+    .checklist > li {
+      position: relative; padding-left: 32px;
+      font-size: 18px; line-height: 1.6;
+    }
+    .checklist > li + li { margin-top: 14px; }
+    .checklist > li::before {
+      content: "→"; 
+      position: absolute; 
+      left: 0;
     }
 
     /* ---- FAQ ---- */
@@ -1326,8 +1574,18 @@ $share_title = rawurlencode($POST['title']);
       .toc-items a, .toc-group-n, .toc-group-t, .toc-chev, .toc-panel, .toc-track > span,
       .share button, .share a, .faq summary::after { transition: none; }
     }
+
+    .mb-1 {
+      margin-bottom: 0.5rem!important;
+    }
+
+    .mt-3 {
+      margin-top: 24px!important;
+    }
+
   </style>
   <?php require __DIR__ . '/inc/crisp.php'; ?>
+  <?php require __DIR__ . '/inc/analytics.php'; ?>
 </head>
 <body id="top">
 
@@ -1339,9 +1597,6 @@ $share_title = rawurlencode($POST['title']);
     <div class="wrap nav-inner">
       <a href="/" class="brand" aria-label="<?= e($CONFIG['site_name']) ?> — home">
         <span class="brand-mark">
-          <!-- Both dimensions, so the browser can reserve the slot from the
-               1346x244 source before the file lands. height alone yields no
-               aspect ratio, and the sticky header shifted on every cold load. -->
           <img src="<?= e($CONFIG['logo_full']) ?>" alt="<?= e($CONFIG['site_name']) ?>" width="176" height="32" />
         </span>
       </a>
@@ -1373,9 +1628,6 @@ $share_title = rawurlencode($POST['title']);
             <?= e(date('j F Y', strtotime($POST['published']))) ?>
           </span>
           <?php if ($POST['modified'] !== $POST['published']): ?>
-          <!-- Shown only once it means something. dateModified is in the JSON-LD
-               either way; on a post about a platform change, the reader deserves
-               to see it too. -->
           <span class="m">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
             Updated <?= e(date('j F Y', strtotime($POST['modified']))) ?>
@@ -1393,16 +1645,12 @@ $share_title = rawurlencode($POST['title']);
           <?php endif; ?>
         </div>
       </div>
-
-      <!-- Decorative 3D scene: the article's central idea (one product, three
-           prices) surrounded by the native B2B features it depends on. -->
       <div class="hero-art" aria-hidden="true">
         <div class="scene">
           <div class="stage">
           <div class="panel">
             <div class="panel-bar">
               <i></i><i></i><i></i>
-              <!-- Same file the nav already loads, so this costs no extra request. -->
               <span class="brandpill"><img src="/assets/dqlab.png" alt="" width="1346" height="244" decoding="async" /></span>
             </div>
             <div class="panel-body">
@@ -1457,8 +1705,6 @@ $share_title = rawurlencode($POST['title']);
     <aside class="post-rail">
       <div class="rail-card">
         <div class="rail-author">
-          <!-- 112px source for a 52px slot (2x for retina). The shared 778px
-               original is 140KB, which is six times the bytes for no gain here. -->
           <img src="/assets/author-112.png" width="52" height="52" alt="" loading="lazy" decoding="async" />
           <div>
             <div class="n"><?= e($POST['author']['name']) ?></div>
@@ -1523,30 +1769,110 @@ $share_title = rawurlencode($POST['title']);
     <article class="post-body">
 
       <p>
-        If you are planning to start a <strong>B2B</strong> or <strong>wholesale</strong> business alongside DTC on Shopify, 
-        you no longer need Shopify Plus or expensive apps. 
+        If you are planning to run <strong>B2B</strong> or <strong>wholesale</strong> alongside DTC, 
+        Shopify B2B now works on every paid plan — including Basic at $39/month. You no longer need Shopify Plus or expensive apps. 
         The native B2B features Shopify opened to all plans on April 2, 2026, 
         are more than enough to run your wholesale business smoothly, 
         no matter which paid plan you are on.
       </p>
 
       <p>
-        In this article, we will mainly cover exactly what native features Shopify offers, 
-        which theme works best, the apps you genuinely need, and the ones that are just nice to have.
+        This guide walks through the whole thing in order: what a Shopify B2B store actually is, the features
+        every wholesale business needs, what Shopify gives you natively, which theme to pick, where
+        apps stop being optional, and how to find your first buyers once the store is live.
       </p>
+      <?php /* Lead illustration is WebP: the source PNG is 1.38 MB. eager, not lazy —
+         at 1440x900 this sits inside the first viewport. */ ?>
+      <figure class="lead-art">
+        <img src="/assets/shopify-b2b-starter-guide.webp" width="1536" height="1024"
+             alt="Shopify B2B Starter Guide — a storefront under a green awning showing product cards, company accounts, volume discounts and sales charts, with shipping boxes stacked beside it."
+             loading="eager" decoding="async" />
+      </figure>
 
       <section>
-        <?= h2($TOC, 'what-changed') ?>
-        <hr />
+        <?= h2($TOC, 'what-is-b2b') ?>
+        
+        <p>
+          A Shopify B2B store sells to other businesses — retailers, distributors, dealers, contractors —
+          rather than to the end user of that product. On Shopify, use a different mode of the store you already have, where
+          buyers sign in to a company account and see prices and terms that were set for them.
+        </p>
+        <p>
+          The difference matters because almost every assumption behind a DTC store breaks in
+          wholesale. Here is what actually changes:
+        </p>
+        <div class="stable-wrap">
+          <table class="stable vs-table">
+            <caption class="sr-only">How a Shopify B2B wholesale store differs from a DTC retail store</caption>
+            <thead>
+              <tr>
+                <th scope="col">Difference</th>
+                <th scope="col">Retail (DTC)</th>
+                <th scope="col">Wholesale (B2B)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row"><span class="ft">Who buys</span></th><td>The person using the product</td><td>A buyer purchasing for their business</td></tr>
+              <tr><th scope="row"><span class="ft">Price</span></th><td>One public price for everyone</td><td>Negotiated, and different per customer</td></tr>
+              <tr><th scope="row"><span class="ft">Order size</span></th><td>One or two units</td><td>Cases, pallets, minimum quantities</td></tr>
+              <tr><th scope="row"><span class="ft">Payment</span></th><td>Card, at checkout</td><td>Net 30 or 60 — you are extending credit</td></tr>
+              <tr><th scope="row"><span class="ft">Who can see prices</span></th><td>Anybody</td><td>Approved accounts only, usually</td></tr>
+              <tr><th scope="row"><span class="ft">How they shop</span></th><td>Browse, discover, get persuaded</td><td>Search a SKU, reorder, leave</td></tr>
+              <tr><th scope="row"><span class="ft">Buying cycle</span></th><td>Minutes</td><td>Weeks or months, then repeat forever</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <?= h2($TOC, 'core-features') ?>
+        
+        <p>
+          To operate smoothly, 
+          a modern b2b or wholesale store requires specific functionality that standard retail stores do not:
+        </p>
+        <ul class="checklist">
+          <li><strong>Company accounts.</strong> A buyer is not a person, it is a business with several people working behind it, each with different permission.</li>
+          <li><strong>Custom pricing.</strong> Tiered pricing, volume discounts, and customer-specific negotiated rates.</li>
+          <li>
+            <strong>Order minimums and pack sizes.</strong> If you sell in packs of 12, buyers have to
+            order in multiples of 12 — and the store has to say so at the cart, not in a follow-up
+            email. Shopify calls this an increment rule, and it rejects anything in between:
+            <ul class="qty-ex">
+              <li class="ok"><span class="sr-only">Allowed:</span><b>12</b> units — Allowed</li>
+              <li class="ok"><span class="sr-only">Allowed:</span><b>24</b> units — Allowed</li>
+              <li class="ok"><span class="sr-only">Allowed:</span><b>36</b> units — Allowed</li>
+              <li class="no"><span class="sr-only">Not allowed:</span><b>5</b> units — Not allowed</li>
+              <li class="no"><span class="sr-only">Not allowed:</span><b>18</b> units — Not allowed</li>
+            </ul>
+          </li>
+          <li>
+            <strong>Flexible payment terms.</strong> 
+            Support for Net 30/60/90 terms, purchase orders (POs), and vaulted credit cards for future billing.
+          </li>
+          <li><strong>Fast ordering.</strong> Tools for bulk CSV uploads or SKU-based quick order forms for fast replenishment.</li>
+          <li><strong>Minimum order quantities (MOQs).</strong> Restrictions on case packs or cart minimums.</li>
+          <li><strong>Request for quote: </strong>It's better to have an option to request a quote and negotiate the price.</li>
+        </ul>
+      </section>
+
+      <section>
+        <?= h2($TOC, 'native-features') ?>
+        
         <p>Shopify's native B2B module is available on Basic, Grow, Advanced, and Plus as of April 2, 2026. 
           A merchant on the cheapest paid plan can now do all of this without upgrading:</p>
-        <ul class="steps">
+        <ul class="checklist">
           <li>
-            <strong>Company profiles: </strong>
-            <p>Manage multiple buyers and locations with unique permission levels,
-            payment terms, tax exemptions, and order submission settings.</p>
-
-            <p>Store Admin > Customers > Companies:</p>
+            <p class="mb-1"><strong>Company profiles: </strong>
+            Group multiple buyers, locations, and permissions under a single company entity.</p>
+            <p style="display: flex; align-items: center; gap: 6px;">
+              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0 0 48 48">
+                <path fill="#7cb342" d="M37.216,11.78c-0.023-0.211-0.211-0.305-0.351-0.305s-3.21-0.234-3.21-0.234s-2.132-2.132-2.39-2.343	c-0.234-0.234-0.68-0.164-0.867-0.117c-0.023,0-0.469,0.141-1.195,0.375c-0.726-2.086-1.968-3.984-4.194-3.984h-0.211	C24.187,4.375,23.391,4,22.735,4c-5.155,0-7.639,6.444-8.412,9.725c-2.015,0.633-3.445,1.054-3.609,1.125	c-1.125,0.351-1.148,0.375-1.289,1.429c-0.117,0.797-3.046,23.456-3.046,23.456L29.179,44l12.373-2.671	C41.575,41.282,37.24,11.991,37.216,11.78z M27.937,9.483c-0.562,0.164-1.242,0.375-1.921,0.609V9.671	c0-1.265-0.164-2.296-0.469-3.117C26.718,6.695,27.445,7.984,27.937,9.483L27.937,9.483z M24.117,6.812	c0.305,0.797,0.516,1.922,0.516,3.468v0.234c-1.265,0.398-2.601,0.797-3.984,1.242C21.422,8.804,22.899,7.351,24.117,6.812	L24.117,6.812z M22.617,5.359c0.234,0,0.469,0.094,0.656,0.234c-1.664,0.773-3.421,2.718-4.148,6.655	c-1.101,0.351-2.156,0.656-3.163,0.984C16.806,10.233,18.915,5.359,22.617,5.359z"></path>
+                <path fill="#558b2f" d="M36.865,11.428c-0.141,0-3.21-0.234-3.21-0.234s-2.132-2.132-2.39-2.343	C31.17,8.757,31.053,8.71,30.96,8.71L29.249,44l12.373-2.671c0,0-4.335-29.338-4.359-29.549	C37.169,11.569,37.005,11.475,36.865,11.428z"></path>
+                <path fill="#fff" d="M24.792,18.593l-1.475,4.449c0,0-1.337-0.715-2.927-0.715c-2.374,0-2.489,1.498-2.489,1.867	c0,2.028,5.301,2.812,5.301,7.583c0,3.757-2.374,6.177-5.578,6.177c-3.872,0-5.808-2.397-5.808-2.397l1.037-3.411	c0,0,2.028,1.752,3.734,1.752c1.129,0,1.59-0.876,1.59-1.521c0-2.651-4.333-2.766-4.333-7.145c0-3.665,2.628-7.214,7.952-7.214	C23.777,17.994,24.792,18.593,24.792,18.593z"></path>
+              </svg> 
+              <span> &gt; Markets &gt; Customers &gt; Companies</span>
+            </p>
             
             <div class="shots">
               <figure class="shot">
@@ -1564,10 +1890,17 @@ $share_title = rawurlencode($POST['title']);
             </div>
           </li>
           <li>
-            <strong>Quantity rules: </strong>
-            <p>Create customer-specific conditional rules for products and variants, 
+            <p class="mb-1"><strong>Quantity rules: </strong>
+            Create customer-specific conditional rules for products and variants, 
               including minimums and maximums, case packs, and increments.</p>
-            <p>Store Admin > Markets > Catalogs > + Add rules</p>
+            <p style="display: flex; align-items: center; gap: 6px;">
+              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0 0 48 48">
+                <path fill="#7cb342" d="M37.216,11.78c-0.023-0.211-0.211-0.305-0.351-0.305s-3.21-0.234-3.21-0.234s-2.132-2.132-2.39-2.343	c-0.234-0.234-0.68-0.164-0.867-0.117c-0.023,0-0.469,0.141-1.195,0.375c-0.726-2.086-1.968-3.984-4.194-3.984h-0.211	C24.187,4.375,23.391,4,22.735,4c-5.155,0-7.639,6.444-8.412,9.725c-2.015,0.633-3.445,1.054-3.609,1.125	c-1.125,0.351-1.148,0.375-1.289,1.429c-0.117,0.797-3.046,23.456-3.046,23.456L29.179,44l12.373-2.671	C41.575,41.282,37.24,11.991,37.216,11.78z M27.937,9.483c-0.562,0.164-1.242,0.375-1.921,0.609V9.671	c0-1.265-0.164-2.296-0.469-3.117C26.718,6.695,27.445,7.984,27.937,9.483L27.937,9.483z M24.117,6.812	c0.305,0.797,0.516,1.922,0.516,3.468v0.234c-1.265,0.398-2.601,0.797-3.984,1.242C21.422,8.804,22.899,7.351,24.117,6.812	L24.117,6.812z M22.617,5.359c0.234,0,0.469,0.094,0.656,0.234c-1.664,0.773-3.421,2.718-4.148,6.655	c-1.101,0.351-2.156,0.656-3.163,0.984C16.806,10.233,18.915,5.359,22.617,5.359z"></path>
+                <path fill="#558b2f" d="M36.865,11.428c-0.141,0-3.21-0.234-3.21-0.234s-2.132-2.132-2.39-2.343	C31.17,8.757,31.053,8.71,30.96,8.71L29.249,44l12.373-2.671c0,0-4.335-29.338-4.359-29.549	C37.169,11.569,37.005,11.475,36.865,11.428z"></path>
+                <path fill="#fff" d="M24.792,18.593l-1.475,4.449c0,0-1.337-0.715-2.927-0.715c-2.374,0-2.489,1.498-2.489,1.867	c0,2.028,5.301,2.812,5.301,7.583c0,3.757-2.374,6.177-5.578,6.177c-3.872,0-5.808-2.397-5.808-2.397l1.037-3.411	c0,0,2.028,1.752,3.734,1.752c1.129,0,1.59-0.876,1.59-1.521c0-2.651-4.333-2.766-4.333-7.145c0-3.665,2.628-7.214,7.952-7.214	C23.777,17.994,24.792,18.593,24.792,18.593z"></path>
+              </svg> 
+              <span> &gt; Markets &gt; Catalogs &gt; + Add rules</span>
+            </p>
             <div class="shots shots-quantity">
               <figure class="shot shot-trim">
                 <a href="/assets/quantity.png" target="_blank" rel="noopener noreferrer" aria-label="Open the quantity rules editor screenshot full size">
@@ -1584,9 +1917,18 @@ $share_title = rawurlencode($POST['title']);
             </div>
           </li>
           <li>
-            <strong>Volume pricing: </strong>
-            <p>Easily implement quantity price breaks to get your B2B customers buying in larger quantities.</p>
-            <p>Store Admin > Markets > Catalogs > + Add rules</p>
+            <p class="mb-1"><strong>Volume pricing: </strong>
+            Easily implement quantity price breaks to get your B2B customers buying in larger quantities.</p>
+
+            <p style="display: flex; align-items: center; gap: 6px;">
+              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0 0 48 48">
+                <path fill="#7cb342" d="M37.216,11.78c-0.023-0.211-0.211-0.305-0.351-0.305s-3.21-0.234-3.21-0.234s-2.132-2.132-2.39-2.343	c-0.234-0.234-0.68-0.164-0.867-0.117c-0.023,0-0.469,0.141-1.195,0.375c-0.726-2.086-1.968-3.984-4.194-3.984h-0.211	C24.187,4.375,23.391,4,22.735,4c-5.155,0-7.639,6.444-8.412,9.725c-2.015,0.633-3.445,1.054-3.609,1.125	c-1.125,0.351-1.148,0.375-1.289,1.429c-0.117,0.797-3.046,23.456-3.046,23.456L29.179,44l12.373-2.671	C41.575,41.282,37.24,11.991,37.216,11.78z M27.937,9.483c-0.562,0.164-1.242,0.375-1.921,0.609V9.671	c0-1.265-0.164-2.296-0.469-3.117C26.718,6.695,27.445,7.984,27.937,9.483L27.937,9.483z M24.117,6.812	c0.305,0.797,0.516,1.922,0.516,3.468v0.234c-1.265,0.398-2.601,0.797-3.984,1.242C21.422,8.804,22.899,7.351,24.117,6.812	L24.117,6.812z M22.617,5.359c0.234,0,0.469,0.094,0.656,0.234c-1.664,0.773-3.421,2.718-4.148,6.655	c-1.101,0.351-2.156,0.656-3.163,0.984C16.806,10.233,18.915,5.359,22.617,5.359z"></path>
+                <path fill="#558b2f" d="M36.865,11.428c-0.141,0-3.21-0.234-3.21-0.234s-2.132-2.132-2.39-2.343	C31.17,8.757,31.053,8.71,30.96,8.71L29.249,44l12.373-2.671c0,0-4.335-29.338-4.359-29.549	C37.169,11.569,37.005,11.475,36.865,11.428z"></path>
+                <path fill="#fff" d="M24.792,18.593l-1.475,4.449c0,0-1.337-0.715-2.927-0.715c-2.374,0-2.489,1.498-2.489,1.867	c0,2.028,5.301,2.812,5.301,7.583c0,3.757-2.374,6.177-5.578,6.177c-3.872,0-5.808-2.397-5.808-2.397l1.037-3.411	c0,0,2.028,1.752,3.734,1.752c1.129,0,1.59-0.876,1.59-1.521c0-2.651-4.333-2.766-4.333-7.145c0-3.665,2.628-7.214,7.952-7.214	C23.777,17.994,24.792,18.593,24.792,18.593z"></path>
+              </svg> 
+              <span> &gt; Markets &gt; Catalogs &gt; + Add rules</span>
+            </p>
+            
             <div class="shots shots-volume">
               <figure class="shot shot-trim">
                 <a href="/assets/volume-pricing.png" target="_blank" rel="noopener noreferrer" aria-label="Open the volume pricing editor screenshot full size">
@@ -1613,12 +1955,39 @@ $share_title = rawurlencode($POST['title']);
             </div>
           </li>
           <li>
-            <strong>Company account requests: </strong>
-            <p>Add an account request form to your store with Shopify Forms. 
+            <p class="mb-1"><strong>Company account requests: </strong>
+            Add an account request form to your store with Shopify Forms. 
               Buyer details save as a company account automatically, 
               so they can buy wholesale as soon as you approve.</p>
-            <p>Install <a href="https://apps.shopify.com/shopify-forms" target="_blank" rel="noopener noreferrer">Shopify form App</a> > Store Admin > Customers > Companies > Select company > Approve</p>
-
+            <p class="app-path">
+              <?php /* One link around both icons: same destination twice would be two
+                 tab stops announcing the same thing. */ ?>
+              <a class="ap-node" href="https://apps.shopify.com/shopify-forms"
+                 target="_blank" rel="noopener noreferrer"
+                 aria-label="Shopify Forms on the Shopify App Store">
+                <svg class="ap-ico ap-store" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                     viewBox="0 0 54 60" aria-hidden="true" focusable="false">
+                  <path d="m37.82 59.855 15.187-3.774s-6.539-44.21-6.58-44.513a.582.582 0 0 0-.527-.49c-.219-.019-4.495-.084-4.495-.084s-2.606-2.53-3.586-3.49v52.351ZM36.166 7c-.003.002-.672.208-1.796.557-.189-.61-.465-1.36-.86-2.113-1.273-2.43-3.138-3.715-5.391-3.718h-.008c-.157 0-.312.015-.469.028a6.766 6.766 0 0 0-.203-.235C26.457.47 25.199-.042 23.691.003c-2.91.083-5.807 2.184-8.157 5.917-1.653 2.626-2.911 5.926-3.268 8.48l-5.729 1.775c-1.686.53-1.74.582-1.96 2.171C4.414 19.548 0 53.67 0 53.67L36.61 60V6.925c-.18.012-.342.045-.444.075Zm-8.454 2.618-6.174 1.911c.597-2.284 1.728-4.559 3.118-6.05.517-.555 1.24-1.174 2.097-1.527.804 1.68.98 4.058.96 5.666Zm-3.964-7.679c.683-.015 1.258.135 1.75.458-.787.409-1.547.995-2.26 1.76-1.848 1.983-3.264 5.061-3.83 8.03-1.76.545-3.484 1.08-5.07 1.57 1.001-4.674 4.919-11.688 9.41-11.818Zm-5.66 26.628c.196 3.114 8.39 3.794 8.85 11.09.361 5.739-3.045 9.665-7.953 9.975-5.89.371-9.133-3.105-9.133-3.105l1.248-5.31s3.264 2.462 5.877 2.297c1.707-.108 2.317-1.496 2.255-2.478-.257-4.062-6.929-3.822-7.35-10.498-.355-5.617 3.334-11.31 11.474-11.823 3.136-.198 4.743.603 4.743.603l-1.861 6.964s-2.077-.945-4.538-.79c-3.611.228-3.65 2.505-3.613 3.075ZM29.646 9.02c-.022-1.473-.197-3.523-.883-5.295 2.208.419 3.294 2.917 3.754 4.406-.851.262-1.821.562-2.871.889Z"/>
+                </svg>
+                <span class="ap-sep" aria-hidden="true">&gt;</span>
+                <?php /* Self-hosted: hotlinking cdn.shopify.com meant a third-party
+                   connection and a listing change could swap it under us. */ ?>
+                <img class="ap-ico" src="/assets/app-shopify-forms.png"
+                     width="96" height="96" loading="lazy" decoding="async" alt="" />
+                <span>Shopify Forms</span>
+              </a>
+              <span class="ap-sep" aria-hidden="true">&gt;</span>
+              <span class="ap-step">Store Admin</span>
+              <span class="ap-sep" aria-hidden="true">&gt;</span>
+              <span class="ap-step">Customers</span>
+              <span class="ap-sep" aria-hidden="true">&gt;</span>
+              <span class="ap-step">Companies</span>
+              <span class="ap-sep" aria-hidden="true">&gt;</span>
+              <span class="ap-step">Select company</span>
+              <span class="ap-sep" aria-hidden="true">&gt;</span>
+              <span class="ap-step">Approve</span>
+            </p>
+            
             <div class="shots shots-request">
               <figure class="shot shot-trim">
                 <a href="/assets/company-signup.png" target="_blank" rel="noopener noreferrer" aria-label="Open the storefront sign up form screenshot full size">
@@ -1635,8 +2004,8 @@ $share_title = rawurlencode($POST['title']);
             </div>
           </li>
           <li>
-            <strong>Quick bulk ordering: </strong>
-            <p>Show buyers a list of all products and variants so they can order sizes, 
+            <p><strong>Quick bulk ordering: </strong>
+            Show buyers a list of all products and variants so they can order sizes, 
               colours and more from the product page or a separate order form.</p>
 
             <div class="shots shots-single">
@@ -1649,76 +2018,88 @@ $share_title = rawurlencode($POST['title']);
             </div>
           </li>
         </ul>
+
       </section>
 
       <section>
-        <?= h2($TOC, 'basic-vs-plus') ?>
-        <hr />
-        
+        <?=  h2($TOC, 'shopify-plus') ?>
         <p>
-          Every B2B feature, by plan
+          Check out the feature comparison table below. 
+          It gives you a clear and simple breakdown of exactly which B2B features are available across the different Shopify plans, 
+          so you can easily choose the best fit for your growing business.
         </p>
-        <div class="stable-wrap">
-          <table class="stable stable-marks">
-            <caption class="sr-only">Shopify B2B features available on the Basic, Grow, Advanced and Plus plans</caption>
-            <thead>
-              <tr>
-                <th scope="col">Feature</th>
-                <?php foreach ($B2B_PLANS as $plan): ?>
-                  <th scope="col"><?= plan_icon($plan) ?><span class="pl-name"><?= e($plan) ?></span></th>
-                <?php endforeach; ?>
-              </tr>
-            </thead>
-            <?php foreach ($B2B_PLAN_FEATURES as $group => $rows): ?>
-              <tbody>
-                <tr class="grp"><th scope="colgroup" colspan="<?= count($B2B_PLANS) + 1 ?>"><?= e($group) ?></th></tr>
-                <?php foreach ($rows as $feature => $vals): ?>
-                  <tr>
-                    <th scope="row"><?= feature_label($feature) ?></th>
-                    <?php foreach ($vals as $v): ?>
-                      <td><?= plan_cell($v) ?></td>
-                    <?php endforeach; ?>
-                  </tr>
-                <?php endforeach; ?>
-              </tbody>
-            <?php endforeach; ?>
-          </table>
+    
+          <div class="stable-wrap">
+            <table class="stable stable-marks">
+              <caption class="sr-only">Shopify B2B features available on the Basic, Grow, Advanced and Plus plans</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Feature</th>
+                  <?php foreach ($B2B_PLANS as $plan): ?>
+                    <th scope="col"><?= plan_icon($plan) ?><span class="pl-name"><?= e($plan) ?></span></th>
+                  <?php endforeach; ?>
+                </tr>
+              </thead>
+              <?php foreach ($B2B_PLAN_FEATURES as $group => $rows): ?>
+                <tbody>
+                  <tr class="grp"><th scope="colgroup" colspan="<?= count($B2B_PLANS) + 1 ?>"><?= e($group) ?></th></tr>
+                  <?php foreach ($rows as $feature => $vals): ?>
+                    <tr>
+                      <th scope="row"><?= feature_label($feature) ?></th>
+                      <?php foreach ($vals as $v): ?>
+                        <td><?= plan_cell($v) ?></td>
+                      <?php endforeach; ?>
+                    </tr>
+                  <?php endforeach; ?>
+                </tbody>
+              <?php endforeach; ?>
+            </table>
+          </div>
+          <p class="src">
+            Source:
+            <a href="https://help.shopify.com/en/manual/b2b/getting-started/plan-features" target="_blank" rel="noopener noreferrer">Shopify Help Center — B2B features by plan</a>
+          </p>
+
+        <div class="callout callout-tip">
+          <?= tip_bulb() ?>
+          <p>
+            <span class="tip-k">In short:</span>
+            If Shopify's standard B2B features and apps can handle your requirements, you may not
+            need Plus. Shopify Plus becomes useful when you need more catalogs, deeper
+            customization, or advanced B2B workflows.
+          </p>
         </div>
-        <p class="src">
-          Source:
-          <a href="https://help.shopify.com/en/manual/b2b/getting-started/plan-features" target="_blank" rel="noopener noreferrer">Shopify Help Center — B2B features by plan</a>
-        </p>
       </section>
 
       <section>
         <?= h2($TOC, 'theme') ?>
-        <hr />
+        
         <p>The three themes worth considering, in order of fit:</p>
         <div class="tcards">
 
           <article class="tcard" style="--c: #3d8f4e;">
             <div class="tc-id">
-              <span class="tc-num" aria-hidden="true">01</span>
-              <h3 class="tc-name"><a href="https://themes.shopify.com/themes/trade" target="_blank" rel="noopener noreferrer">Trade</a></h3>
+              <h3 class="tc-name">
+                <a href="https://themes.shopify.com/themes/trade" target="_blank" rel="noopener noreferrer">Trade</a>
+              </h3>
               <p class="tc-sub">Shopify's free B2B theme</p>
             </div>
             <div class="tc-cell">
               <span class="tc-chip">Best for</span>
-              <p>B2B and wholesale business</p>
+              <p>Only Shopify B2B and wholesale business</p>
             </div>
             <div class="tc-cell">
               <p class="tc-h is-pro">Pros</p>
-              <p class="tc-line"><span class="tc-ico is-pro" aria-hidden="true"></span>Default features activated for B2B and wholesale.</p>
+              <p class="tc-line">Default features activated for Shopify B2B and wholesale.</p>
             </div>
             <div class="tc-cell">
               <p class="tc-h is-con">Cons</p>
-              <p class="tc-line"><span class="tc-ico is-con" aria-hidden="true"></span>Purely B2B. If you also sell to regular customers, the store may look too simple.</p>
+              <p class="tc-line">Purely B2B. If you also sell to regular customers, the store may look too simple.</p>
             </div>
           </article>
 
           <article class="tcard" style="--c: #2f5cc4;">
             <div class="tc-id">
-              <span class="tc-num" aria-hidden="true">02</span>
               <h3 class="tc-name"><a href="https://themes.shopify.com/themes/warehouse" target="_blank" rel="noopener noreferrer">Warehouse</a></h3>
               <p class="tc-sub"><strong>$320 USD</strong>, built for large catalogs</p>
             </div>
@@ -1728,18 +2109,19 @@ $share_title = rawurlencode($POST['title']);
             </div>
             <div class="tc-cell">
               <p class="tc-h is-pro">Pros</p>
-              <p class="tc-line"><span class="tc-ico is-pro" aria-hidden="true"></span>Many variants, deep filtering and B2B buyers who already know how to setup.</p>
+              <p class="tc-line">Many variants, deep filtering and B2B buyers who already know how to set up.</p>
             </div>
             <div class="tc-cell">
               <p class="tc-h is-con">Cons</p>
-              <p class="tc-line"><span class="tc-ico is-con" aria-hidden="true"></span>B2B behaviour is not built in: gated pricing and quick ordering come from native B2B and apps.</p>
+              <p class="tc-line">B2B behaviour is not built in: gated pricing and quick ordering come from native B2B and apps.</p>
             </div>
           </article>
 
           <article class="tcard" style="--c: #6a4bc4;">
             <div class="tc-id">
-              <span class="tc-num" aria-hidden="true">03</span>
-              <h3 class="tc-name"><a href="https://themes.shopify.com/themes/empire" target="_blank" rel="noopener noreferrer">Empire</a></h3>
+              <h3 class="tc-name">
+                <a href="https://themes.shopify.com/themes/empire" target="_blank" rel="noopener noreferrer">Empire</a>
+              </h3>
               <p class="tc-sub"><strong>$360 USD</strong>, one storefront for retail and wholesale</p>
             </div>
             <div class="tc-cell">
@@ -1748,30 +2130,21 @@ $share_title = rawurlencode($POST['title']);
             </div>
             <div class="tc-cell">
               <p class="tc-h is-pro">Pros</p>
-              <p class="tc-line"><span class="tc-ico is-pro" aria-hidden="true"></span>
+              <p class="tc-line">
               Customizable for wholesale and subscription brands.</p>
             </div>
             <div class="tc-cell">
               <p class="tc-h is-con">Cons</p>
-              <p class="tc-line"><span class="tc-ico is-con" aria-hidden="true"></span>Built for DTC first, so every wholesale features you have to add rather than inherit.</p>
+              <p class="tc-line">Built for DTC first, so every wholesale feature is one you have to add rather than inherit.</p>
             </div>
           </article>
 
         </div>
-        
-        <div class="callout callout-tip">
-          <?= tip_bulb() ?>
-          <p>
-            <span class="tip-k">Worth knowing:</span>
-            Trade hides the price from logged-out visitors. If you want
-            a <strong>"Request a Quote" button</strong> where the price used to be, then you have to use an app.
-          </p>
-        </div>
       </section>
 
       <section>
-        <?= h2($TOC, 'essential-apps') ?>
-        <hr />
+        <?= h2($TOC, 'where-apps') ?>
+        
         <p>
           Before installing anything, turn on the free tools — a surprising number of merchants pay
           for apps that duplicate them.
@@ -1792,203 +2165,143 @@ $share_title = rawurlencode($POST['title']);
             </tbody>
           </table>
         </div>
-        <p>Now the paid ones that earn their keep.</p>
-
-        <h3 class="step-h">Request a Quote (RFQ) with buyer negotiation</h3>
-        <p>The single most common reason to buy an app. Skip it entirely if three tiers covers you.</p>
-        <div class="stable-wrap">
-          <table class="stable">
-            <thead>
-              <tr>
-                <th scope="col">App</th>
-                <th scope="col">Best for</th>
-                <th scope="col">Pricing</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">
-                  <span class="ft ft-app">
-                    <img class="app-ico" src="/assets/app-request-for-quote.png"
-                         width="34" height="34" loading="lazy" decoding="async" alt="" />
-                    <a href="https://apps.shopify.com/request-for-quote" target="_blank" rel="noopener noreferrer">SA Request a Quote, Hide Price</a>
-                  </span>
-                </th>
-                <td>Request quotes for D2C & B2B customers. Works with Globo Product Options Hubspot, Omnisend Mailchimp, Klaviyo</td>
-                <td>Start from $16.99/month with a FREE plan</td>
-              </tr>
-              <tr>
-                <th scope="row">
-                    <span class="ft ft-app">
-                      <img class="app-ico" src="/assets/app-request-for-quote-by-omega.png"
-                         width="34" height="34" loading="lazy" decoding="async" alt="" />
-                    <a href="https://apps.shopify.com/request-for-quote-by-omega" target="_blank" rel="noopener noreferrer">QS Request a Quote, Hide Price</a>
-                  </span>
-                </th>
-                <td>B2B growth: Sync quote & contact data to Mailchimp, HubSpot & your CRM</td>
-                <td>Start from $16.99/month with a FREE plan</td>
-              </tr>
-              <tr>
-                <th scope="row">
-                  <span class="ft ft-app">
-                    <img class="app-ico" src="/assets/app-storeify-request-a-quote.png"
-                         width="34" height="34" loading="lazy" decoding="async" alt="" />
-                    <a href="https://apps.shopify.com/storeify-request-a-quote" target="_blank" rel="noopener noreferrer">S:Request a Quote & Hide Price</a>
-                  </span>
-                </th>
-                <td>Automatically accept quotes, create draft orders, and send invoices.</td>
-                <td>Start from $12.99/month with a FREE plan</td>
-              </tr>
-              <tr>
-                <th scope="row">
-                  <span class="ft ft-app">
-                    <img class="app-ico" src="/assets/app-dlab-request-quote-hide-price.png"
-                         width="34" height="34" loading="lazy" decoding="async" alt="" />
-                    <a href="https://apps.shopify.com/dlab-request-quote-hide-price" target="_blank" rel="noopener noreferrer">DQLab Request Quote Hide Price</a>
-                  </span>
-                </th>
-                <td>Request quote with unlimited negotiation. Invoice with PDF attachment & signature</td>
-                <td>Free and $9/m</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h3 class="step-h">Advanced Catalog & Pricing</h3>
-        <p>
-          On Basic, Grow, and Advanced plans, you can assign up to 3 active catalogs across all your B2B markets. 
-          Assigning 3 catalogs to one market uses the full limit. On the Shopify Plus plan, 
-          you can create an unlimited number of catalogs and also assign them directly to specific company locations.
+        <p class="mt-3">
+          While native Shopify B2B features cover the fundamentals, 
+          complex operations will eventually require paid third-party apps. 
+          You will need apps when your workflow demands:
         </p>
+        <ul class="checklist">
+          <li>Custom quoting workflows or back-and-forth price negotiations.</li>
+          <li>Deep synchronization with legacy ERPs or CRM tools.</li>
+          <li>Sales rep portals where internal teams place orders on behalf of clients.</li>
+          <li>Highly specific quantity rules.</li>
+        </ul>
 
-        <div class="shots shots-single shots-catalog">
-          <figure class="shot">
-            <a href="/assets/catalog-3.png" target="_blank" rel="noopener noreferrer" aria-label="Open the catalog limit error screenshot full size">
-              <img src="/assets/catalog-3.png" width="1992" height="300" loading="lazy" decoding="async"
-                   alt="Shopify admin, New catalog: an error banner reading “Only 3 active catalogs can be assigned to active B2B markets. Set a catalog to draft or upgrade your plan to add more.”" />
-            </a>
-          </figure>
-        </div>
-
-        <p>Here is the list of apps which are providing customer group based pricing, 
-          volume pricing with discounts. Some apps also giving company registration with approval system.</p>
-
-        <div class="stable-wrap">
-          <table class="stable stable-apps">
-            <thead>
-              <tr>
-                <th scope="col">App</th>
-                <th scope="col">Best for</th>
-                <th scope="col">Pricing</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">
-                  <span class="ft ft-app">
-                    <!-- Self-hosted copy of the App Store listing icon, resized
-                         96px for a 34px slot. Hotlinking cdn.shopify.com meant a
-                         third-party connection for one small image, and a listing
-                         change could swap it under us without warning. -->
-                    <img class="app-ico" src="/assets/app-bss-b2b.png"
-                         width="34" height="34" loading="lazy" decoding="async" alt="" />
-                    <a href="https://apps.shopify.com/b2b-solution-custom-pricing" target="_blank" rel="noopener noreferrer">BSS B2B Wholesale Pricing</a>
-                  </span>
-                </th>
-                <td>Centralized B2B wholesale with custom pricing, price lists, net terms, tax control and approvals</td>
-                <td>Start from $29/month with a FREE plan</td>
-              </tr>
-              <tr>
-                <th scope="row">
-                  <span class="ft ft-app">
-                    <img class="app-ico" src="/assets/app-clay-b2b-wholesale-form.png"
-                         width="34" height="34" loading="lazy" decoding="async" alt="" />
-                    <a href="https://apps.shopify.com/clay-b2b-wholesale-form" target="_blank" rel="noopener noreferrer">Clay • B2B Wholesale Pricing</a>
-                  </span>
-                </th>
-                <td>Offering wholesale & B2B buyers unlimited B2B catalogs</td>
-                <td>Start from $25/month with a FREE plan</td>
-              </tr>
-              <tr>
-                <th scope="row">
-                  <span class="ft ft-app">
-                    <img class="app-ico" src="/assets/app-massy-b2b-wholesale-pricing-discount.png"
-                         width="34" height="34" loading="lazy" decoding="async" alt="" />
-                    <a href="https://apps.shopify.com/massy-b2b-wholesale-pricing-discount" target="_blank" rel="noopener noreferrer">Massy B2B Wholesale Pricing</a>
-                  </span>
-                </th>
-                <td>For B2B & wholesale merchants: Custom Price Lists, Volume Discounts, MOQ limits, B2B Login</td>
-                <td>Start from $29/month with a FREE plan</td>
-              </tr>
-              <tr>
-                <th scope="row">
-                  <span class="ft ft-app">
-                    <img class="app-ico" src="/assets/app-request-for-quote.png"
-                         width="34" height="34" loading="lazy" decoding="async" alt="" />
-                    <a href="https://apps.shopify.com/wholesale-sami" target="_blank" rel="noopener noreferrer">Sami B2B Wholesale Pricing</a>
-                  </span>
-                </th>
-                <td>Set wholesale pricing by customer group, product, variant, market, or quantity</td>
-                <td>Start from $24.90/month with a FREE plan</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h3 class="step-h">B2B registration & approval</h3>
-        <p>
-          Shopify lets you manage Companies, but a polished public “Apply for a wholesale account” form + approval workflow may require an app.
-        </p>
-
-        <h3 class="step-h">Accounting sync</h3>
-        <p>
-          Selling on Net 30 means selling on credit, and in wholesale, cash flow <em>is</em> the business. Xero or
-          QuickBooks connectors sync orders and invoices automatically. If you use local accounting software, plan
-          the CSV export or API integration early rather than as an afterthought.
-        </p>
-
-        <h3 class="step-h">Bulk and CSV ordering</h3>
-        <p>
-          When a dealer orders 120 SKUs at once, clicking through product pages is impossible. 
-          The Trade theme's quick order list helps, but has no CSV upload.
-        </p>
+        <?php /* The reader has just been told native B2B stops at quoting, which is
+           the moment they start looking for an app. One CTA per article, here. */ ?>
+        <?= rfq_cta() ?>
       </section>
 
       <section>
         <?= h2($TOC, 'nice-apps') ?>
-        <hr />
+        
         <p>
-          <strong>These are not day-one purchases.</strong> Add them when the pain is real and you can point at the
-          hour it costs you each week.
+         You do not need these apps on day one. 
+         Only install them when your business grows and you need to save time.
         </p>
-        <ul>
-          <li><strong>Credit limits and customer ledger.</strong> "Block new orders if this account owes more than $5,000" does not exist natively. At small scale a Shopify Flow alert is a workable substitute.</li>
-          <li><strong>Deposits and partial payments.</strong> Plus-only natively; <strong>Downpay</strong> is the closest workaround for deposits.</li>
-          <li><strong>Tax exemption and VAT validation.</strong> Native B2B handles exemption at the company-location level; automated validation needs an app.</li>
-          <li><strong>Content gating.</strong> Restricting specific collections or pages to approved dealers — <strong>Locksmith</strong> is the standard answer.</li>
-          <li><strong>ERP connector.</strong> If inventory lives outside Shopify you will oversell without a sync. Cin7, Brightpearl, Unleashed, Linnworks, NetSuite.</li>
-          <li><strong>Search and filtering.</strong> Wholesale buyers do not browse, they search by SKU. Past roughly 500 products, consider a dedicated search app.</li>
-          <li><strong>Reporting.</strong> Which dealer buys what, and which SKUs move in which channel. Basic's reporting is thin.</li>
+        <ul class="checklist">
+          <li>
+            <strong>Credit limits: </strong> 
+            Automatically stop a buyer from ordering if they owe you too much money (for example, over $5,000).
+          </li>
+          <li><strong>Taking deposits: </strong>
+          Native Shopify only lets Plus users take partial payments. For other plans, use an app like 
+          <a href="https://apps.shopify.com/downpay" target="_blank" rel="noopener">Downpay</a>.
+          </li>
+          <li>
+            <strong>Tax & VAT check: </strong> 
+            Shopify handles basic tax rules, but you need an app to automatically check and validate a buyer's VAT number.
+          </li>
+          <li>
+            <strong>Hiding content: </strong> 
+            If you want to hide specific pages or products so only approved buyers can see them, use an app like 
+            <a href="https://apps.shopify.com/locksmith" target="_blank" rel="noopener">Locksmith</a>.
+          </li>
+          <li>
+            <strong>SKU search: </strong> 
+            B2B buyers usually search by exact SKU numbers instead of browsing. 
+            If you have more than 500 products, get a dedicated search app.
+          </li>
+          <li>
+            <strong>Better reporting: </strong> 
+            Shopify's basic reports are very simple. You will eventually need an app to track exactly which dealer buys which products.
+          </li>
         </ul>
       </section>
 
-      <!-- A div, not a section: this closes the article rather than starting a
-           new part of it, and a <section> with no heading names no region. -->
-      <div class="post-outro">
-        <div class="callout callout-tip">
-          <?= tip_bulb() ?>
-          <p>
-            <span class="tip-k">Wrapping up:</span>
-            Start on Basic. Native B2B, the Trade theme, Shopify Forms and Shopify Flow will carry your first
-            twenty to thirty wholesale accounts — buy an app when you can point at the wall you have hit, not before.
-          </p>
-          <p>
-            Explore our all <a href="/#apps">Shopify Apps</a> to see how we support brands
-            like yours. Or, if you want to discuss a project,
-            <a href="#contact">get in touch with our team</a>.
-          </p>
+      <section>
+        <?= h2($TOC, 'marketing') ?>
+        
+        <p>
+          Shopify B2B marketing is about building trust, providing education, 
+          and nurturing long-term relationships.
+        </p>
+
+        <ul class="checklist">
+          <li><strong>Account-Based Marketing (ABM):</strong> Identify your top ideal corporate clients and tailor highly specific outreach campaigns directly to their decision-makers.</li>
+          <li><strong>Content & SEO:</strong> Create technical whitepapers, case studies, and detailed documentation. B2B buyers conduct extensive research before reaching out.</li>
+          <li><strong>Automated Reorder Campaigns:</strong> Use Shopify Flow and email marketing to remind buyers when it’s time to restock based on their historical purchasing cadence.</li>
+          <li><strong>LinkedIn Networking:</strong> Leverage LinkedIn to connect with procurement managers and share industry insights.</li>
+        </ul>
+      </section>
+
+      <section>
+        <?= h2($TOC, 'first-30-days') ?>
+        
+        <p>
+          If you do nothing else in this guide, do these in this order. The sequence matters more
+          than the speed — step one blocks everything after it.
+        </p>
+
+        <ul class="checklist week-plan">
+          <li>
+            <span class="wk">Week 1 — foundations</span>
+            <ul>
+              <li><strong>Switch to new customer accounts</strong> under Settings &rarr; Customer accounts. B2B does not work without it, and this is the single most common reason a setup appears broken.</li>
+              <li>Confirm your store is on new Shopify Markets — B2B catalogs attach to B2B markets, so this is a hard prerequisite on Basic, Grow and Advanced.</li>
+              <li>Create one test company with your own email as the buyer.</li>
+            </ul>
+          </li>
+          <li>
+            <span class="wk">Week 2 — pricing and rules</span>
+            <ul>
+              <li>Build your first catalog and attach it to a B2B market. Remember the limit of three.</li>
+              <li>Add quantity rules — minimums, increments, case packs — to the products that need them.</li>
+              <li>Set payment terms. Net 30 is the default expectation; decide now who gets it.</li>
+            </ul>
+          </li>
+          <li>
+            <span class="wk">Week 3 — storefront</span>
+            <ul>
+              <li>Install the Trade theme, or configure gated pricing on the theme you have.</li>
+              <li>Publish the wholesale application form with Shopify Forms and link it from the navigation.</li>
+              <li>Place a full test order as your test buyer, from login to invoice, and watch what breaks.</li>
+            </ul>
+          </li>
+          <li>
+            <span class="wk">Week 4 — first buyers</span>
+            <ul>
+              <li>Invite five to ten buyers you already know. Not fifty — you want to fix problems quietly.</li>
+              <li>Watch where they stall. That is your real list of which apps to buy, and it will not match the list you assumed.</li>
+              <li>Only now install the first paid app, against a problem you can name.</li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <?= h2($TOC, 'summary') ?>
+        <p>Setting up a Shopify B2B store in 2026 is more streamlined than ever. 
+          By leveraging native company profiles and catalogs, 
+          choosing a utility-focused theme, and strategically using apps like 
+          DQ Request a Quote to handle negotiations, 
+          you can build a highly efficient enterprise portal. 
+          Focus on making the buyer's journey as frictionless as possible, 
+          and back it up with targeted, relationship-driven marketing.</p>
+      </section>
+
+      <section>
+        <?= h2($TOC, 'faq') ?>
+        
+        <div class="faq">
+          <?php foreach ($FAQS as $i => $faq): ?>
+          <details<?= $i === 0 ? ' open' : '' ?>>
+            <summary><?= e($faq['q']) ?></summary>
+            <div class="a"><?= e($faq['a']) ?></div>
+          </details>
+          <?php endforeach; ?>
         </div>
-      </div>
+      </section>
 
     </article>
   </div>
@@ -2005,10 +2318,7 @@ $share_title = rawurlencode($POST['title']);
       <div class="eyebrow">More on B2B &amp; quote-based selling</div>
     </div>
     <div class="blog">
-      <!-- The app is a product page, not a post, so it is not in the registry —
-           but it is the most useful next click from this article, so it keeps
-           its hand-written card and the first slot. -->
-      <a class="post" href="/dqlab-request-quote-hide-price">
+      <a class="post" href="/dq-b2b-request-quote-rfq">
         <?php
           // Built by the same renderer as every other cover rather than by hand.
           // The hand-written copy silently fell behind when the component gained
@@ -2018,6 +2328,7 @@ $share_title = rawurlencode($POST['title']);
               'title' => 'Hide prices and collect quote requests on Shopify',
               'cover' => [
                   'variant' => 'form',
+                  'tone'    => 'clay',
                   'eyebrow' => 'Shopify app · Deque Lab',
                   'title'   => 'Hide the price, collect a <b>quote</b>',
                   'foot'    => 'Free plan · $9/month',
@@ -2075,7 +2386,7 @@ $share_title = rawurlencode($POST['title']);
       <nav class="footer-col" aria-label="Shopify apps">
         <h5>Shopify Apps</h5>
         <ul>
-          <li><a href="/dqlab-request-quote-hide-price">Request a Quote &amp; Hide Price</a></li>
+          <li><a href="/dq-b2b-request-quote-rfq">B2B Request a Quote (RFQ)</a></li>
           <li><a href="/#app-appointment">Appointment Booking</a></li>
           <li><a href="/#apps">All Shopify apps</a></li>
         </ul>

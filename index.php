@@ -139,7 +139,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
           {"@type":"ListItem","position":2,"item":{"@type":"SoftwareApplication","name":"DQ: PreOrder & Request Stock","applicationCategory":"BusinessApplication","operatingSystem":"Shopify","description":"Flagship preorder app — acquired by a larger Shopify partner in 2024.","offers":{"@type":"Offer","availability":"https://schema.org/Discontinued"}}},
           {"@type":"ListItem","position":3,"item":{"@type":"SoftwareApplication","name":"DQ: CRM for B2B","applicationCategory":"BusinessApplication","operatingSystem":"Shopify","description":"Native CRM for B2B merchants on Shopify with account hierarchies.","offers":{"@type":"Offer","availability":"https://schema.org/PreOrder"}}},
           {"@type":"ListItem","position":4,"item":{"@type":"SoftwareApplication","name":"DQ: Wholesale Pricing & Discount","applicationCategory":"BusinessApplication","operatingSystem":"Shopify","description":"Customer-group pricing and tiered volume discounts on Shopify Functions.","offers":{"@type":"Offer","availability":"https://schema.org/PreOrder"}}},
-          {"@type":"ListItem","position":5,"item":{"@type":"SoftwareApplication","name":"DQ: Request a Quote & Hide Price","applicationCategory":"BusinessApplication","operatingSystem":"Shopify","description":"Gate prices behind login and capture quote requests with admin approval.","offers":{"@type":"Offer","availability":"https://schema.org/PreOrder"}}},
+          {"@type":"ListItem","position":5,"item":{"@type":"SoftwareApplication","name":"DQ: B2B Request a Quote (RFQ)","applicationCategory":"BusinessApplication","operatingSystem":"Shopify","description":"Gate prices behind login and capture quote requests with admin approval.","offers":{"@type":"Offer","availability":"https://schema.org/PreOrder"}}},
           {"@type":"ListItem","position":6,"item":{"@type":"SoftwareApplication","name":"DQ: Live Product Options","applicationCategory":"BusinessApplication","operatingSystem":"Shopify","description":"Real-time configurators — swatches, conditional logic, live price preview.","offers":{"@type":"Offer","availability":"https://schema.org/PreOrder"}}},
           {"@type":"ListItem","position":7,"item":{"@type":"SoftwareApplication","name":"DQ: Subscription Plus","applicationCategory":"BusinessApplication","operatingSystem":"Shopify Plus","description":"Subscriptions for Shopify Plus with mixed cart and merchant-branded portal.","offers":{"@type":"Offer","availability":"https://schema.org/PreOrder"}}},
           {"@type":"ListItem","position":8,"item":{"@type":"SoftwareApplication","name":"DQ: Checkout Extensions Plus","applicationCategory":"BusinessApplication","operatingSystem":"Shopify Plus","description":"Bundle of checkout extensions for Plus merchants.","offers":{"@type":"Offer","availability":"https://schema.org/PreOrder"}}}
@@ -485,8 +485,8 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
     .legend .l.sold::before { background: #d97706; }
   </style>
   <?php require __DIR__ . '/inc/crisp.php'; ?>
+  <?php require __DIR__ . '/inc/analytics.php'; ?>
 
-  <script src="https://analytics.ahrefs.com/analytics.js" data-key="AgbLLxcpekIQG5E1V/q5ow" async></script>
 </head>
 <body id="top">
 
@@ -913,7 +913,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
         </div>
       </article>
 
-      <!-- 05 · Request a Quote, Hide Price -->
+      <!-- 05 · B2B Request a Quote (RFQ) -->
       <article class="p soon" id="app-quote">
         <div class="top">
           <div class="ic ic-img bg-green" aria-hidden="true">
@@ -921,11 +921,11 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
           </div>
           <span class="status live">Live on Shopify</span>
         </div>
-        <h3>DQLab Request Quote Hide Price</h3>
+        <h3>DQ: B2B Request a Quote (RFQ)</h3>
         <p class="desc">Gate prices behind login or form. Capture quote requests with custom fields and admin-approval flow.</p>
         <div class="foot">
           <span class="price">SALES · 2026 Q3</span>
-          <a href="/dqlab-request-quote-hide-price" class="cta">View app</a>
+          <a href="/dq-b2b-request-quote-rfq" class="cta">View app</a>
         </div>
       </article>
 
@@ -1024,7 +1024,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
           <li><a href="#app-appointment">Appointment Booking</a></li>
           <li><a href="#app-preorder">PreOrder (acquired)</a></li>
           <li><a href="#apps">All Shopify apps</a></li>
-          <li><a href="/shopify-b2b-wholesale-basic-plan">Shopify B2B guide</a></li>
+          <li><a href="/shopify-b2b-starter-guide">Shopify B2B guide</a></li>
         </ul>
       </nav>
       <nav class="footer-col" aria-label="Connect with us">

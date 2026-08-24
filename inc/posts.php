@@ -22,10 +22,17 @@ define('DQLAB_POSTS', true);
  * follow this one array.
  */
 const DQ_CATEGORIES = [
-    'shopify-b2b' => 'Shopify B2B',
+    'shopify-b2b' => 'B2B',
+    'marketing'   => 'Marketing',
+    'apps'        => 'Apps',
     'guides'      => 'Guides',
-    'apps'        => 'Apps & Tools',
 ];
+
+/**
+ * Banner palettes. A post picks one with cover.tone; the grid on /blogs then
+ * reads as a run of distinct colours instead of three identical grey cards.
+ */
+const DQ_COVER_TONES = ['ink', 'moss', 'plum', 'clay'];
 
 /**
  * Every post, newest first.
@@ -36,33 +43,37 @@ const DQ_CATEGORIES = [
  * category exactly one, and it must be a key of DQ_CATEGORIES. One primary
  *          category keeps /blogs sections free of the same card twice.
  * cover    drives the HTML banner. No image file: see dq_post_cover().
+ *          'tone' paints the banner in one of the palettes in dq_post_cover()
+ *          and is what gives the /blogs grid its run of distinct colours; a
+ *          post with no tone falls back to the light paper banner.
  */
 const DQ_POSTS = [
     [
-        'slug'      => 'shopify-b2b-wholesale-basic-plan',
+        'slug'      => 'shopify-b2b-starter-guide',
         'status'    => 'live',
         'category'  => 'shopify-b2b',
-        'title'     => 'Run B2B and wholesale business on Shopify Basic plan in 2026',
-        'h1'        => 'Run B2B and wholesale business on Shopify Basic plan in 2026',
-        'excerpt'   => 'Run wholesale on Shopify with no app at all. What native B2B covers, which theme to pick, the 3-catalog limit, and when an app finally earns its cost.',
-        'card_text' => 'What native B2B covers on the cheapest paid plan, which theme to pick, the 3-catalog limit, and the point where an app finally earns its cost.',
+        'title'     => 'Shopify B2B: How to Start a Wholesale Business in 2026',
+        'h1'        => 'Shopify B2B: How to Start a Wholesale Business in 2026',
+        'excerpt'   => 'Shopify B2B runs on every paid plan since April 2026. What you get natively, which theme to pick, when apps become necessary, and how to win your first buyers.',
+        'card_text' => 'What a B2B store is, which features Shopify gives you natively on every plan, which theme to pick, where apps become necessary, and how to find your first wholesale buyers.',
         'published' => '2026-08-03',
-        'modified'  => '2026-08-10',
-        'read_time' => 7,
-        'words'     => 1550,
-        'tags'      => ['Shopify B2B', 'Wholesale', 'Basic Plan', 'Shopify Apps', 'Ecommerce'],
+        'modified'  => '2026-08-25',
+        'read_time' => 10,
+        'words'     => 2006,
+        'tags'      => ['Shopify B2B', 'Wholesale', 'B2B Ecommerce', 'Shopify Apps', 'B2B Marketing'],
         'author'    => ['name' => 'Nafeeur Rahman', 'role' => 'Founder, Deque Lab'],
         'cover'     => [
             'variant' => 'tiers',
+            'tone'    => 'ink',
             'eyebrow' => 'Guide · Shopify B2B',
-            'title'   => 'Run B2B and wholesale on Shopify <b>Basic</b>',
-            'foot'    => 'No Plus. No apps.',
+            'title'   => 'How to start a <b>Shopify B2B</b> business',
+            'foot'    => 'Setup → apps → first buyers.',
         ],
     ],
     [
         'slug'      => 'quote-form-that-converts',
         'status'    => 'soon',
-        'category'  => 'guides',
+        'category'  => 'marketing',
         'title'     => 'Designing a quote form that converts',
         'excerpt'   => 'The fields that move a browser to a serious lead — and the ones that just add friction.',
         'card_text' => 'The fields that move a browser to a serious lead — and the ones that just add friction.',
@@ -73,6 +84,7 @@ const DQ_POSTS = [
         'author'    => ['name' => 'Nafeeur Rahman', 'role' => 'Founder, Deque Lab'],
         'cover'     => [
             'variant' => 'form',
+            'tone'    => 'moss',
             'eyebrow' => 'Guide · Quotes',
             'title'   => 'Designing a quote form that <b>converts</b>',
             'foot'    => 'Fewer fields, better leads.',
@@ -92,6 +104,7 @@ const DQ_POSTS = [
         'author'    => ['name' => 'Nafeeur Rahman', 'role' => 'Founder, Deque Lab'],
         'cover'     => [
             'variant' => 'invoice',
+            'tone'    => 'plum',
             'eyebrow' => 'Playbook · Invoicing',
             'title'   => 'From quote to paid in <b>24 hours</b>',
             'foot'    => 'Quote → invoice → paid.',
@@ -170,6 +183,10 @@ function dq_post_cover(array $p): string {
     $variant = $c['variant'] ?? 'plain';
     $eyebrow = $c['eyebrow'] ?? '';
     $foot    = $c['foot'] ?? '';
+    // One of the palettes in styles.css (ink / moss / plum / clay). Unknown or
+    // missing values fall through to the original light banner rather than
+    // shipping a class with no rule behind it.
+    $tone    = in_array($c['tone'] ?? '', DQ_COVER_TONES, true) ? (string) $c['tone'] : '';
     // Cover titles carry one <b> for the accented word, so they are written as
     // trusted markup here rather than escaped wholesale.
     $title   = $c['title'] ?? e($p['title']);
@@ -199,7 +216,7 @@ function dq_post_cover(array $p): string {
     // Title and motif share a flex row rather than the motif floating on top:
     // absolute positioning meant a headline one line longer than expected ran
     // underneath the card, and the collision only showed at certain widths.
-    return '<div class="cover-art cv-' . e($variant) . '" aria-hidden="true">'
+    return '<div class="cover-art cv-' . e($variant) . ($tone !== '' ? ' toned tone-' . e($tone) : '') . '" aria-hidden="true">'
          . ($eyebrow !== '' ? '<span class="cv-eyebrow">' . e($eyebrow) . '</span>' : '')
          . '<div class="cv-main">'
          . '<span class="cv-title">' . $title . '</span>'
@@ -213,29 +230,51 @@ function dq_post_cover(array $p): string {
  * One post card. A live post is an <a> so the whole card is one hit target;
  * a coming-soon post is an <article>, because nothing about it is clickable.
  * data-title and data-cat are what the /blogs search and tabs filter on.
+ *
+ * $opts['layout']:
+ *   'card'      (default) the boxed white card the homepage and the related
+ *               row use — border, tag chip, "Read article →".
+ *   'editorial' the /blogs listing: banner on top, then title, excerpt and a
+ *               date · author line sitting directly on the page with no box
+ *               around them. Same registry, same banner, different frame.
  */
-function dq_post_card(array $p): string {
-    $live = $p['status'] === 'live';
-    $url  = dq_post_url($p);
-    $tag  = DQ_CATEGORIES[$p['category']] ?? $p['category'];
-    $date = date('M Y', (int) strtotime($p['published']));
+function dq_post_card(array $p, array $opts = []): string {
+    $editorial = ($opts['layout'] ?? 'card') === 'editorial';
+    $live      = $p['status'] === 'live';
+    $url       = dq_post_url($p);
+    $tag       = DQ_CATEGORIES[$p['category']] ?? $p['category'];
+    $stamp     = (int) strtotime($p['published']);
 
-    $attrs = ' class="post" data-cat="' . e($p['category']) . '"'
+    $attrs = ' class="post' . ($editorial ? ' post-ed' : '') . '" data-cat="' . e($p['category']) . '"'
            . ' data-title="' . e(strtolower($p['title'] . ' ' . implode(' ', $p['tags'] ?? []))) . '"';
 
     $open  = $live ? '<a href="' . e((string) $url) . '"' . $attrs . '>' : '<article' . $attrs . '>';
     $close = $live ? '</a>' : '</article>';
 
-    return $open
-         . dq_post_cover($p)
-         . '<div class="body">'
-         . '<div class="meta"><span>' . e($live ? $date : 'Soon') . '</span>'
-         . '<span class="tg">' . e($tag) . '</span>'
-         . ($live ? '<span class="dot">·</span><span>' . e((string) $p['read_time']) . ' min</span>' : '')
-         . '</div>'
-         . '<h3>' . e($p['title']) . '</h3>'
-         . '<p>' . e($p['card_text'] ?? $p['excerpt']) . '</p>'
-         . '<span class="rd">' . ($live ? 'Read article →' : 'In progress') . '</span>'
-         . '</div>'
-         . $close;
+    if ($editorial) {
+        // Date then author, the two facts a reader uses to decide whether a
+        // guide is still current and who stands behind it. A coming-soon post
+        // has no date worth printing, so it says so instead of a future one.
+        $author = $p['author']['name'] ?? 'Deque Lab';
+        $when   = $live ? date('M j, Y', $stamp) : 'Coming soon';
+
+        $body = '<h3>' . e($p['title']) . '</h3>'
+              . '<p>' . e($p['card_text'] ?? $p['excerpt']) . '</p>'
+              . '<div class="meta">'
+              . '<span>' . e($when) . '</span>'
+              . '<span class="sep" aria-hidden="true">|</span>'
+              . '<span>' . e($author) . '</span>'
+              . ($live ? '<span class="sep" aria-hidden="true">|</span><span>' . e((string) $p['read_time']) . ' min</span>' : '')
+              . '</div>';
+    } else {
+        $body = '<div class="meta"><span>' . e($live ? date('M Y', $stamp) : 'Soon') . '</span>'
+              . '<span class="tg">' . e($tag) . '</span>'
+              . ($live ? '<span class="dot">·</span><span>' . e((string) $p['read_time']) . ' min</span>' : '')
+              . '</div>'
+              . '<h3>' . e($p['title']) . '</h3>'
+              . '<p>' . e($p['card_text'] ?? $p['excerpt']) . '</p>'
+              . '<span class="rd">' . ($live ? 'Read article →' : 'In progress') . '</span>';
+    }
+
+    return $open . dq_post_cover($p) . '<div class="body">' . $body . '</div>' . $close;
 }

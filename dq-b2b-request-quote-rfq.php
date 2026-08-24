@@ -2,21 +2,21 @@
 declare(strict_types=1);
 
 /* ============================================================
- * Deque Lab — DQ: Request a Quote & Hide Price (landing page)
+ * Deque Lab — DQ: B2B Request a Quote (RFQ) (landing page)
  * ============================================================ */
 
 require __DIR__ . '/inc/lib.php';
 require __DIR__ . '/inc/posts.php';
 
 // Page-level SEO/AEO config (overrides base).
-$CONFIG['page_title']       = 'Request a Quote & Hide Price for Shopify — DQLab';
-$CONFIG['page_description'] = 'DQLab Request a Quote & Hide Price lets Shopify merchants hide prices and the add-to-cart button, collect quote requests with custom fields, and approve offers from the admin. Free plan available.';
-$CONFIG['page_keywords']    = 'request a quote Shopify, hide price Shopify, hide add to cart, quote request app, B2B quote Shopify, call for price, DQLab, Deque Lab';
-$CONFIG['canonical_url']    = $CONFIG['site_url'] . '/dqlab-request-quote-hide-price';
+$CONFIG['page_title']       = 'DQ: B2B Request a Quote (RFQ) — Shopify App';
+$CONFIG['page_description'] = 'DQ: B2B Request a Quote (RFQ) lets Shopify merchants hide prices and the add-to-cart button, collect quote requests with custom fields, and approve offers from the admin. Free plan available.';
+$CONFIG['page_keywords']    = 'DQ B2B Request a Quote, RFQ Shopify app, request a quote Shopify, hide price Shopify, hide add to cart, B2B quote Shopify, call for price, Deque Lab';
+$CONFIG['canonical_url']    = $CONFIG['site_url'] . '/dq-b2b-request-quote-rfq';
 $CONFIG['og_image']         = $CONFIG['site_url'] . '/assets/dq_request_quote.png';
 
 // Preselect this app in the shared contact form.
-$contact_default_interest = 'DQ: Request a Quote / Hide Price (waitlist)';
+$contact_default_interest = 'DQ: B2B Request a Quote (RFQ) (waitlist)';
 $contact_eyebrow = 'Section 06 · Contact';
 $contact_heading = 'Talk to us about<br>Request a Quote.';
 $contact_lede    = 'On Shopify Plus, running B2B, or need a custom quote flow? Tell us what you sell and we\'ll help you set it up — usually within a business day.';
@@ -25,7 +25,7 @@ require __DIR__ . '/inc/contact-process.php';
 
 // ---- Content data (drives both markup and JSON-LD) ----
 $FAQS = [
-    ['q' => 'What does DQ: Request a Quote & Hide Price do?',
+    ['q' => 'What does DQ: B2B Request a Quote (RFQ) do?',
      'a' => 'It lets you hide product prices and the add-to-cart button on any Shopify product, and replace them with a "Request a Quote" button. Customers submit a quote request with custom fields, and you approve, edit, or decline each request from your Shopify admin.'],
     ['q' => 'Can I hide prices for specific products or customers?',
      'a' => 'Yes. Target by product, collection, tag, or customer group — for example, hide prices only for wholesale customers, or only until a shopper logs in. Everyone else sees your normal storefront.'],
@@ -69,7 +69,7 @@ $STEPS = [
   <meta property="og:description" content="<?= e($CONFIG['page_description']) ?>" />
   <meta property="og:url" content="<?= e($CONFIG['canonical_url']) ?>" />
   <meta property="og:image" content="<?= e($CONFIG['og_image']) ?>" />
-  <meta property="og:image:alt" content="DQ: Request a Quote & Hide Price for Shopify" />
+  <meta property="og:image:alt" content="DQ: B2B Request a Quote (RFQ) for Shopify" />
 
   <!-- ============== Twitter / X ============== -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -99,7 +99,7 @@ $STEPS = [
       {
         "@type": "SoftwareApplication",
         "@id": "<?= e($CONFIG['canonical_url']) ?>#app",
-        "name": "DQ: Request a Quote & Hide Price",
+        "name": "DQ: B2B Request a Quote (RFQ)",
         "operatingSystem": "Shopify",
         "applicationCategory": "BusinessApplication",
         "url": "<?= e($CONFIG['canonical_url']) ?>",
@@ -133,7 +133,7 @@ $STEPS = [
         "itemListElement": [
           {"@type":"ListItem","position":1,"name":"Home","item":"<?= e($CONFIG['site_url']) ?>/"},
           {"@type":"ListItem","position":2,"name":"Shopify Apps","item":"<?= e($CONFIG['site_url']) ?>/#apps"},
-          {"@type":"ListItem","position":3,"name":"Request a Quote & Hide Price","item":"<?= e($CONFIG['canonical_url']) ?>"}
+          {"@type":"ListItem","position":3,"name":"DQ: B2B Request a Quote (RFQ)","item":"<?= e($CONFIG['canonical_url']) ?>"}
         ]
       }
     ]
@@ -436,6 +436,7 @@ $STEPS = [
     }
   </style>
   <?php require __DIR__ . '/inc/crisp.php'; ?>
+  <?php require __DIR__ . '/inc/analytics.php'; ?>
 </head>
 <body id="top">
 
@@ -478,7 +479,7 @@ $STEPS = [
           Win more <span class="accent">quotes</span>.
         </h1>
         <p class="lede">
-          Turn browsing into conversations. DQLab <strong>Request a Quote &amp; Hide Price</strong> hides prices and
+          Turn browsing into conversations. DQLab <strong>B2B Request a Quote (RFQ)</strong> hides prices and
           the buy button, captures quote requests with your own fields, and lets you approve every offer from the Shopify admin.
         </p>
         <div class="cta">
@@ -796,7 +797,7 @@ $STEPS = [
           <span class="brand-mark"><img src="<?= e($CONFIG['logo_full']) ?>" alt="<?= e($CONFIG['site_name']) ?>" width="221" height="40" /></span>
         </a>
         <p style="color:#8a8d85; font-size:14px; margin-top:18px; max-width:34ch;">
-          Request a Quote &amp; Hide Price — a Shopify app by Deque Lab for quote-based and B2B selling.
+          B2B Request a Quote (RFQ) — a Shopify app by Deque Lab for quote-based and B2B selling.
         </p>
         <div class="footer-socials">
           <a href="<?= e($CONFIG['linkedin']) ?>" target="_blank" rel="noopener noreferrer" aria-label="Deque Lab on LinkedIn">
