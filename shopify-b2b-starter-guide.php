@@ -1426,7 +1426,7 @@ $share_title = rawurlencode($POST['title']);
        reads as a product being shown rather than the page shouting: at full
        bleed the same content looked like an interstitial ad and got skipped.
        Everything sizes from --apr-logo, so one number moves the block. */
-     {
+    .post-body .app-promo {
       --apr-logo: 56px;
       display: flex; align-items: flex-start; gap: 18px;
       max-width: 560px;
@@ -1480,7 +1480,7 @@ $share_title = rawurlencode($POST['title']);
       font-family: var(--f-mono); font-size: 12.5px; color: var(--muted);
     }
     @media (max-width: 560px) {
-       { flex-direction: column; gap: 14px; }
+      .post-body .app-promo { flex-direction: column; gap: 14px; }
     }
 
     /* Comparison table in "What is a B2B store" — two columns that are read
