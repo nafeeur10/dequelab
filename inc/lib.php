@@ -131,7 +131,7 @@ $INTEREST_SHOPIFY = [
     'DQ: Appointment Booking',
     'DQ: CRM for B2B (waitlist)',
     'DQ: Wholesale Pricing (waitlist)',
-    'DQ: B2B Request a Quote (RFQ) (waitlist)',
+    'DQ: B2B Request a Quote (RFQ)',
     'DQ: Live Product Options (waitlist)',
     'DQ: Subscription Plus (waitlist)',
     'DQ: Checkout Extensions Plus (waitlist)',

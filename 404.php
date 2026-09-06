@@ -23,9 +23,12 @@
       letter-spacing: -0.04em; line-height: 1; color: var(--ink);
     }
     .err-code .x { color: var(--accent); }
+    /* The page's <h1>. line-height is pinned because the global h1 at
+       styles.css:189 sets 0.98 for the display scale, which this is not. */
     .err-msg {
       margin: 20px 0 8px;
       font-size: clamp(22px, 3vw, 32px); font-weight: 500; letter-spacing: -0.02em;
+      line-height: 1.5;
     }
     .err-sub { color: var(--muted); max-width: 44ch; margin: 0 auto 28px; }
   </style>
@@ -37,7 +40,7 @@
     <div class="err-wrap">
       <div>
         <div class="err-code">4<span class="x">0</span>4</div>
-        <div class="err-msg">Page not found</div>
+        <h1 class="err-msg">Page not found</h1>
         <p class="err-sub">The link you followed may be broken, or the page may have moved. No worries — head back to the lab.</p>
         <a href="/" class="btn btn-accent btn-arrow">Back to Deque Lab</a>
       </div>

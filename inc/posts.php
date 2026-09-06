@@ -32,7 +32,7 @@ const DQ_CATEGORIES = [
  * Banner palettes. A post picks one with cover.tone; the grid on /blogs then
  * reads as a run of distinct colours instead of three identical grey cards.
  */
-const DQ_COVER_TONES = ['ink', 'moss', 'plum', 'clay'];
+const DQ_COVER_TONES = ['ink', 'moss', 'plum', 'clay', 'slate'];
 
 /**
  * Every post, newest first.
@@ -48,6 +48,28 @@ const DQ_COVER_TONES = ['ink', 'moss', 'plum', 'clay'];
  *          post with no tone falls back to the light paper banner.
  */
 const DQ_POSTS = [
+    [
+        'slug'      => 'request-a-quote-shopify',
+        'status'    => 'live',
+        'category'  => 'shopify-b2b',
+        'title'     => 'Shopify Request a Quote (RFQ): The Ultimate Guide for B2B Stores',
+        'h1'        => 'Shopify Request a Quote (RFQ): The Ultimate Guide for B2B Stores',
+        'excerpt'   => 'Add a Request a Quote button to Shopify. What an RFQ is, how the process works, the three ways to build it, and how to hide prices without losing SEO.',
+        'card_text' => 'What an RFQ is, the four steps a quote takes on Shopify, the three ways to build one — custom Liquid, native B2B, or an app — how to hide prices safely, and how to turn an accepted quote into a draft order.',
+        'published' => '2026-08-31',
+        'modified'  => '2026-09-06',
+        'read_time' => 20,
+        'words'     => 4526,
+        'tags'      => ['Request a Quote', 'RFQ', 'Shopify B2B', 'Hide Price', 'Shopify Apps'],
+        'author'    => ['name' => 'Nafeeur Rahman', 'role' => 'Founder, Deque Lab'],
+        'cover'     => [
+            'variant' => 'quote',
+            'tone'    => 'slate',
+            'eyebrow' => 'Guide · Shopify RFQ',
+            'title'   => 'Shopify <b>Request a Quote</b> (RFQ)',
+            'foot'    => 'Hide price → quote → order.',
+        ],
+    ],
     [
         'slug'      => 'shopify-b2b-starter-guide',
         'status'    => 'live',
@@ -200,6 +222,17 @@ function dq_post_cover(array $p): string {
             $motif .= '<span class="cv-row' . $hi . '"><i>' . e($qty) . '</i><b>' . e($price) . '</b></span>';
         }
         $motif .= '</div>';
+    } elseif ($variant === 'quote') {
+        // The whole article in one picture: the price is gone, and the button
+        // that replaced it asks for a conversation instead of a card.
+        $motif = '<div class="cv-card cv-quote">'
+               . '<span class="cv-line w1"></span>'
+               . '<span class="cv-lock">'
+               . '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'
+               . '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>'
+               . 'Price hidden</span>'
+               . '<span class="cv-btn">Request a quote</span>'
+               . '</div>';
     } elseif ($variant === 'form') {
         $motif = '<div class="cv-card cv-form">'
                . '<span class="cv-field"></span><span class="cv-field short"></span>'

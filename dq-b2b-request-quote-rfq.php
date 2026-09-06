@@ -16,7 +16,7 @@ $CONFIG['canonical_url']    = $CONFIG['site_url'] . '/dq-b2b-request-quote-rfq';
 $CONFIG['og_image']         = $CONFIG['site_url'] . '/assets/dq_request_quote.png';
 
 // Preselect this app in the shared contact form.
-$contact_default_interest = 'DQ: B2B Request a Quote (RFQ) (waitlist)';
+$contact_default_interest = 'DQ: B2B Request a Quote (RFQ)';
 $contact_eyebrow = 'Section 06 · Contact';
 $contact_heading = 'Talk to us about<br>Request a Quote.';
 $contact_lede    = 'On Shopify Plus, running B2B, or need a custom quote flow? Tell us what you sell and we\'ll help you set it up — usually within a business day.';
@@ -354,7 +354,10 @@ $STEPS = [
     @media (max-width: 860px) { .split .r { border-left: 0; border-top: 1px solid var(--line); } }
     .frow { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; padding: 22px 20px; border-bottom: 1px solid var(--line); }
     .frow:last-child { border-bottom: 0; }
-    .frow h4 { font-size: 16px; font-weight: 500; }
+    /* h3, not the h4 this was: these sit directly under #split-title's <h2>.
+       line-height and letter-spacing are pinned because the global h3 at
+       styles.css:191 carries a display scale h4 never applied here. */
+    .frow h3 { font-size: 16px; font-weight: 500; line-height: 1.5; letter-spacing: -0.02em; }
     .frow p { color: var(--muted); font-size: 13px; margin-top: 4px; }
     .frow .tile { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; }
     .frow .tile img { width: 24px; height: 24px; }
@@ -639,7 +642,7 @@ $STEPS = [
       <div class="r">
         <div class="frow">
           <div>
-            <h4>Targeting rules</h4>
+            <h3>Targeting rules</h3>
             <p>Hide by product, collection, tag, or customer group.</p>
           </div>
           <div class="tile a" aria-hidden="true">
@@ -648,7 +651,7 @@ $STEPS = [
         </div>
         <div class="frow">
           <div>
-            <h4>Login to view price</h4>
+            <h3>Login to view price</h3>
             <p>Optionally require an account before prices appear.</p>
           </div>
           <div class="tile b" aria-hidden="true">
@@ -657,7 +660,7 @@ $STEPS = [
         </div>
         <div class="frow">
           <div>
-            <h4>Admin approval</h4>
+            <h3>Admin approval</h3>
             <p>Review, price, and approve every request in one place.</p>
           </div>
           <div class="tile c" aria-hidden="true">
@@ -812,7 +815,7 @@ $STEPS = [
         </div>
       </div>
       <nav class="footer-col" aria-label="Product">
-        <h5>Product</h5>
+        <h2>Product</h2>
         <ul>
           <li><a href="#features">Features</a></li>
           <li><a href="#pricing">Pricing</a></li>
@@ -820,7 +823,7 @@ $STEPS = [
         </ul>
       </nav>
       <nav class="footer-col" aria-label="Company">
-        <h5>Company</h5>
+        <h2>Company</h2>
         <ul>
           <li><a href="/">Deque Lab</a></li>
           <li><a href="/#apps">All Shopify apps</a></li>
@@ -828,7 +831,7 @@ $STEPS = [
         </ul>
       </nav>
       <nav class="footer-col" aria-label="Community">
-        <h5>Community</h5>
+        <h2>Community</h2>
         <ul>
           <li><button type="button" class="chat-open" style="background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer;font-size:14px;">Help &amp; chat</button></li>
           <li><a href="<?= e($CONFIG['linkedin']) ?>" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>

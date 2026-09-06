@@ -219,9 +219,14 @@ footer.site-footer {
 @media (max-width: 820px) {
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
-.footer-col h5 {
+/* An <h2>, not the <h5> this used to be: the footer sits under the page's
+   <h1> with nothing between, so h5 skipped three levels. font-weight and
+   line-height are pinned because h2 picks up the display scale at line 188
+   and h5 did not — without them the labels would render lighter and tighter. */
+.footer-col h2 {
   font-family: var(--f-mono);
-  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  font-size: 11px; font-weight: 700; line-height: 1.5;
+  letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--muted); margin: 0 0 20px;
 }
 .footer-col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
@@ -632,6 +637,15 @@ article.post .rd { color: var(--muted-2); }
   background: var(--accent); color: var(--accent-ink);
   font-size: 3.6cqw; text-align: center; font-weight: 600;
 }
+/* Quote motif: a product card with the price taken out of it. The lock row is
+   where the number used to be, so the swap the article describes is the thing
+   the banner shows. */
+.cv-lock {
+  display: flex; align-items: center; gap: 1.6cqw;
+  font-size: 3.6cqw; color: var(--muted);
+}
+.cv-lock svg { width: 4.2cqw; height: 4.2cqw; flex: none; color: var(--muted-2); }
+
 .cv-line { height: 3cqw; border-radius: 1.2cqw; background: var(--paper-2); }
 .cv-line.w1 { width: 90%; } .cv-line.w2 { width: 70%; } .cv-line.w3 { width: 80%; }
 .cv-total {
@@ -721,6 +735,7 @@ article.post .rd { color: var(--muted-2); }
 .tone-moss { --tone-bg: #3c6b2c; --tone-hi: #d6ecc2; }
 .tone-plum { --tone-bg: #6a4a86; --tone-hi: #e3cdf5; }
 .tone-clay { --tone-bg: #a4552b; --tone-hi: #ffd7b3; }
+.tone-slate{ --tone-bg: #1e3b4d; --tone-hi: #a9d8ec; }
 
 /* The accent haze reads as dirt on a dark ground; a soft white bloom is the
    same device, inverted. */

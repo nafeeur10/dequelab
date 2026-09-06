@@ -295,7 +295,7 @@ $schema = [
         </p>
       </div>
       <nav class="footer-col" aria-label="SaaS products">
-        <h5>SaaS</h5>
+        <h2>SaaS</h2>
         <ul>
           <li><a href="/#saas-alliances">Alliances PRO</a></li>
           <li><a href="/#saas-planner">Muslim Daily Planner</a></li>
@@ -303,7 +303,7 @@ $schema = [
         </ul>
       </nav>
       <nav class="footer-col" aria-label="Shopify apps">
-        <h5>Shopify Apps</h5>
+        <h2>Shopify Apps</h2>
         <ul>
           <li><a href="/dq-b2b-request-quote-rfq">B2B Request a Quote (RFQ)</a></li>
           <li><a href="/#app-appointment">Appointment Booking</a></li>
@@ -311,7 +311,7 @@ $schema = [
         </ul>
       </nav>
       <nav class="footer-col" aria-label="Connect with us">
-        <h5>Connect</h5>
+        <h2>Connect</h2>
         <ul>
           <li><a href="mailto:<?= e($CONFIG['contact_email']) ?>"><?= e($CONFIG['contact_email']) ?></a></li>
           <li><a href="<?= e($CONFIG['linkedin']) ?>" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>

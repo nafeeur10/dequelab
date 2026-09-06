@@ -404,7 +404,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
     .mock-crm .row { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; }
     .mock-crm .lanes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; flex: 1; }
     .mock-crm .lane { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 8px; display: flex; flex-direction: column; }
-    .mock-crm .lane h6 { font-family: var(--f-mono); font-size: 9px; color: var(--muted); letter-spacing: 0.1em; margin: 0 0 6px; font-weight: 500; }
+    .mock-crm .lane .k { font-family: var(--f-mono); font-size: 9px; color: var(--muted); letter-spacing: 0.1em; margin: 0 0 6px; font-weight: 500; }
     .mock-crm .deal { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font-size: 11px; color: var(--ink); margin-bottom: 4px; }
     .mock-crm .deal:last-child { margin-bottom: 0; }
     .mock-crm .deal.focus { background: #fff; border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in oklch, var(--accent) 14%, transparent); }
@@ -436,7 +436,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
       display: flex; flex-direction: column;
     }
     .mock-book .h { display: flex; justify-content: space-between; align-items: end; margin-bottom: 12px; }
-    .mock-book .h h6 { font-size: 14px; font-weight: 500; margin: 0; }
+    .mock-book .h .t { font-size: 14px; font-weight: 500; margin: 0; }
     .mock-book .h .sub { font-family: var(--f-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.06em; }
     .mock-book .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
     .mock-book .cal .d { aspect-ratio: 1; display: grid; place-items: center; font-size: 11px; border-radius: 5px; color: var(--ink); }
@@ -613,19 +613,19 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
             <div class="row"><span>PIPELINE · Q2</span><span style="color: var(--accent)">$184k</span></div>
             <div class="lanes">
               <div class="lane">
-                <h6>NEW · 12</h6>
+                <div class="k">NEW · 12</div>
                 <div class="deal">Alderwood<div class="v">$8.2k</div></div>
                 <div class="deal">Fieldcraft<div class="v">$4.0k</div></div>
                 <div class="deal">Meridian<div class="v">$12k</div></div>
               </div>
               <div class="lane">
-                <h6>DISCOVERY · 8</h6>
+                <div class="k">DISCOVERY · 8</div>
                 <div class="deal focus">Northwind<div class="v">$18k</div></div>
                 <div class="deal">Pebble<div class="v">$24k</div></div>
                 <div class="deal">Cedar Co<div class="v">$16k</div></div>
               </div>
               <div class="lane">
-                <h6>WON · 4</h6>
+                <div class="k">WON · 4</div>
                 <div class="deal" style="opacity:.7">Patagonia<div class="v">$32k</div></div>
                 <div class="deal" style="opacity:.7">Pine Co<div class="v">$16k</div></div>
                 <div class="deal" style="opacity:.7">Lantern<div class="v">$22k</div></div>
@@ -840,7 +840,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
           </div>
           <div class="mock-book" aria-hidden="true">
             <div class="h">
-              <h6>Book a session</h6>
+              <div class="t">Book a session</div>
               <span class="sub">30 MIN · FREE</span>
             </div>
             <div class="cal">
@@ -1011,7 +1011,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
         </p>
       </div>
       <nav class="footer-col" aria-label="SaaS products">
-        <h5>SaaS</h5>
+        <h2>SaaS</h2>
         <ul>
           <li><a href="#saas-alliances">Alliances PRO</a></li>
           <li><a href="#saas-planner">Muslim Daily Planner</a></li>
@@ -1019,7 +1019,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
         </ul>
       </nav>
       <nav class="footer-col" aria-label="Shopify apps">
-        <h5>Shopify Apps</h5>
+        <h2>Shopify Apps</h2>
         <ul>
           <li><a href="#app-appointment">Appointment Booking</a></li>
           <li><a href="#app-preorder">PreOrder (acquired)</a></li>
@@ -1028,7 +1028,7 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
         </ul>
       </nav>
       <nav class="footer-col" aria-label="Connect with us">
-        <h5>Connect</h5>
+        <h2>Connect</h2>
         <ul>
           <li><a href="mailto:<?= e($CONFIG['contact_email']) ?>"><?= e($CONFIG['contact_email']) ?></a></li>
           <li><a href="<?= e($CONFIG['linkedin']) ?>" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
