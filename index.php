@@ -268,12 +268,18 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
       transition: transform 200ms ease;
     }
     .tech-item:hover img { transform: scale(1.08); }
+    .clients-wrap .tech-marquee { padding-top: 24px; }
+    .client-item { display: inline-flex; align-items: center; flex-shrink: 0; height: 68px; }
+    .client-item img { width: auto; height: var(--h); display: block; transition: transform 200ms ease; }
+    .client-item:hover img { transform: scale(1.06); }
     @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     @media (max-width: 640px) {
       .tech-marquee { padding: 22px 0; }
       .tech-item { height: 52px; width: 52px; }
       .tech-item img { max-width: 72px; max-height: 72px; }
       .tech-track { gap: 52px; }
+      .client-item { height: 52px; }
+      .client-item img { height: calc(var(--h) * 0.8); }
     }
 
     /* ============ Section header ============ */
@@ -970,6 +976,36 @@ $CONFIG['canonical_url'] = $CONFIG['site_url'] . '/';
           <a href="#contact" class="cta">Get notified</a>
         </div>
       </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CLIENTS MARQUEE ============== -->
+<section class="tech-marquee-wrap clients-wrap" aria-labelledby="clients-title">
+  <div class="wrap">
+    <div class="eyebrow" id="clients-title">Brands we work with</div>
+    <div class="tech-marquee">
+      <?php
+        // Wordmarks differ in built-in padding, so each gets its own display height.
+        $clients = [
+          ['name' => 'Farer',     'src' => '/assets/farer.svg',      'w' => 160, 'h' => 22,  'css' => 26],
+          ['name' => 'Crude',     'src' => '/assets/crude.png',      'w' => 400, 'h' => 200, 'css' => 84],
+          ['name' => 'HerbloomZ', 'src' => '/assets/herbloomz.avif', 'w' => 500, 'h' => 82,  'css' => 32],
+          ['name' => 'Lace Lab',  'src' => '/assets/lacelab.avif',   'w' => 300, 'h' => 66,  'css' => 30],
+        ];
+        $render_client = function(array $c) {
+          echo '<div class="client-item" title="' . e($c['name']) . '">'
+             .   '<img src="' . e($c['src']) . '" alt="' . e($c['name']) . '" width="' . $c['w'] . '" height="' . $c['h'] . '"'
+             .   ' style="--h:' . $c['css'] . 'px" loading="lazy" decoding="async" />'
+             . '</div>';
+        };
+      ?>
+      <div class="tech-track" aria-hidden="true">
+        <?php for ($i = 0; $i < 4; $i++) foreach ($clients as $c) $render_client($c); ?>
+      </div>
+      <span class="sr-only">
+        Clients: <?= e(implode(', ', array_column($clients, 'name'))) ?>.
+      </span>
     </div>
   </div>
 </section>

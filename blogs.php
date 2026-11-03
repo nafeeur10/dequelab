@@ -298,15 +298,14 @@ $schema = [
         <h2>SaaS</h2>
         <ul>
           <li><a href="/#saas-alliances">Alliances PRO</a></li>
-          <li><a href="/#saas-planner">Muslim Daily Planner</a></li>
           <li><a href="/#saas">All SaaS products</a></li>
         </ul>
       </nav>
       <nav class="footer-col" aria-label="Shopify apps">
         <h2>Shopify Apps</h2>
         <ul>
-          <li><a href="/dq-b2b-request-quote-rfq">B2B Request a Quote (RFQ)</a></li>
-          <li><a href="/#app-appointment">Appointment Booking</a></li>
+          <li><a href="/dq-b2b-request-quote-rfq">DQ: B2B Request a Quote (RFQ)</a></li>
+          <li><a href="/#app-preorder">PreOrder (acquired)</a></li>
           <li><a href="/#apps">All Shopify apps</a></li>
         </ul>
       </nav>

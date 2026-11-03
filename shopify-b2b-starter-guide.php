@@ -46,8 +46,8 @@ $CONFIG['canonical_url']    = $CONFIG['site_url'] . '/' . $POST['slug'];
 $CONFIG['og_image']         = $CONFIG['site_url'] . '/assets/og-shopify-b2b-starter-guide.jpg';
 $CONFIG['og_image_alt']     = 'Shopify B2B Starter Guide — a storefront under a green awning showing product cards, company accounts, volume discounts and sales charts, with shipping boxes stacked beside it.';
 
-// Preselect the closest waitlist in the shared contact form.
-$contact_default_interest = 'DQ: Wholesale Pricing (waitlist)';
+// Preselect the closest live product in the shared contact form.
+$contact_default_interest = 'DQ: B2B Request a Quote (RFQ)';
 $contact_eyebrow = 'Building something like this?';
 $contact_heading = 'Setting up wholesale<br>on Shopify?';
 $contact_lede    = 'Tell us what you sell and which plan you are on. We will tell you honestly whether native B2B covers it, or which app is worth the money — usually within a business day.';
@@ -1122,10 +1122,14 @@ $share_title = rawurlencode($POST['title']);
         <p>Setting up a Shopify B2B store in 2026 is more streamlined than ever. 
           By leveraging native company profiles and catalogs, 
           choosing a utility-focused theme, and strategically using apps like 
-          DQ Request a Quote to handle negotiations, 
+          DQ: B2B Request a Quote (RFQ) to handle negotiations, 
           you can build a highly efficient enterprise portal. 
           Focus on making the buyer's journey as frictionless as possible, 
           and back it up with targeted, relationship-driven marketing.</p>
+        <p>For merchants trying to build their pipeline, a structured
+          <a href="https://optinify.ai/shopify-lead-generation" target="_blank" rel="noopener">Shopify lead generation</a>
+          strategy can help turn store visitors into prospects through targeted signup experiences,
+          offers, forms, quizzes, and other lead-capture methods.</p>
       </section>
 
       <section>
@@ -1217,15 +1221,14 @@ $share_title = rawurlencode($POST['title']);
         <h2>SaaS</h2>
         <ul>
           <li><a href="/#saas-alliances">Alliances PRO</a></li>
-          <li><a href="/#saas-planner">Muslim Daily Planner</a></li>
           <li><a href="/#saas">All SaaS products</a></li>
         </ul>
       </nav>
       <nav class="footer-col" aria-label="Shopify apps">
         <h2>Shopify Apps</h2>
         <ul>
-          <li><a href="/dq-b2b-request-quote-rfq">B2B Request a Quote (RFQ)</a></li>
-          <li><a href="/#app-appointment">Appointment Booking</a></li>
+          <li><a href="/dq-b2b-request-quote-rfq">DQ: B2B Request a Quote (RFQ)</a></li>
+          <li><a href="/#app-preorder">PreOrder (acquired)</a></li>
           <li><a href="/#apps">All Shopify apps</a></li>
         </ul>
       </nav>

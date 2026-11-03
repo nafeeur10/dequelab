@@ -7,9 +7,9 @@
  *   $contact_lede, $contact_default_interest
  * ============================================================ */
 
-$contact_eyebrow ??= 'Stay in the loop';
-$contact_heading ??= 'Want early access<br>or a question?';
-$contact_lede    ??= 'Drop us a line. We reply to every message — usually within a business day. Tell us which product, and we\'ll add you to that waitlist or get on a call.';
+$contact_eyebrow ??= 'Get in touch';
+$contact_heading ??= 'Have a question<br>or a project?';
+$contact_lede    ??= 'Drop us a line. We reply to every message — usually within a business day. Tell us which product you\'re interested in, and we\'ll help or get on a call.';
 $contact_default_interest ??= '';
 $contact_show_socials ??= true;   // set false to move social icons elsewhere (e.g. footer)
 $contact_section_style ??= 'padding-top:0';    // e.g. 'padding-top:0' to tighten the gap above

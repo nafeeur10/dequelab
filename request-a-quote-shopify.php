@@ -345,10 +345,10 @@ $FAQS = [
      'a' => 'Yes. The free Trade theme hides prices from visitors who are not logged in. On any other theme you can wrap the price and the Add to Cart button in a customer check in Liquid. Neither one puts a Request a Quote button in the empty space, so the visitor just sees a gap.'],
 
     ['q' => 'What is the best Request a Quote app for Shopify?',
-     'a' => 'It depends on what you need. If you only want prices hidden and requests collected, almost any app from $7 to $17 a month will do it. If you negotiate — counter-offers, revised quantities, an approval that becomes an order — you need an app built around a quote thread. QS Request a Quote is the most complete, SB has the biggest free plan, and CWS is the cheapest that still makes draft orders.'],
+     'a' => 'It depends on what you need. If you only want to hide prices and collect quote requests, many apps can help. If you also need to negotiate prices, change quantities, and turn approved quotes into orders, choose an app that keeps the whole process in one place. DQ: B2B Request a Quote (RFQ) is an affordable option for managing these steps.'],
 
     ['q' => 'Is there a free Shopify request a quote app?',
-     'a' => 'Yes, several. The free plans are limited by how many quotes you get, not by features. SB gives you 50 quote requests a month, QS gives you 10, and Samita and Storeify both have a free tier around the basic form. A free plan is enough to prove buyers will use the button. It is rarely enough once they do.'],
+     'a' => 'Yes, several apps offer free plans, but limits vary by app. DQ: B2B Request a Quote (RFQ) lets you collect up to 10 quote requests per month on its free plan. This can be enough for stores that are just getting started.'],
 
     ['q' => 'Can a customer ask for a quote on a whole cart?',
      'a' => 'Yes, and you should let them. Most apps add a per-product quote button and a "request a quote for this cart" action. B2B buyers negotiate the order total, not one product. Making them send eleven separate requests for an eleven-line order is the fastest way to be ignored.'],
@@ -1835,7 +1835,7 @@ $share_title = rawurlencode($POST['title']);
         <?= h2($TOC, 'cta') ?>
 
         <p>
-          With <a href="/dq-b2b-request-quote-rfq">DQ: B2B Request a Quote (RFQ)</a>, you can hide prices, add a quote form, 
+          With <a href="https://apps.shopify.com/dlab-request-quote-hide-price">DQ: B2B Request a Quote (RFQ)</a>, you can hide prices, add a quote form, 
           and let buyers suggest a price. 
           Manage requests in one place and turn accepted quotes into Shopify draft orders in one click. 
           No coding needed.
@@ -1846,10 +1846,10 @@ $share_title = rawurlencode($POST['title']);
                alt="DQ: B2B Request a Quote (RFQ) app icon" loading="lazy" decoding="async">
           <div class="rel-body">
             <span class="rel-k">Shopify app</span>
-            <a class="rel-title" href="/dq-b2b-request-quote-rfq">DQ: B2B Request a Quote (RFQ)</a>
+            <a class="rel-title" href="https://apps.shopify.com/dlab-request-quote-hide-price">DQ: B2B Request a Quote (RFQ)</a>
             <p class="rel-desc">Add a Request a Quote button and hide prices on your Shopify store.</p>
           </div>
-          <a class="rel-btn" href="/dq-b2b-request-quote-rfq">
+          <a class="rel-btn" href="https://apps.shopify.com/dlab-request-quote-hide-price">
             See the app
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1946,15 +1946,14 @@ $share_title = rawurlencode($POST['title']);
         <h2>SaaS</h2>
         <ul>
           <li><a href="/#saas-alliances">Alliances PRO</a></li>
-          <li><a href="/#saas-planner">Muslim Daily Planner</a></li>
           <li><a href="/#saas">All SaaS products</a></li>
         </ul>
       </nav>
       <nav class="footer-col" aria-label="Shopify apps">
         <h2>Shopify Apps</h2>
         <ul>
-          <li><a href="/dq-b2b-request-quote-rfq">B2B Request a Quote (RFQ)</a></li>
-          <li><a href="/#app-appointment">Appointment Booking</a></li>
+          <li><a href="/dq-b2b-request-quote-rfq">DQ: B2B Request a Quote (RFQ)</a></li>
+          <li><a href="/#app-preorder">PreOrder (acquired)</a></li>
           <li><a href="/#apps">All Shopify apps</a></li>
         </ul>
       </nav>

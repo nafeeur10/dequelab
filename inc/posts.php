@@ -132,6 +132,28 @@ const DQ_POSTS = [
             'foot'    => 'Quote → invoice → paid.',
         ],
     ],
+    [
+        'slug'      => 'request-a-quote-shopify-without-app',
+        'status'    => 'live',
+        'category'  => 'shopify-b2b',
+        'title'     => 'Shopify Request a Quote Without an App: Setup and Limitations',
+        'h1'        => 'Shopify Request a Quote Without an App: Setup and Limitations',
+        'excerpt'   => 'Add a Request a Quote button to Shopify without an app. Get Liquid code, setup steps, limitations, and guidance on when a quote app makes sense.',
+        'card_text' => 'Build a product quote form with Shopify Liquid, keep product details in each request, and understand the manual work behind quotes, follow-ups, and draft orders.',
+        'published' => '2026-09-10',
+        'modified'  => '2026-09-10',
+        'read_time' => 15,
+        'words'     => 2547,
+        'tags'      => ['Request a Quote', 'RFQ', 'Shopify B2B', 'Hide Price', 'Shopify Apps'],
+        'author'    => ['name' => 'Nafeeur Rahman', 'role' => 'Founder, Deque Lab'],
+        'cover'     => [
+            'variant' => 'form',
+            'tone'    => 'moss',
+            'eyebrow' => 'Guide · No-app quoting',
+            'title'   => 'Request a Quote <b>without an app</b>',
+            'foot'    => 'Form → email → manual draft order.',
+        ],
+    ]
 ];
 
 /**

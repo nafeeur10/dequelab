@@ -11,7 +11,7 @@ require __DIR__ . '/inc/posts.php';
 // Page-level SEO/AEO config (overrides base).
 $CONFIG['page_title']       = 'DQ: B2B Request a Quote (RFQ) — Shopify App';
 $CONFIG['page_description'] = 'DQ: B2B Request a Quote (RFQ) lets Shopify merchants hide prices and the add-to-cart button, collect quote requests with custom fields, and approve offers from the admin. Free plan available.';
-$CONFIG['page_keywords']    = 'DQ B2B Request a Quote, RFQ Shopify app, request a quote Shopify, hide price Shopify, hide add to cart, B2B quote Shopify, call for price, Deque Lab';
+$CONFIG['page_keywords']    = 'DQ: B2B Request a Quote (RFQ), RFQ Shopify app, request a quote Shopify, hide price Shopify, hide add to cart, B2B quote Shopify, call for price, Deque Lab';
 $CONFIG['canonical_url']    = $CONFIG['site_url'] . '/dq-b2b-request-quote-rfq';
 $CONFIG['og_image']         = $CONFIG['site_url'] . '/assets/dq_request_quote.png';
 
@@ -459,7 +459,7 @@ $STEPS = [
         <button type="button" class="chat-open" style="background:none;border:0;padding:8px 12px;font-size:14px;border-radius:8px;color:inherit;font-family:inherit;">Need help?</button>
         <a href="#contact">Contact Sales</a>
       </div>
-      <a href="#contact" class="btn btn-accent btn-sm nav-cta">Install →</a>
+      <a href="https://apps.shopify.com/dlab-request-quote-hide-price" class="btn btn-accent btn-sm nav-cta">Install →</a>
     </div>
   </nav>
 </header>
@@ -482,7 +482,7 @@ $STEPS = [
           Win more <span class="accent">quotes</span>.
         </h1>
         <p class="lede">
-          Turn browsing into conversations. DQLab <strong>B2B Request a Quote (RFQ)</strong> hides prices and
+          Turn browsing into conversations. <strong>DQ: B2B Request a Quote (RFQ)</strong> hides prices and
           the buy button, captures quote requests with your own fields, and lets you approve every offer from the Shopify admin.
         </p>
         <div class="cta">
@@ -724,7 +724,7 @@ $STEPS = [
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Widget action: Page &amp; Popup</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Quote button on product page</li>
         </ul>
-        <a href="#contact" class="btn btn-outline">Get started free</a>
+        <a href="https://apps.shopify.com/dlab-request-quote-hide-price" class="btn btn-outline">Get started free</a>
       </article>
 
       <article class="plan pro">
@@ -739,7 +739,7 @@ $STEPS = [
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Quote button on products &amp; collections</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Priority email &amp; WhatsApp support</li>
         </ul>
-        <a href="#contact" class="btn btn-accent btn-arrow">Start 14-day trial</a>
+        <a href="https://apps.shopify.com/dlab-request-quote-hide-price" class="btn btn-accent btn-arrow">Start 14-day trial</a>
       </article>
     </div>
     <p class="pricing-note eyebrow" style="justify-content:center; display:flex;">No credit card required to start</p>
@@ -800,7 +800,7 @@ $STEPS = [
           <span class="brand-mark"><img src="<?= e($CONFIG['logo_full']) ?>" alt="<?= e($CONFIG['site_name']) ?>" width="221" height="40" /></span>
         </a>
         <p style="color:#8a8d85; font-size:14px; margin-top:18px; max-width:34ch;">
-          B2B Request a Quote (RFQ) — a Shopify app by Deque Lab for quote-based and B2B selling.
+          DQ: B2B Request a Quote (RFQ) — a Shopify app by Deque Lab for quote-based and B2B selling.
         </p>
         <div class="footer-socials">
           <a href="<?= e($CONFIG['linkedin']) ?>" target="_blank" rel="noopener noreferrer" aria-label="Deque Lab on LinkedIn">
@@ -836,6 +836,8 @@ $STEPS = [
           <li><button type="button" class="chat-open" style="background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer;font-size:14px;">Help &amp; chat</button></li>
           <li><a href="<?= e($CONFIG['linkedin']) ?>" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
           <li><a href="<?= e($CONFIG['twitter']) ?>" target="_blank" rel="noopener noreferrer">X / Twitter</a></li>
+          <!-- Partner backlink. TODO: swap in the exact shopexperts.com app page URL once ShopExperts publishes it. -->
+          <li><a href="https://shopexperts.com/" target="_blank" rel="noopener">Featured on ShopExperts</a></li>
         </ul>
       </nav>
     </div>

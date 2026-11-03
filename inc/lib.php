@@ -50,8 +50,8 @@ $path = strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
 $CONFIG = [
     'site_name'        => 'Deque Lab',
     'site_tagline'     => 'SaaS & Shopify products',
-    'site_description' => 'Deque Lab is a small product lab building SaaS products (Alliances PRO, Muslim Daily Planner) and Shopify apps. Live products, coming soon, and one acquired app.',
-    'site_keywords'    => 'Deque Lab, Alliances PRO, Muslim Daily Planner, Shopify apps, SaaS products, Mini CRM, Appointment Booking Shopify, PreOrder Shopify, Education CRM, Real Estate CRM',
+    'site_description' => 'Deque Lab is a small product lab building SaaS and Shopify apps: Alliances PRO, a Mini CRM for follow-ups, and DQ: B2B Request a Quote (RFQ). Our first Shopify app was acquired in 2024.',
+    'site_keywords'    => 'Deque Lab, Alliances PRO, DQ: B2B Request a Quote (RFQ), Shopify apps, SaaS products, Mini CRM, Shopify request a quote app, PreOrder Shopify',
     'site_locale'      => 'en_US',
     'site_author'      => 'Deque Lab',
     'site_founded'     => '2021',
@@ -120,20 +120,8 @@ if (in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', ['GET', 'HEAD'], true)) {
 // ---------- Contact form options (rendered + validated server-side) ----------
 $INTEREST_SAAS = [
     'Alliances PRO',
-    'Muslim Daily Planner',
-    'Education CRM (waitlist)',
-    'Real Estate CRM (waitlist)',
-    'Duty Timer (waitlist)',
-    'Email Marketing Suite (waitlist)',
-    'Competitor Marketing Analysis (waitlist)',
 ];
 $INTEREST_SHOPIFY = [
-    'DQ: Appointment Booking',
-    'DQ: CRM for B2B (waitlist)',
-    'DQ: Wholesale Pricing (waitlist)',
     'DQ: B2B Request a Quote (RFQ)',
-    'DQ: Live Product Options (waitlist)',
-    'DQ: Subscription Plus (waitlist)',
-    'DQ: Checkout Extensions Plus (waitlist)',
 ];
 $INTEREST_ALL = array_merge($INTEREST_SAAS, $INTEREST_SHOPIFY, ['Just saying hi']);
